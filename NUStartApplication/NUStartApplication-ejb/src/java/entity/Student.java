@@ -1,8 +1,14 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package entity;
 
+import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,8 +19,10 @@ import javax.persistence.OneToMany;
  *
  * @author dengxueqi
  */
-public class Student extends User {
-    
+
+@Entity
+public class Student extends Person implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,12 +30,12 @@ public class Student extends User {
     private String faculty;
     private String course;
     private int year;
-    private List<Guide> favouriteGuides;
-    //private List<Forum> favouriteForums;
-    //private List<Notification> notifications;
     
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private List<Contact> contacts; 
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Guide> favoriteGuides;
+    
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Contact> contacts;
 
     @Override
     public Long getId() {
@@ -63,16 +71,6 @@ public class Student extends User {
         this.year = year;
     }
 
-    public List<Guide> getFavouriteGuides() {
-        return favouriteGuides;
-    }
-
-    public void setFavouriteGuides(List<Guide> favouriteGuides) {
-        this.favouriteGuides = favouriteGuides;
-    }
-    
-    //forum list, notifications getter and setters
-
     public List<Contact> getContacts() {
         return contacts;
     }
@@ -81,31 +79,37 @@ public class Student extends User {
         this.contacts = contacts;
     }
     
-    
+    public List<Guide> getFavoriteGuides() {
+        return favoriteGuides;
+    }
 
+    public void setFavoriteGuides(List<Guide> favoriteGuides) {
+        this.favoriteGuides = favoriteGuides;
+    }
+    
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 83 * hash + Objects.hashCode(this.id);
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Student)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Student other = (Student) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        Student other = (Student) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entity.Student[ id=" + id + " ]";
     }
     
 }
