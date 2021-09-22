@@ -29,10 +29,16 @@ public class Student extends Person implements Serializable {
     private Long id;
     private String faculty;
     private String course;
-    private int year;
+    private int yr;
     
     @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> favoriteGuides;
+    
+//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+//    private List<Forum> favoriteForums;
+    
+//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+//    private List<Forum> forums;
     
     @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
@@ -63,12 +69,12 @@ public class Student extends Person implements Serializable {
         this.course = course;
     }
 
-    public int getYear() {
-        return year;
+    public int getYr() {
+        return yr;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setYr(int yr) {
+        this.yr = yr;
     }
 
     public List<Contact> getContacts() {

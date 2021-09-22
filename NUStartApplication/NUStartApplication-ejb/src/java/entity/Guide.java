@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -25,9 +26,16 @@ public class Guide implements Serializable {
     private Long id;
     private String title;
     private String content;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateCreated;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateUpdated;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date datePublished;
+    
     
 
     public Long getId() {

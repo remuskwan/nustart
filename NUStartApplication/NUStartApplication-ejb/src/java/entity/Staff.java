@@ -30,9 +30,19 @@ public class Staff extends Person implements Serializable {
     @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> guides;
     
+//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+//    private List<Forum> forums;
+    
     @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
+    
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Guide> favoriteGuides;
+    
+//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+//    private List<Forum> favoriteForums;
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -56,6 +66,14 @@ public class Staff extends Person implements Serializable {
 
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public List<Guide> getFavoriteGuides() {
+        return favoriteGuides;
+    }
+
+    public void setFavoriteGuides(List<Guide> favoriteGuides) {
+        this.favoriteGuides = favoriteGuides;
     }
 
     @Override
