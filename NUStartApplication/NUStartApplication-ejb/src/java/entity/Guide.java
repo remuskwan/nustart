@@ -6,11 +6,15 @@
 package entity;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -25,10 +29,14 @@ public class Guide implements Serializable {
     private Long id;
     private String title;
     private String content;
+    private boolean publish;
+    @Temporal(TemporalType.DATE)
     private Date dateCreated;
+    @Temporal(TemporalType.DATE)
     private Date dateUpdated;
+    @Temporal(TemporalType.DATE)
     private Date datePublished;
-    
+    private List<URL> images;
 
     public Long getId() {
         return id;
@@ -36,6 +44,54 @@ public class Guide implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isPublish() {
+        return publish;
+    }
+
+    public void setPublish(boolean publish) {
+        this.publish = publish;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public void setDateUpdated(Date dateUpdated) {
+        this.dateUpdated = dateUpdated;
+    }
+
+    public Date getDatePublished() {
+        return datePublished;
+    }
+
+    public void setDatePublished(Date datePublished) {
+        this.datePublished = datePublished;
     }
 
     @Override
