@@ -9,10 +9,13 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -37,6 +40,24 @@ public class Guide implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date datePublished;
     private List<URL> images;
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Comment> comments;
+
+    public List<URL> getImages() {
+        return images;
+    }
+
+    public void setImages(List<URL> images) {
+        this.images = images;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
     public Long getId() {
         return id;
