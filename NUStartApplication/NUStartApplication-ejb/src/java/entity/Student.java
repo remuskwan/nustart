@@ -30,6 +30,15 @@ public class Student extends Person implements Serializable {
     private String faculty;
     private String course;
     private int yr;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
     
     @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> favoriteGuides;

@@ -6,7 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,31 +16,26 @@ import javax.persistence.Id;
  * @author Allie
  */
 @Entity
-public class Administrator extends Person implements Serializable {
+public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private List<Guide> myGuides;
-    //private List<Forum> myForum;
+    private String name;
 
-    public List<Guide> getMyGuides() {
-        return myGuides;
+    public String getName() {
+        return name;
     }
 
-    public void setMyGuides(List<Guide> myGuides) {
-        this.myGuides = myGuides;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
     public Long getId() {
         return id;
     }
-    
-    
 
-    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -56,10 +50,10 @@ public class Administrator extends Person implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Administrator)) {
+        if (!(object instanceof Category)) {
             return false;
         }
-        Administrator other = (Administrator) object;
+        Category other = (Category) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -68,7 +62,7 @@ public class Administrator extends Person implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Administrator[ id=" + id + " ]";
+        return "entity.Category[ id=" + id + " ]";
     }
     
 }
