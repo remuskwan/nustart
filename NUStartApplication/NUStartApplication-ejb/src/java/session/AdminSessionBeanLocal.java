@@ -25,8 +25,9 @@ import javax.ejb.Local;
 @Local
 public interface AdminSessionBeanLocal {
     
-    public Administrator retrieveAdministrator(String email);
-    public Administrator administratorLogin(String username, String password) throws InvalidLoginException;
+    public Administrator retrieveAdministrator(Long aId);
+    public Administrator retrieveAdministratorByEmail(String email) throws NoResultException;
+    public Administrator administratorLogin(String username, String password) throws InvalidLoginException, NoResultException;
     //block 
     public void block(Long uId) throws NoResultException;
     //unblock

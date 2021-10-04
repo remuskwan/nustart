@@ -26,7 +26,7 @@ public class Post implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String content;
-    //private User creator;
+    private Person creator;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
 //    private Boolean published;
@@ -64,6 +64,14 @@ public class Post implements Serializable {
 
     public void setLikes(Long likes) {
         this.likes = likes;
+    }
+
+    public Person getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Person creator) {
+        this.creator = creator;
     }
     
     @Override

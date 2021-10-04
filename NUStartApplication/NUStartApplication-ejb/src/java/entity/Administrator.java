@@ -24,7 +24,7 @@ public class Administrator extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private List<Guide> myGuides;
-    //private List<Forum> myForum;
+    private List<Forum> forums;
 
     public List<Guide> getMyGuides() {
         return myGuides;
@@ -38,9 +38,15 @@ public class Administrator extends Person implements Serializable {
     public Long getId() {
         return id;
     }
-    
-    
 
+    public List<Forum> getForums() {
+        return forums;
+    }
+
+    public void setForums(List<Forum> forums) {
+        this.forums = forums;
+    }
+    
     @Override
     public void setId(Long id) {
         this.id = id;

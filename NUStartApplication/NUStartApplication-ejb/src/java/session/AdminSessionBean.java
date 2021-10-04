@@ -37,19 +37,27 @@ public class AdminSessionBean implements AdminSessionBeanLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
-    
     @Override
-    public Administrator retrieveAdministrator(String email){
-        Administrator admin = em.find(Administrator.class, email);
+    public Administrator retrieveAdministrator(Long aId){
+        Administrator admin = em.find(Administrator.class, aId);
         return admin;
     }
-    
+    @Override
+    public Administrator retrieveAdministratorByEmail(String email) throws NoResultException {
+        Query q = em.createQuery("SELECT a FROM Administrator a WHERE a.email = :inEmail");
+        q.setParameter("inEmail", email);
+        try {
+            return (Administrator) q.getSingleResult();
+        } catch (Exception e) {
+            throw new NoResultException("Admin not found");
+        }
+    }
     //might be front end idk
     @Override 
-    public Administrator administratorLogin(String username, String password) throws InvalidLoginException {
+    public Administrator administratorLogin(String username, String password) throws InvalidLoginException, NoResultException {
         try {
             //username is email
-            Administrator admin = retrieveAdministrator(username);
+            Administrator admin = retrieveAdministratorByEmail(username);
             if (admin.getPassword().equals(password)) {
                 return admin;
             } else {
@@ -57,6 +65,8 @@ public class AdminSessionBean implements AdminSessionBeanLocal {
             }
         } catch (InvalidLoginException ex) {
             throw new InvalidLoginException("Administrator username does not exist or invalid password!");
+        } catch (NoResultException e) {
+            throw new NoResultException("Admin not found");
         }
     }
 
@@ -206,5 +216,5 @@ public class AdminSessionBean implements AdminSessionBeanLocal {
         Query q = em.createQuery("select g from Guide g"); 
         return q.getResultList();
     }
-    
+
 }
