@@ -32,7 +32,7 @@ public class Thread implements Serializable {
     private String title;
     private Boolean closed;
     private Boolean pinned;
-    //private User creator
+    private Person creator;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Post> posts;
     @Temporal(TemporalType.DATE)
@@ -84,6 +84,14 @@ public class Thread implements Serializable {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public Person getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Person creator) {
+        this.creator = creator;
     }
 
     @Override
