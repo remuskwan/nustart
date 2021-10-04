@@ -12,6 +12,13 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
+    <servlet>
+        <servlet-name>Controller</servlet-name>
+        <servlet-class>Controller</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/Controller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

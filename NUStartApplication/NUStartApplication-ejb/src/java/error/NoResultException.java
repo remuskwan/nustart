@@ -6,10 +6,10 @@
 package error;
 
 /**
- *
- * @author remuskwan
+ * @author dengx
  */
 public class NoResultException extends Exception {
+
     public NoResultException() {
     }
 

@@ -6,15 +6,13 @@
 package entity;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
 
 /**
  *
@@ -29,15 +27,16 @@ public class Guide implements Serializable {
     private Long id;
     private String title;
     private String content;
-    private boolean publish;
-    @Temporal(TemporalType.DATE)
-    private Date dateCreated;
-    @Temporal(TemporalType.DATE)
-    private Date dateUpdated;
-    @Temporal(TemporalType.DATE)
-    private Date datePublished;
-    private List<URL> images;
 
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateCreated;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateUpdated;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date datePublished;
+ 
     public Long getId() {
         return id;
     }
@@ -60,14 +59,6 @@ public class Guide implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public boolean isPublish() {
-        return publish;
-    }
-
-    public void setPublish(boolean publish) {
-        this.publish = publish;
     }
 
     public Date getDateCreated() {
