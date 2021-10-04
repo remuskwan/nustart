@@ -12,45 +12,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
-
+import javax.persistence.TemporalType;
 
 /**
  *
  * @author remuskwan
  */
 @Entity
-public class Guide implements Serializable {
+public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String title;
     private String content;
+    //private User creator;
+    @Temporal(TemporalType.DATE)
+    private Date createdAt;
+//    private Boolean published;
+//    private Date publishedAt;
+//    private Date updatedAt;
+    private Long likes;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateCreated;
-    
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateUpdated;
-    
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date datePublished;
- 
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {
@@ -61,30 +50,22 @@ public class Guide implements Serializable {
         this.content = content;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Date getDateUpdated() {
-        return dateUpdated;
+    public Long getLikes() {
+        return likes;
     }
 
-    public void setDateUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
+    public void setLikes(Long likes) {
+        this.likes = likes;
     }
-
-    public Date getDatePublished() {
-        return datePublished;
-    }
-
-    public void setDatePublished(Date datePublished) {
-        this.datePublished = datePublished;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -95,10 +76,10 @@ public class Guide implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Guide)) {
+        if (!(object instanceof Post)) {
             return false;
         }
-        Guide other = (Guide) object;
+        Post other = (Post) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,7 +88,7 @@ public class Guide implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Guide[ id=" + id + " ]";
+        return "entity.Post[ id=" + id + " ]";
     }
     
 }

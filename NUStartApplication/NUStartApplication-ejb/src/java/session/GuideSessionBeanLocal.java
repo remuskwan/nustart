@@ -5,6 +5,10 @@
  */
 package session;
 
+import entity.Guide;
+import error.NoResultException;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -13,5 +17,15 @@ import javax.ejb.Local;
  */
 @Local
 public interface GuideSessionBeanLocal {
+    public Guide getGuide(Long gId) throws NoResultException;
     
+    public List<Guide> searchGuidesByTitle(String title) throws NoResultException;
+    
+    public List<Guide> searchGuidesByDate(Date date) throws NoResultException;
+    
+    public void createGuide(Guide g) throws NoResultException;
+    
+    public void updateGuide(Guide g) throws NoResultException;
+    
+    public void deleteGuide(Long gId) throws NoResultException;
 }

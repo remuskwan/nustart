@@ -7,36 +7,37 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
-
+import javax.persistence.TemporalType;
 
 /**
  *
  * @author remuskwan
  */
 @Entity
-public class Guide implements Serializable {
+public class Thread implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    private String content;
+    private Boolean closed;
+    private Boolean pinned;
+    //private User creator
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Post> posts;
+    @Temporal(TemporalType.DATE)
+    private Date created;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateCreated;
-    
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateUpdated;
-    
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date datePublished;
- 
     public Long getId() {
         return id;
     }
@@ -53,36 +54,36 @@ public class Guide implements Serializable {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    public Boolean getClosed() {
+        return closed;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setClosed(Boolean closed) {
+        this.closed = closed;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Boolean getPinned() {
+        return pinned;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setPinned(Boolean pinned) {
+        this.pinned = pinned;
     }
 
-    public Date getDateUpdated() {
-        return dateUpdated;
+    public Date getCreated() {
+        return created;
     }
 
-    public void setDateUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
-    public Date getDatePublished() {
-        return datePublished;
+    public List<Post> getPosts() {
+        return posts;
     }
 
-    public void setDatePublished(Date datePublished) {
-        this.datePublished = datePublished;
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
     @Override
@@ -95,10 +96,10 @@ public class Guide implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Guide)) {
+        if (!(object instanceof Thread)) {
             return false;
         }
-        Guide other = (Guide) object;
+        Thread other = (Thread) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,7 +108,7 @@ public class Guide implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Guide[ id=" + id + " ]";
+        return "entity.Thread[ id=" + id + " ]";
     }
     
 }

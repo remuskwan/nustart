@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package error;
+package session;
+
+import javax.ejb.Local;
 
 /**
- * @author dengx
+ *
+ * @author remuskwan
  */
-public class NoResultException extends Exception {
-
-    public NoResultException() {
-    }
-
-    public NoResultException(String s) {
-        super(s);
-    }
+@Local
+public interface ForumSessionBeanLocal {
+    
 }
