@@ -66,6 +66,12 @@ public class Controller extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse respone) 
+			throws ServletException, IOException {
+		processRequest(request, response);	
+	}
 
     /**
      * Returns a short description of the servlet.
