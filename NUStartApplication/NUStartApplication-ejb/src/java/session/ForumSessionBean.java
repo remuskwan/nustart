@@ -28,8 +28,6 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
     private EntityManager em;
     
     @EJB
-    private AdminSessionBeanLocal adminSessionBeanLocal;
-    @EJB
     private ThreadSessionBeanLocal threadSessionBeanLocal;
 
     @Override
@@ -44,18 +42,12 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
     }
 
     @Override
-    public void createForum(Long aId, Forum f) throws NoResultException {
-        try {
-            f.setTitle(f.getTitle().trim());
-            f.setDescription(f.getDescription().trim());
-            
-            Administrator a = adminSessionBeanLocal.retrieveAdministrator(aId);
-            em.persist(f);
-            a.getForums().add(f);
-        } catch (Exception e) {
-            throw new NoResultException("User not found");
-        }
-        
+    public void createForum(Forum f) {
+        f.setTitle(f.getTitle().trim());
+        f.setDescription(f.getDescription().trim());
+
+        em.persist(f);
+        f.getCreator().getForums().add(f);
     }
 
     @Override
@@ -95,34 +87,17 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
     }
 
     @Override
-    public void editThread(Long fId, Thread t) throws NoResultException {
-        Forum f = getForum(fId);
+    public void editThread(Thread t) throws NoResultException {
         Thread oldT = threadSessionBeanLocal.getThread(t.getId());
-        f.getThreads().remove(oldT);
-        oldT.setTitle(t.getTitle());
+        oldT.setTitle(t.getTitle().trim());
+        oldT.setPosts(t.getPosts());
         oldT.setClosed(t.getClosed());
         oldT.setPinned(t.getPinned());
-        oldT.setPosts(t.getPosts());
-        f.getThreads().add(t);
     }
 
     @Override
-    public void deleteThread(Long fId, Long tId) throws NoResultException {
+    public void deleteThread(Long tId) throws NoResultException {
         Thread t = threadSessionBeanLocal.getThread(tId);
         em.remove(t);
-    }
-    
-     @Override
-    public List<Thread> searchForumThreads(Long fId, String title) throws NoResultException{
-        List<Thread> threads = new ArrayList<>();
-        try {
-            Forum f = getForum(fId);
-            f.getThreads().stream().filter(t -> (t.getTitle().equals(title))).forEachOrdered(t -> {
-                threads.add(t);
-            });
-        } catch (NoResultException ex) {
-            throw new NoResultException("Forum not found");
-        }
-        return threads;
     }
 }

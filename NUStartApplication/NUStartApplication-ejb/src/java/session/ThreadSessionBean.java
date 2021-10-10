@@ -8,10 +8,11 @@ package session;
 import entity.Post;
 import entity.Thread;
 import error.NoResultException;
-import javax.ejb.EJB;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -22,9 +23,6 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
     
     @PersistenceContext
     private EntityManager em;
-    
-    @EJB
-    private ForumSessionBeanLocal forumSessionBeanLocal;
 
     @Override
     public Thread getThread(Long tId) throws NoResultException {
@@ -36,7 +34,22 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
             throw new NoResultException("Thread not found");
         }
     }
-
+    @Override
+    public List<Thread> searchThreads(Long fId, String title) {
+        Query q;
+        if (title != null) {
+            q = em.createQuery("SELECT t FROM Thread t, Forum f WHERE f.id = :fId AND " 
+                    + "LOWER(t.title) LIKE :title");
+            q.setParameter("fId", fId);
+            q.setParameter("title", "%" + title.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT t FROM Thread t, Forum f WHERE f.id = :fId");
+            q.setParameter("fId", fId);
+        }
+        
+        return q.getResultList();
+    }
+    
     @Override
     public void addPost(Long tId, Post p) throws NoResultException {
         try {

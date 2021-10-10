@@ -9,9 +9,12 @@ import entity.Guide;
 import error.NoResultException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -39,24 +42,46 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public void updateGuide(Guide g) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateGuide(Guide g) throws NoResultException {
+        try {
+            Guide oldG = getGuide(g.getId());
+            oldG.setTitle(g.getTitle());
+            oldG.setContent(g.getContent());
+            if (g.getPublished()) {
+                oldG.setDatePublished(new Date());
+            } else {
+                oldG.setDateUpdated(new Date());
+            }
+        } catch (NoResultException ex) {
+            Logger.getLogger(GuideSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     @Override
-    public void deleteGuide(Long gId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteGuide(Long gId) throws NoResultException {
+        Guide g = getGuide(gId);
+        em.remove(g);
     }
 
     @Override
     public List<Guide> searchGuidesByTitle(String title) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query q;
+        if (title != null) {
+            q = em.createQuery("SELECT g FROM Guide g WHERE " 
+                    + "LOWER(g.title) LIKE :title");
+            q.setParameter("title", "%" + title.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT g FROM Guide g");
+        }
+        
+        return q.getResultList();
     }
 
     @Override
     public List<Guide> searchGuidesByDate(Date date) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query q = em.createQuery("SELECT g FROM Guide g WHERE g.dateCreated = :date");
+        q.setParameter("date", date);
+        return q.getResultList();
     }
-
-    
 }
