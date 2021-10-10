@@ -19,7 +19,7 @@ import javax.ejb.Local;
 public interface ForumSessionBeanLocal {
     public Forum getForum(Long fId) throws NoResultException;
     
-    public void createForum(Long aId, Forum f) throws NoResultException;
+    public void createForum(Forum f);
     
     public void updateForum(Forum f) throws NoResultException;
     
@@ -29,9 +29,7 @@ public interface ForumSessionBeanLocal {
     
     public void addThread(Long fId, Thread t) throws NoResultException;
     
-    public void editThread(Long fId, Thread tId) throws NoResultException;
+    public void editThread(Thread tId) throws NoResultException;
     
-    public void deleteThread(Long fId, Long tId) throws NoResultException;
-    
-    public List<Thread> searchForumThreads(Long fId, String title) throws NoResultException;
+    public void deleteThread(Long tId) throws NoResultException;
 }

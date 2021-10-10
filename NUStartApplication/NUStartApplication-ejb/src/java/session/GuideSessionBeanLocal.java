@@ -19,11 +19,11 @@ import javax.ejb.Local;
 public interface GuideSessionBeanLocal {
     public Guide getGuide(Long gId) throws NoResultException;
     
-    public List<Guide> searchGuidesByTitle(String title) throws NoResultException;
+    public List<Guide> searchGuidesByTitle(String title);
     
-    public List<Guide> searchGuidesByDate(Date date) throws NoResultException;
+    public List<Guide> searchGuidesByDate(Date date);
     
-    public void createGuide(Guide g) throws NoResultException;
+    public void createGuide(Guide g);
     
     public void updateGuide(Guide g) throws NoResultException;
     

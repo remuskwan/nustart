@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -14,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,11 +33,16 @@ public class Forum implements Serializable {
     private Long id;
     private String title;
     private String description;
-    //private Admin creator
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Thread> threads;
     @Temporal(TemporalType.DATE)
     private Date created;
+    @ManyToOne
+    private Administrator creator;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Thread> threads;
+
+    public Forum() {
+        this.threads = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;
@@ -75,6 +82,14 @@ public class Forum implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public Administrator getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Administrator creator) {
+        this.creator = creator;
     }
 
     @Override

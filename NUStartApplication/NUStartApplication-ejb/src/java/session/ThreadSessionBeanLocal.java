@@ -8,6 +8,7 @@ package session;
 import entity.Post;
 import entity.Thread;
 import error.NoResultException;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -17,6 +18,8 @@ import javax.ejb.Local;
 @Local
 public interface ThreadSessionBeanLocal {
     public Thread getThread(Long tId) throws NoResultException;
+    
+    public List<Thread> searchThreads(Long fId, String title);
     
     public void addPost(Long tId, Post p) throws NoResultException;
     
