@@ -6,10 +6,9 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,20 +26,12 @@ public class Staff extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "creator")
     private List<Guide> guides;
-    
-//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-//    private List<Forum> forums;
-    
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Contact> contacts;
-    
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Guide> favoriteGuides;
-    
-//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-//    private List<Forum> favoriteForums;
+
+    public Staff() {
+        this.guides = new ArrayList<>();
+    }
 
     @Override
     public Long getId() {
@@ -58,22 +49,6 @@ public class Staff extends Person implements Serializable {
 
     public void setGuides(List<Guide> guides) {
         this.guides = guides;
-    }
-
-    public List<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
-    public List<Guide> getFavoriteGuides() {
-        return favoriteGuides;
-    }
-
-    public void setFavoriteGuides(List<Guide> favoriteGuides) {
-        this.favoriteGuides = favoriteGuides;
     }
 
     @Override
