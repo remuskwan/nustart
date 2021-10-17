@@ -6,8 +6,8 @@
 package session;
 
 import entity.Guide;
+import entity.Person;
 import error.NoResultException;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -18,14 +18,10 @@ import javax.ejb.Local;
 @Local
 public interface GuideSessionBeanLocal {
     public Guide getGuide(Long gId) throws NoResultException;
-    
-    public List<Guide> searchGuidesByTitle(String title);
-    
-    public List<Guide> searchGuidesByDate(Date date);
-    
-    public void createGuide(Guide g);
-    
-    public void updateGuide(Guide g) throws NoResultException;
-    
+    public List<Guide> searchGuides();    
+    public List<Guide> searchGuidesByTitle(String title);    
+    public List<Guide> searchGuidesByCreator(Person creator);    
+    public void createGuide(Guide g);    
+    public void updateGuide(Guide g) throws NoResultException;    
     public void deleteGuide(Long gId) throws NoResultException;
 }
