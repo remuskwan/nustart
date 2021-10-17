@@ -5,11 +5,9 @@
  */
 package session;
 
-import entity.Administrator;
 import entity.Forum;
 import entity.Thread;
 import error.NoResultException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -61,8 +59,8 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
     @Override
     public void deleteForum(Long fId) throws NoResultException {
         Forum f = getForum(fId);
-        
         em.remove(f);
+        f.getCreator().getForums().remove(f);
     }
 
     @Override
@@ -81,6 +79,7 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
 
     @Override
     public void addThread(Long fId, Thread t) throws NoResultException {
+        t.setTitle(t.getTitle().trim());
         Forum f = getForum(fId);
         em.persist(t);
         f.getThreads().add(t);
@@ -96,8 +95,16 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
     }
 
     @Override
-    public void deleteThread(Long tId) throws NoResultException {
+    public void deleteThread(Long fId, Long tId) throws NoResultException {
+        Forum f = getForum(fId);
         Thread t = threadSessionBeanLocal.getThread(tId);
-        em.remove(t);
+        
+        if (f != null) {
+            f.getThreads().remove(t);
+            t.getCreator().getThreads().remove(t);
+            em.remove(t);
+        } else {
+            throw new NoResultException("Not found");
+        }
     }
 }
