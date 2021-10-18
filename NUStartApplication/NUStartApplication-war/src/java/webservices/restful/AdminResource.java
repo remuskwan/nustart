@@ -128,4 +128,11 @@ public class AdminResource {
         }
     }
 
+    @DELETE
+    @Path("/{fid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteFacility(@PathParam("fid") Long fId) {
+        adminSessionBeanLocal.deleteFacility(fId);
+        return Response.status(204).build();
+    }
 }
