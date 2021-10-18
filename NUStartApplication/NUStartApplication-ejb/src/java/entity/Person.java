@@ -6,12 +6,17 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -28,7 +33,24 @@ public abstract class Person implements Serializable {
     private String email;
     private String password;
     private String profilePicture;
+    
+    
+    @OneToMany(mappedBy = "creator")
+    private List<Thread> threads;
+    @OneToMany(mappedBy = "creator")
+    private List<Post> posts;
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Contact> contacts;
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Guide> favoriteGuides;
+    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Post> favoritePosts;
 
+    public Person() {   
+        this.threads = new ArrayList<>();
+        this.posts = new ArrayList<>();
+    }
+    
     public Long getId() {
         return id;
     }
@@ -59,6 +81,46 @@ public abstract class Person implements Serializable {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+    
+    public List<Thread> getThreads() {
+        return threads;
+    }
+
+    public void setThreads(List<Thread> threads) {
+        this.threads = threads;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
+    public List<Guide> getFavoriteGuides() {
+        return favoriteGuides;
+    }
+
+    public void setFavoriteGuides(List<Guide> favoriteGuides) {
+        this.favoriteGuides = favoriteGuides;
+    }
+
+    public List<Post> getFavoritePosts() {
+        return favoritePosts;
+    }
+
+    public void setFavoritePosts(List<Post> favoritePosts) {
+        this.favoritePosts = favoritePosts;
     }
 
     @Override

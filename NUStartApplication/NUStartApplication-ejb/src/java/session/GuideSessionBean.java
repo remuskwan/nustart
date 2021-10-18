@@ -6,6 +6,7 @@
 package session;
 
 import entity.Guide;
+import entity.Person;
 import error.NoResultException;
 import java.util.Date;
 import java.util.List;
@@ -63,6 +64,12 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
         Guide g = getGuide(gId);
         em.remove(g);
     }
+    
+    @Override
+    public List<Guide> searchGuides() {
+        Query q = em.createQuery("SELECT g FROM Guide g");
+        return q.getResultList();
+    }
 
     @Override
     public List<Guide> searchGuidesByTitle(String title) {
@@ -79,9 +86,9 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public List<Guide> searchGuidesByDate(Date date) {
-        Query q = em.createQuery("SELECT g FROM Guide g WHERE g.dateCreated = :date");
-        q.setParameter("date", date);
+    public List<Guide> searchGuidesByCreator(Person creator){
+        Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator = :creator");
+        q.setParameter("creator", creator);
         return q.getResultList();
     }
 }
