@@ -1,25 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 /**
  *
  * @author dengxueqi
  */
-
 @Entity
 public class Student extends Person implements Serializable {
 
@@ -31,26 +21,6 @@ public class Student extends Person implements Serializable {
     private String course;
     private int yr;
     private boolean active;
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-    
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Guide> favoriteGuides;
-    
-//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-//    private List<Forum> favoriteForums;
-    
-//    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-//    private List<Forum> forums;
-    
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Contact> contacts;
 
     @Override
     public Long getId() {
@@ -86,20 +56,12 @@ public class Student extends Person implements Serializable {
         this.yr = yr;
     }
 
-    public List<Contact> getContacts() {
-        return contacts;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
-    
-    public List<Guide> getFavoriteGuides() {
-        return favoriteGuides;
-    }
-
-    public void setFavoriteGuides(List<Guide> favoriteGuides) {
-        this.favoriteGuides = favoriteGuides;
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
     @Override
@@ -126,5 +88,5 @@ public class Student extends Person implements Serializable {
     public String toString() {
         return "entity.Student[ id=" + id + " ]";
     }
-    
+
 }

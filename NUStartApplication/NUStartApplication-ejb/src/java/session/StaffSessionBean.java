@@ -1,13 +1,13 @@
 package session;
 
 import entity.Contact;
-import entity.Guide;
 import entity.Staff;
 import error.NoResultException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -38,15 +38,21 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
     @Override
     public void updateStaff(Staff s) throws NoResultException {
         Staff staff = getStaff(s.getId());
-        staff.setGuides(s.getGuides());
+        staff.setActive(s.isActive());
+        staff.setContacts(s.getContacts());
+        staff.setEmail(s.getEmail());
         staff.setFavoriteGuides(s.getFavoriteGuides());
-        //setForums
-        //setFavouriteForums
+        staff.setFavoritePosts(s.getFavoritePosts());
+        staff.setProfilePicture(s.getProfilePicture());
+        staff.setGuides(s.getGuides());
+        staff.setThreads(s.getThreads());
+        staff.setPosts(s.getPosts());
+        staff.setPassword(s.getPassword());
     }
 
     @Override
-    public void deleteStaff(Staff s) throws NoResultException {
-        Staff staff = getStaff(s.getId());
+    public void deleteStaff(Long sId) throws NoResultException {
+        Staff staff = getStaff(sId);
 
         em.remove(staff);
     }
@@ -59,21 +65,9 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
     }
 
     @Override
-    public List<Guide> showGuides(Staff s) throws NoResultException {
-        return s.getGuides();
+    public List<Staff> searchStaff() {
+        Query q = em.createQuery("SELECT s FROM Staff s");
+        return q.getResultList();
     }
-
-    @Override
-    public List<Guide> showFavouriteGuides(Staff s) throws NoResultException {
-        return s.getFavoriteGuides();
-    }
-
-//    @Override
-//    public List<Forum> showForums(Staff s) throws NoResultException {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//    @Override
-//    public List<Forum> showFavouriteForums(Staff s) throws NoResultException {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+    
 }

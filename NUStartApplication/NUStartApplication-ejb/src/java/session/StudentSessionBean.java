@@ -1,13 +1,13 @@
 package session;
 
 import entity.Contact;
-import entity.Guide;
 import entity.Student;
 import error.NoResultException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -42,16 +42,19 @@ public class StudentSessionBean implements StudentSessionBeanLocal {
         student.setFaculty(s.getFaculty());
         student.setCourse(s.getCourse());
         student.setFavoriteGuides(s.getFavoriteGuides());
-        //setFavouriteForums
-        //setForumPosts
-        //setNotifications
+        student.setFavoriteGuides(s.getFavoriteGuides());
+        student.setFavoritePosts(s.getFavoritePosts());
+        student.setPosts(s.getPosts());
+        student.setContacts(s.getContacts());
         student.setProfilePicture(s.getProfilePicture());
         student.setEmail(s.getEmail());
+        student.setActive(s.isActive());
+        student.setPassword(s.getPassword());
     }
 
     @Override
-    public void deleteStudent(Student s) throws NoResultException {
-        Student student = getStudent(s.getId());
+    public void deleteStudent(Long sId) throws NoResultException {
+        Student student = getStudent(sId);
         
         em.remove(student);
     }
@@ -64,8 +67,9 @@ public class StudentSessionBean implements StudentSessionBeanLocal {
     }
 
     @Override
-    public List<Guide> showFavouriteGudies(Student s) throws NoResultException {
-        return s.getFavoriteGuides();
+    public List<Student> searchStudents() {
+        Query q = em.createQuery("SELECT s FROM Student s");
+        return q.getResultList();
     }
 
     

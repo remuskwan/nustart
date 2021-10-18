@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -25,7 +20,9 @@ public class Staff extends Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
+    private boolean active;
+
     @OneToMany(mappedBy = "creator")
     private List<Guide> guides;
 
@@ -42,7 +39,15 @@ public class Staff extends Person implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public List<Guide> getGuides() {
         return guides;
     }
@@ -75,5 +80,5 @@ public class Staff extends Person implements Serializable {
     public String toString() {
         return "entity.Staff[ id=" + id + " ]";
     }
-    
+
 }
