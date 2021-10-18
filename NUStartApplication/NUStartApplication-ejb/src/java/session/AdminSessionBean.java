@@ -75,15 +75,26 @@ public class AdminSessionBean implements AdminSessionBeanLocal {
     }
     //block 
     @Override
-    public void block(Long uId) throws NoResultException {
+    public void blockStu(Long uId) throws NoResultException {
         Student stu = studentSessionBeanLocal.getStudent(uId);
         stu.setActive(false);
     }
     //unblock
     @Override
-    public void unblock(Long uId) throws NoResultException {
+    public void unblockStu(Long uId) throws NoResultException {
         Student stu = studentSessionBeanLocal.getStudent(uId);
         stu.setActive(true);
+    }
+    @Override
+    public void blockStaff(Long uId) throws NoResultException {
+        Staff staff = staffSessionBeanLocal.getStaff(uId);
+        staff.setActive(false);
+    }
+    //unblock
+    @Override
+    public void unblockStaff(Long uId) throws NoResultException {
+        Staff staff = staffSessionBeanLocal.getStaff(uId);
+        staff.setActive(true);
     }
 
     
@@ -205,6 +216,7 @@ public class AdminSessionBean implements AdminSessionBeanLocal {
         return q.getResultList();
     }
 
+    //let remus and xinyue have these methods
     @Override
     public List<Forum> getAllForums() {
         Query q = em.createQuery("select f from Forum f");

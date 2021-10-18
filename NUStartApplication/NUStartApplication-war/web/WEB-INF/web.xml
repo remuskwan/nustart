@@ -29,4 +29,16 @@
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
+    <ejb-local-ref>
+        <ejb-ref-name>ForumSessionBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>session.ForumSessionBeanLocal</local>
+        <ejb-link>NUStartApplication-ejb.jar#ForumSessionBean</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>StaffSessionBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>session.StaffSessionBeanLocal</local>
+        <ejb-link>NUStartApplication-ejb.jar#StaffSessionBean</ejb-link>
+    </ejb-local-ref>
 </web-app>

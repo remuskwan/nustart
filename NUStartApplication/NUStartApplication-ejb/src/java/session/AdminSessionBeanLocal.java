@@ -29,9 +29,11 @@ public interface AdminSessionBeanLocal {
     public Administrator retrieveAdministratorByEmail(String email) throws NoResultException;
     public Administrator administratorLogin(String username, String password) throws InvalidLoginException, NoResultException;
     //block 
-    public void block(Long uId) throws NoResultException;
+    public void blockStu(Long uId) throws NoResultException;
+    public void blockStaff(Long uId) throws NoResultException;
     //unblock
-    public void unblock(Long uId) throws NoResultException;
+    public void unblockStu(Long uId) throws NoResultException;
+    public void unblockStaff(Long uId) throws NoResultException;
     //CRUD category
     public List<Category> getCategories();
     public void addCategories(Category cat);

@@ -41,6 +41,15 @@ public class Staff extends Person implements Serializable {
     
 //    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
 //    private List<Forum> favoriteForums;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     @Override
     public Long getId() {
