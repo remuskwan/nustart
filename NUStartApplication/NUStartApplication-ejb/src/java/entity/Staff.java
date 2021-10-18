@@ -28,6 +28,16 @@ public class Staff extends Person implements Serializable {
     
     @OneToMany(mappedBy = "creator")
     private List<Guide> guides;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
 
     public Staff() {
         this.guides = new ArrayList<>();
