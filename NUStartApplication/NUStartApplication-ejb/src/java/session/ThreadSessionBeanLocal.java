@@ -23,7 +23,7 @@ public interface ThreadSessionBeanLocal {
     
     public void addPost(Long tId, Post p) throws NoResultException;
     
-    public void editPost(Long tId, Post p) throws NoResultException;
+    public void editPost(Post p) throws NoResultException;
     
     public void deletePost(Long tId, Long pId) throws NoResultException;
 }

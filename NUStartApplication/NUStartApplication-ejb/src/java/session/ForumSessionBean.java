@@ -45,7 +45,6 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
         f.setDescription(f.getDescription().trim());
 
         em.persist(f);
-        f.getCreator().getForums().add(f);
     }
 
     @Override
@@ -60,7 +59,6 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
     public void deleteForum(Long fId) throws NoResultException {
         Forum f = getForum(fId);
         em.remove(f);
-        f.getCreator().getForums().remove(f);
     }
 
     @Override
@@ -101,7 +99,6 @@ public class ForumSessionBean implements ForumSessionBeanLocal {
         
         if (f != null) {
             f.getThreads().remove(t);
-            t.getCreator().getThreads().remove(t);
             em.remove(t);
         } else {
             throw new NoResultException("Not found");

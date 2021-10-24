@@ -62,13 +62,10 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
     }
 
     @Override
-    public void editPost(Long tId, Post p) throws NoResultException {
-        Thread t = getThread(tId);
+    public void editPost(Post p) throws NoResultException {
         Post oldP = em.find(Post.class, p.getId());
-        t.getPosts().remove(oldP);
         oldP.setContent(p.getContent());
         oldP.setLikes(p.getLikes());
-        t.getPosts().add(p);
     }
 
     @Override
