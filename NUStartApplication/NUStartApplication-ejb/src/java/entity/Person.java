@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,14 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import enumeration.AccountType;
 
 /**
  *
  * @author dengxueqi
  */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Person implements Serializable {
+public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -32,25 +26,33 @@ public abstract class Person implements Serializable {
     private Long id;
     private String email;
     private String password;
-    private String profilePicture;
-    
-    
+    private String profilePicture; 
+    private AccountType accountType;
+    private boolean active; //student and staff only
+    private String faculty; //student and staff only
+    private String course; // student only
+    private int yr; //student only
+    private boolean deleted;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Forum> forums; //admin only
     @OneToMany(mappedBy = "creator")
     private List<Thread> threads;
     @OneToMany(mappedBy = "creator")
+    private List<Guide> guides; //staff only
+    @OneToMany(mappedBy = "creator")
     private List<Post> posts;
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> favoriteGuides;
-    @OneToMany(cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Post> favoritePosts;
 
-    public Person() {   
-        this.threads = new ArrayList<>();
-        this.posts = new ArrayList<>();
+    public Person() {
+        
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -82,13 +84,77 @@ public abstract class Person implements Serializable {
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
-    
+
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public int getYr() {
+        return yr;
+    }
+
+    public void setYr(int yr) {
+        this.yr = yr;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public List<Forum> getForums() {
+        return forums;
+    }
+
+    public void setForums(List<Forum> forums) {
+        this.forums = forums;
+    }
+
     public List<Thread> getThreads() {
         return threads;
     }
 
     public void setThreads(List<Thread> threads) {
         this.threads = threads;
+    }
+
+    public List<Guide> getGuides() {
+        return guides;
+    }
+
+    public void setGuides(List<Guide> guides) {
+        this.guides = guides;
     }
 
     public List<Post> getPosts() {
@@ -147,5 +213,5 @@ public abstract class Person implements Serializable {
     public String toString() {
         return "entity.Person[ id=" + id + " ]";
     }
-    
+
 }

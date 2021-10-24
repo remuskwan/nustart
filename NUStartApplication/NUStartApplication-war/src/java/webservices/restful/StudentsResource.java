@@ -1,6 +1,6 @@
 package webservices.restful;
 
-import entity.Student;
+import entity.Person;
 import error.NoResultException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,8 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import session.StudentSessionBeanLocal;
-
+import session.PersonSessionBeanLocal;
 /**
  * REST Web Service
  *
@@ -25,14 +24,14 @@ import session.StudentSessionBeanLocal;
  */
 @Path("students")
 public class StudentsResource {
-
+    
     @EJB
-    private StudentSessionBeanLocal studentSessionBeanLocal;
+    PersonSessionBeanLocal personSessionBeanLocal;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Student> getAllStudents() {
-        return studentSessionBeanLocal.searchStudents();
+    public List<Person> getAllStudents() {
+        return personSessionBeanLocal.getAllStudents();
     }
 
     @GET
@@ -40,9 +39,9 @@ public class StudentsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStudent(@PathParam("id") Long sId) {
         try {
-            Student s = studentSessionBeanLocal.getStudent(sId);
+            Person p = personSessionBeanLocal.getPerson(sId);
             return Response.status(200)
-                    .entity(s)
+                    .entity(p)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (NoResultException ex) {
@@ -56,8 +55,8 @@ public class StudentsResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Student createStudent(Student s) {
-        studentSessionBeanLocal.createStudent(s);
+    public Person createStudent(Person s) {
+        personSessionBeanLocal.createStudent(s);
         return s;
     }
 
@@ -66,7 +65,7 @@ public class StudentsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteStudent(@PathParam("id") Long studentId) {
         try {
-            studentSessionBeanLocal.deleteStudent(studentId);
+            personSessionBeanLocal.deletePerson(studentId);
             return Response.status(204).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
@@ -80,10 +79,10 @@ public class StudentsResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateStudent(@PathParam("id") Long sId, Student s) {
+    public Response updateStudent(@PathParam("id") Long sId, Person s) {
         s.setId(sId);
         try {
-            studentSessionBeanLocal.updateStudent(s);
+            personSessionBeanLocal.updateStudent(s);
             return Response.status(204).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found")

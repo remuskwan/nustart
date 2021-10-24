@@ -1,6 +1,6 @@
 package webservices.restful;
 
-import entity.Staff;
+import entity.Person;
 import error.NoResultException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,7 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import session.StaffSessionBeanLocal;
+import session.PersonSessionBeanLocal;
 
 /**
  * REST Web Service
@@ -27,12 +27,12 @@ import session.StaffSessionBeanLocal;
 public class StaffResource {
 
     @EJB
-    private StaffSessionBeanLocal staffSessionLocal;
+    private PersonSessionBeanLocal personSessionBeanLocal;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Staff> getAllStaff() {
-        return staffSessionLocal.searchStaff();
+    public List<Person> getAllStaff() {
+        return personSessionBeanLocal.getAllStaff();
     }
 
     @GET
@@ -40,8 +40,8 @@ public class StaffResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStaff(@PathParam("staffId") Long staffId) {
         try {
-            Staff s = staffSessionLocal.getStaff(staffId);
-            return Response.status(200).entity(s).build();
+            Person p = personSessionBeanLocal.getPerson(staffId);
+            return Response.status(200).entity(p).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found")
@@ -54,8 +54,8 @@ public class StaffResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Staff createStaff(Staff s) {
-        staffSessionLocal.createStaff(s);
+    public Person createStaff(Person s) {
+        personSessionBeanLocal.createStaff(s);
         return s;
     }
 
@@ -63,10 +63,10 @@ public class StaffResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateStaff(@PathParam("id") Long staffId, Staff s) {
+    public Response updateStaff(@PathParam("id") Long staffId, Person s) {
         s.setId(staffId);
         try {
-            staffSessionLocal.updateStaff(s);
+            personSessionBeanLocal.updateStaff(s);
             return Response.status(204).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
@@ -82,7 +82,7 @@ public class StaffResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteStaff(@PathParam("staffId") Long staffId) {
         try {
-            staffSessionLocal.deleteStaff(staffId);
+            personSessionBeanLocal.deletePerson(staffId);
             return Response.status(204).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()

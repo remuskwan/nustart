@@ -6,7 +6,6 @@
 package webservices.restful;
 
 import entity.Guide;
-import entity.Person;
 import error.NoResultException;
 import java.util.Date;
 import java.util.List;
@@ -37,20 +36,21 @@ import session.GuideSessionBeanLocal;
 @Path("guides")
 @RequestScoped
 public class GuidesResource {
+
     @Context
     private UriInfo context;
     @EJB
     private GuideSessionBeanLocal guideSessionLocal;
 
-    
-    public GuidesResource() { }
-    
+    public GuidesResource() {
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Guide> getAllGuides() {
         return guideSessionLocal.searchGuides();
     }
-    
+
     @GET
     @Path("/{gid}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,12 +66,12 @@ public class GuidesResource {
                     .type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @GET
     @Path("/query")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchGuides(@QueryParam("title") String title,
-            @QueryParam("creator") Person creator) {
+            @QueryParam("creator") String email) {
         if (title != null) {
             List<Guide> results
                     = guideSessionLocal.searchGuidesByTitle(title);
@@ -80,14 +80,22 @@ public class GuidesResource {
             return Response.status(200).entity(
                     entity
             ).build();
-        } else if (creator != null) {
-            List<Guide> results
-                    = guideSessionLocal.searchGuidesByCreator(creator);
-            GenericEntity<List<Guide>> entity = new GenericEntity<List<Guide>>(results) {
-            };
-            return Response.status(200).entity(
-                    entity
-            ).build();
+        } else if (email != null) {
+            try {
+                List<Guide> results
+                        = guideSessionLocal.searchGuidesByCreator(email);
+                GenericEntity<List<Guide>> entity = new GenericEntity<List<Guide>>(results) {
+                };
+                return Response.status(200).entity(
+                        entity
+                ).build();
+            } catch (Exception e) {
+                JsonObject exception = Json.createObjectBuilder()
+                        .add("error", "Not found")
+                        .build();
+                return Response.status(404).entity(exception)
+                        .type(MediaType.APPLICATION_JSON).build();
+            }
         } else {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "No query conditions")
@@ -95,7 +103,7 @@ public class GuidesResource {
             return Response.status(400).entity(exception).build();
         }
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -104,7 +112,7 @@ public class GuidesResource {
         guideSessionLocal.createGuide(g);
         return g;
     }
-    
+
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -123,7 +131,6 @@ public class GuidesResource {
         }
     }
 
-
     @DELETE
     @Path("/{gid}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -138,5 +145,5 @@ public class GuidesResource {
             return Response.status(404).entity(exception).build();
         }
     }
-        
+
 }
