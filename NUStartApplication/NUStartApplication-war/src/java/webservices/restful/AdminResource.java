@@ -44,24 +44,28 @@ public class AdminResource {
     private StudentSessionBeanLocal studentSessionBeanLocal;
 
     @GET
+    @Path("/staffs")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Staff> getAllStaff() {
         return adminSessionBeanLocal.getAllStaff();
     }
 
     @GET
+    @Path("/students")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Student> getAllStudent() {
         return adminSessionBeanLocal.getAllStudents();
     }
 
     @GET
+    @Path("/categories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getAllCategories() {
         return adminSessionBeanLocal.getCategories();
     }
 
     @POST
+    @Path("/categories")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Category createCategory(Category c) {
@@ -103,6 +107,7 @@ public class AdminResource {
     }
 
     @POST
+    @Path("/facilities")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Facility createFacility(Facility f) {
@@ -111,7 +116,7 @@ public class AdminResource {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/facilities/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editFacility(@PathParam("id") Long fId, Facility f) {
@@ -129,7 +134,7 @@ public class AdminResource {
     }
 
     @DELETE
-    @Path("/{fid}")
+    @Path("/facilities/{fid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFacility(@PathParam("fid") Long fId) {
         adminSessionBeanLocal.deleteFacility(fId);

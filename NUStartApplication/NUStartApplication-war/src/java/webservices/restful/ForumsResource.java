@@ -7,13 +7,13 @@ package webservices.restful;
 
 import entity.Forum;
 import entity.Post;
+import entity.Thread;
 import error.NoResultException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.ForumSessionBeanLocal;
@@ -33,7 +34,7 @@ import session.ThreadSessionBeanLocal;
  */
 @Path("forums")
 public class ForumsResource {
-
+    
     @EJB
     private ForumSessionBeanLocal forumSessionBeanLocal;
     @EJB
@@ -107,8 +108,9 @@ public class ForumsResource {
     @Path("/{id}/threads")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addThread(@PathParam("id") Long fId, entity.Thread t) {
+    public Response addThread(@PathParam("id") Long fId, Thread t) {
         try {
+            t.setCreated(new Date());
             forumSessionBeanLocal.addThread(fId, t);
             Forum f = forumSessionBeanLocal.getForum(fId);
 
@@ -126,7 +128,7 @@ public class ForumsResource {
     @Path("/{id}/threads")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editThread(@PathParam("id") Long fId, entity.Thread t) {
+    public Response editThread(@PathParam("id") Long fId, Thread t) {
         try {
             forumSessionBeanLocal.editThread(t);
             Forum forum = forumSessionBeanLocal.getForum(fId);
@@ -163,7 +165,7 @@ public class ForumsResource {
             @PathParam("thread_id") Long tId, Post p) {
         try {
             threadSessionBeanLocal.addPost(tId, p);
-            entity.Thread thread = threadSessionBeanLocal.getThread(tId);
+            Thread thread = threadSessionBeanLocal.getThread(tId);
             
             return Response.status(200).entity(thread).build();
         } catch (NoResultException ex) {
@@ -182,8 +184,8 @@ public class ForumsResource {
     public Response editPost(@PathParam("forum_id") Long fId, 
             @PathParam("thread_id") Long tId, Post p) {
         try {
-            threadSessionBeanLocal.editPost(tId, p);
-            entity.Thread thread = threadSessionBeanLocal.getThread(tId);
+            threadSessionBeanLocal.editPost(p);
+            Thread thread = threadSessionBeanLocal.getThread(tId);
             
             return Response.status(200).entity(thread).build();
         } catch (NoResultException ex) {
