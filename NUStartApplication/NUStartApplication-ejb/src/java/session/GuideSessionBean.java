@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +27,9 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     
     @PersistenceContext
     private EntityManager em;
+    
+    @EJB
+    private PersonSessionBeanLocal personSessionBeanLocal;
 
     @Override
     public Guide getGuide(Long gId) throws NoResultException {
@@ -86,7 +90,8 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public List<Guide> searchGuidesByCreator(Person creator){
+    public List<Guide> searchGuidesByCreator(String email) throws NoResultException {
+        Person creator = personSessionBeanLocal.getPersonByEmail(email);
         Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator = :creator");
         q.setParameter("creator", creator);
         return q.getResultList();
