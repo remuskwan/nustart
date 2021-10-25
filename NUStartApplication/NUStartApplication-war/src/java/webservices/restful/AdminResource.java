@@ -12,6 +12,8 @@ import error.NoResultException;
 import java.util.List;
 import entity.Category;
 import entity.Facility;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -139,5 +141,69 @@ public class AdminResource {
     public Response deleteFacility(@PathParam("fid") Long fId) {
         adminSessionBeanLocal.deleteFacility(fId);
         return Response.status(204).build();
+    }
+
+    @PUT
+    @Path("/students/{sid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response blockStudent(@PathParam("sid") Long sId) {
+        try {
+            adminSessionBeanLocal.blockStu(sId);
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @PUT
+    @Path("/students/{sid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unblockStudent(@PathParam("sid") Long sId) {
+        try {
+            adminSessionBeanLocal.unblockStu(sId);
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @PUT
+    @Path("/staffs/{sid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response blockStaff(@PathParam("sid") Long sId) {
+        try {
+            adminSessionBeanLocal.blockStaff(sId);
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @PUT
+    @Path("/students/{sid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unblockStaff(@PathParam("sid") Long sId) {
+        try {
+            adminSessionBeanLocal.unblockStaff(sId);
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
     }
 }
