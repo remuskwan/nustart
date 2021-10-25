@@ -44,7 +44,7 @@ public class StudentSessionBean implements StudentSessionBeanLocal {
         student.setFavoriteGuides(s.getFavoriteGuides());
         student.setFavoriteGuides(s.getFavoriteGuides());
         student.setFavoritePosts(s.getFavoritePosts());
-        student.setPosts(s.getPosts());
+//        student.setPosts(s.getPosts());
         student.setContacts(s.getContacts());
         student.setProfilePicture(s.getProfilePicture());
         student.setEmail(s.getEmail());

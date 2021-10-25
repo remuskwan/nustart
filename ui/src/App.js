@@ -1,4 +1,5 @@
 import { Route, Switch } from 'react-router';
+import { PrivateRoute, PublicRoute } from './app/util/routes'
 import HomePage from './app/containers/HomePage';
 import './App.css';
 
@@ -6,11 +7,14 @@ function App() {
   return (
     <div className="content">
       <Switch>
-        <Route exact path="/" component={HomePage} />
-        {/* <Route path="/register" component={RegisterPage} />
-        <Route path="/Users" component={UsersPage} />
-        <Route path="/Profile" component={ProfilePage} />
-        <Route path="/threadDetails" component={ThreadDetailsPage} /> */}
+        <PrivateRoute exact path="/" component={HomePage} />
+        {/* <PublicRoute path="/register" component={RegisterPage} />
+        <PrivateRoute path="/users" component={UsersPage} />
+        <PrivateRoute path="/profile" component={ProfilePage} />
+        <PrivateRoute path="/threadDetails" component={ThreadDetailsPage} />
+        <PrivateRoute path="/forumDetails" component={ForumDetailsPage} />
+        <PrivateRoute path="/addThread" component={AddThreadPage} />
+        <PublicRoute path="/login" component={LoginPage} /> */}
       </Switch>
     </div>
   );
