@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { Link } from 'react-router-dom'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import {
   ChatAltIcon,
@@ -12,8 +13,7 @@ import {
   StarIcon,
   ThumbUpIcon,
 } from '@heroicons/react/solid'
-import { BellIcon, FireIcon, HomeIcon, MenuIcon, TrendingUpIcon, UserGroupIcon, XIcon } from '@heroicons/react/outline'
-import SideBar from '../../components/sideBar'
+import { BellIcon, FireIcon, HomeIcon, MenuIcon, UsersIcon, UserGroupIcon, XIcon } from '@heroicons/react/outline'
 
 const user = {
   name: 'Chelsea Hagon',
@@ -31,58 +31,12 @@ const navigation = [
   { name: 'Guides', href: '#', icon: HomeIcon, current: true },
   { name: 'Forums', href: '#', icon: FireIcon, current: false },
   { name: 'Campus', href: '#', icon: UserGroupIcon, current: false },
-  { name: 'Trending', href: '#', icon: TrendingUpIcon, current: false },
+  { name: 'Users', href: '#', icon: UsersIcon, current: false },
 ]
 const tabs = [
   { name: 'Recent', href: '#', current: true },
   { name: 'Most Liked', href: '#', current: false },
   { name: 'Most Answers', href: '#', current: false },
-]
-const questions = [
-  {
-    id: '81614',
-    likes: '29',
-    replies: '11',
-    views: '2.7k',
-    author: {
-      name: 'Dries Vincent',
-      imageUrl:
-        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      href: '#',
-    },
-    date: 'December 9 at 11:43 AM',
-    datetime: '2020-12-09T11:43:00',
-    href: '#',
-    title: 'What would you have done differently if you ran Jurassic Park?',
-    body: `
-      <p>Jurassic Park was an incredible idea and a magnificent feat of engineering, but poor protocols and a disregard for human safety killed what could have otherwise been one of the best businesses of our generation.</p>
-      <p>Ultimately, I think that if you wanted to run the park successfully and keep visitors safe, the most important thing to prioritize would be&hellip;</p>
-    `,
-  },
-  // More questions...
-]
-const whoToFollow = [
-  {
-    name: 'Leonard Krasner',
-    handle: 'leonardkrasner',
-    href: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  // More people...
-]
-const trendingPosts = [
-  {
-    id: 1,
-    user: {
-      name: 'Floyd Miles',
-      imageUrl:
-        'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    body: 'What books do you have on your bookshelf just to look smarter than you actually are?',
-    comments: 291,
-  },
-  // More posts...
 ]
 
 function classNames(...classes) {
@@ -106,16 +60,16 @@ export default function NavBar() {
             <div className="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
               <div className="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
-                  <a href="#">
+                  <Link to="/">
                     <img
                       className="block h-8 w-auto"
                       src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
                       alt="Workflow"
                     />
-                  </a>
+                  </Link>
                 </div>
               </div>
-              <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
+              <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-8">
                 <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                   <div className="w-full">
                     <label htmlFor="search" className="sr-only">
@@ -147,16 +101,19 @@ export default function NavBar() {
                   )}
                 </Popover.Button>
               </div>
-              <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
-                <a href="#" className="text-sm font-medium text-gray-900 hover:underline">
-                  Go Premium
-                </a>
-                <a
+              <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-2">
+                {/* <a
                   href="#"
                   className="ml-5 flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                 >
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
+                </a> */}
+                <a
+                  href="#"
+                  className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                >
+                  New Post
                 </a>
 
                 {/* Profile dropdown */}
@@ -196,12 +153,7 @@ export default function NavBar() {
                   </Transition>
                 </Menu>
 
-                <a
-                  href="#"
-                  className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                >
-                  New Post
-                </a>
+                
               </div>
             </div>
           </div>
@@ -231,13 +183,6 @@ export default function NavBar() {
                   <div className="text-base font-medium text-gray-800">{user.name}</div>
                   <div className="text-sm font-medium text-gray-500">{user.email}</div>
                 </div>
-                <button
-                  type="button"
-                  className="ml-auto flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
               </div>
               <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
                 {userNavigation.map((item) => (
@@ -259,12 +204,6 @@ export default function NavBar() {
               >
                 New Post
               </a>
-
-              <div className="mt-6 flex justify-center">
-                <a href="#" className="text-base font-medium text-gray-900 hover:underline">
-                  Go Premium
-                </a>
-              </div>
             </div>
           </Popover.Panel>
         </>

@@ -37,8 +37,6 @@ import session.GuideSessionBeanLocal;
 @RequestScoped
 public class GuidesResource {
 
-    @Context
-    private UriInfo context;
     @EJB
     private GuideSessionBeanLocal guideSessionLocal;
 

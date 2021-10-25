@@ -45,8 +45,8 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
         staff.setFavoritePosts(s.getFavoritePosts());
         staff.setProfilePicture(s.getProfilePicture());
         staff.setGuides(s.getGuides());
-        staff.setThreads(s.getThreads());
-        staff.setPosts(s.getPosts());
+//        staff.setThreads(s.getThreads());
+//        staff.setPosts(s.getPosts());
         staff.setPassword(s.getPassword());
     }
 

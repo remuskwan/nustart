@@ -62,9 +62,9 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         staff.setFavoriteGuides(s.getFavoriteGuides());
         staff.setFavoritePosts(s.getFavoritePosts());
         staff.setProfilePicture(s.getProfilePicture());
-        staff.setGuides(s.getGuides());
-        staff.setThreads(s.getThreads());
-        staff.setPosts(s.getPosts());
+//        staff.setGuides(s.getGuides());
+//        staff.setThreads(s.getThreads());
+//        staff.setPosts(s.getPosts());
         staff.setPassword(s.getPassword());
         staff.setFaculty(s.getFaculty());
     }
@@ -78,7 +78,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         student.setFavoriteGuides(s.getFavoriteGuides());
         student.setFavoriteGuides(s.getFavoriteGuides());
         student.setFavoritePosts(s.getFavoritePosts());
-        student.setPosts(s.getPosts());
+//        student.setPosts(s.getPosts());
         student.setContacts(s.getContacts());
         student.setProfilePicture(s.getProfilePicture());
         student.setEmail(s.getEmail());

@@ -34,14 +34,14 @@ public class Person implements Serializable {
     private int yr; //student only
     private boolean deleted;
 
-    @OneToMany(mappedBy = "creator")
-    private List<Forum> forums; //admin only
-    @OneToMany(mappedBy = "creator")
-    private List<Thread> threads;
-    @OneToMany(mappedBy = "creator")
-    private List<Guide> guides; //staff only
-    @OneToMany(mappedBy = "creator")
-    private List<Post> posts;
+//    @OneToMany(mappedBy = "creator")
+//    private List<Forum> forums; //admin only
+//    @OneToMany(mappedBy = "creator")
+//    private List<Thread> threads;
+//    @OneToMany(mappedBy = "creator")
+//    private List<Guide> guides; //staff only
+//    @OneToMany(mappedBy = "creator")
+//    private List<Post> posts;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -133,37 +133,37 @@ public class Person implements Serializable {
         this.deleted = deleted;
     }
 
-    public List<Forum> getForums() {
-        return forums;
-    }
-
-    public void setForums(List<Forum> forums) {
-        this.forums = forums;
-    }
-
-    public List<Thread> getThreads() {
-        return threads;
-    }
-
-    public void setThreads(List<Thread> threads) {
-        this.threads = threads;
-    }
-
-    public List<Guide> getGuides() {
-        return guides;
-    }
-
-    public void setGuides(List<Guide> guides) {
-        this.guides = guides;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
+//    public List<Forum> getForums() {
+//        return forums;
+//    }
+//
+//    public void setForums(List<Forum> forums) {
+//        this.forums = forums;
+//    }
+//
+//    public List<Thread> getThreads() {
+//        return threads;
+//    }
+//
+//    public void setThreads(List<Thread> threads) {
+//        this.threads = threads;
+//    }
+//
+//    public List<Guide> getGuides() {
+//        return guides;
+//    }
+//
+//    public void setGuides(List<Guide> guides) {
+//        this.guides = guides;
+//    }
+//
+//    public List<Post> getPosts() {
+//        return posts;
+//    }
+//
+//    public void setPosts(List<Post> posts) {
+//        this.posts = posts;
+//    }
 
     public List<Contact> getContacts() {
         return contacts;
