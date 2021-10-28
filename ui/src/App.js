@@ -7,7 +7,8 @@ function App() {
   return (
     <div className="content">
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        {/* NOTE: replace with PrivateRoute once LoginPage is complete */}
+        <Route exact path="/" component={HomePage} /> 
         {/* <PublicRoute path="/register" component={RegisterPage} />
         <PrivateRoute path="/users" component={UsersPage} />
         <PrivateRoute path="/profile" component={ProfilePage} />

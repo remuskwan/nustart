@@ -5,18 +5,14 @@
  */
 package webservices.restful;
 
-import entity.Guide;
-import entity.Staff;
-import entity.Student;
 import error.NoResultException;
 import java.util.List;
 import entity.Category;
 import entity.Facility;
 import entity.Map;
 import entity.Person;
+import java.util.Date;
 import error.InvalidLoginException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -33,8 +29,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.AdminSessionBeanLocal;
 import session.PersonSessionBeanLocal;
-import session.StaffSessionBeanLocal;
-import session.StudentSessionBeanLocal;
 
 /**
  *
@@ -64,8 +58,6 @@ public class AdminResource {
         }
     }
 
-   
-
     @GET
     @Path("/staffs")
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,7 +69,7 @@ public class AdminResource {
     @GET
     @Path("/students")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Person> getAllStudent() {
+    public List<Person> getAllStudents() {
         return personSessionBeanLocal.getAllStudents();
     }
 
@@ -93,16 +85,16 @@ public class AdminResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Category createCategory(Category c) {
+        c.setCreated(new Date());
         personSessionBeanLocal.addCategories(c);
         return c;
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/categories/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editCategory(@PathParam("id") Long cId, Category c) {
-
         try {
             personSessionBeanLocal.updateCategory(c);
             return Response.status(204).build();
@@ -116,11 +108,11 @@ public class AdminResource {
     }
 
     @DELETE
-    @Path("/{cid}")
+    @Path("/categories/{cid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@PathParam("cid") String name) {
+    public Response deleteCategory(@PathParam("cid") String cId) {
         try {
-            personSessionBeanLocal.deleteCategory(name);
+            personSessionBeanLocal.deleteCategory(cId);
             return Response.status(204).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()

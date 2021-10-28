@@ -23,13 +23,17 @@ public interface PersonSessionBeanLocal {
 
     public Person getPersonByEmail(String email) throws NoResultException;
     
-    public void createStaff(Person p);
-
-    public void createStudent(Person p);
-
-    public void updateStaff(Person s) throws NoResultException;
+    public void createUser(Person p);
     
-    public void updateStudent(Person s) throws NoResultException;
+//    public void createStaff(Person p);
+//
+//    public void createStudent(Person p);
+    
+    public void updateUser(Person p) throws NoResultException;
+
+//    public void updateStaff(Person s) throws NoResultException;
+//    
+//    public void updateStudent(Person s) throws NoResultException;
 
     public void deletePerson(Long pId) throws NoResultException;
 
@@ -39,7 +43,7 @@ public interface PersonSessionBeanLocal {
     
     public void unblockUser(Long pId) throws NoResultException;
     
-    public List<Person> searchUsers();
+    public List<Person> searchUsers(String username);
     
     public List<Person> getAllStaff();
     
