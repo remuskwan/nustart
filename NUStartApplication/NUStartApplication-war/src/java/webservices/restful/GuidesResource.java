@@ -49,6 +49,7 @@ public class GuidesResource {
     }
     
     @GET
+    @Path("/categories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getAllCategories() {
         return guideSessionLocal.getCategories();
