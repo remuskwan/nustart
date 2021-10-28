@@ -12,6 +12,7 @@ import error.NoResultException;
 import java.util.List;
 import entity.Category;
 import entity.Facility;
+import entity.Person;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -28,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.AdminSessionBeanLocal;
+import session.PersonSessionBeanLocal;
 import session.StaffSessionBeanLocal;
 import session.StudentSessionBeanLocal;
 
@@ -44,12 +46,16 @@ public class AdminResource {
     private StaffSessionBeanLocal staffSessionBeanLocal;
     @EJB
     private StudentSessionBeanLocal studentSessionBeanLocal;
+    
+    @EJB
+    private PersonSessionBeanLocal personSessionBeanLocal; 
 
     @GET
     @Path("/staffs")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Staff> getAllStaff() {
-        return adminSessionBeanLocal.getAllStaff();
+    public List<Person> getAllStaff() {
+        
+        return personSessionBeanLocal.getAllStaff();
     }
 
     @GET
@@ -144,9 +150,9 @@ public class AdminResource {
     }
 
     @PUT
-    @Path("/students/{sid}")
+    @Path("/students/block/{studentId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response blockStudent(@PathParam("sid") Long sId) {
+    public Response blockStudent(@PathParam("studentId") Long sId) {
         try {
             adminSessionBeanLocal.blockStu(sId);
             return Response.status(204).build();
@@ -160,7 +166,7 @@ public class AdminResource {
     }
 
     @PUT
-    @Path("/students/{sid}")
+    @Path("/students/unblock/{sid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response unblockStudent(@PathParam("sid") Long sId) {
         try {
@@ -176,9 +182,9 @@ public class AdminResource {
     }
 
     @PUT
-    @Path("/staffs/{sid}")
+    @Path("/staffs/block/{staffId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response blockStaff(@PathParam("sid") Long sId) {
+    public Response blockStaff(@PathParam("staffId") Long sId) {
         try {
             adminSessionBeanLocal.blockStaff(sId);
             return Response.status(204).build();
@@ -192,7 +198,7 @@ public class AdminResource {
     }
 
     @PUT
-    @Path("/students/{sid}")
+    @Path("/staffs/unblock/{sid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response unblockStaff(@PathParam("sid") Long sId) {
         try {
@@ -206,4 +212,6 @@ public class AdminResource {
                     .type(MediaType.APPLICATION_JSON).build();
         }
     }
+    
+    
 }
