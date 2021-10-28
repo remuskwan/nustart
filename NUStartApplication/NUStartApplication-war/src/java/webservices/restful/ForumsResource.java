@@ -74,7 +74,7 @@ public class ForumsResource {
     }
     
     @DELETE
-    @Path("/{fId}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteForum(@PathParam("id") Long fId) {
         try {
@@ -131,9 +131,9 @@ public class ForumsResource {
     public Response editThread(@PathParam("id") Long fId, Thread t) {
         try {
             forumSessionBeanLocal.editThread(t);
-            Forum forum = forumSessionBeanLocal.getForum(fId);
+//            Forum forum = forumSessionBeanLocal.getForum(fId);
             
-            return Response.status(200).entity(forum).build();
+            return Response.status(200).entity(t).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found")
                     .build();
@@ -164,6 +164,7 @@ public class ForumsResource {
     public Response addPost(@PathParam("forum_id") Long fId, 
             @PathParam("thread_id") Long tId, Post p) {
         try {
+            p.setCreatedAt(new Date());
             threadSessionBeanLocal.addPost(tId, p);
             Thread thread = threadSessionBeanLocal.getThread(tId);
             
