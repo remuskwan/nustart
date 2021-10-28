@@ -12,7 +12,9 @@ import error.NoResultException;
 import java.util.List;
 import entity.Category;
 import entity.Facility;
+import entity.Map;
 import entity.Person;
+import error.InvalidLoginException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -26,6 +28,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.AdminSessionBeanLocal;
@@ -39,16 +42,29 @@ import session.StudentSessionBeanLocal;
  */
 @Path("admin")
 public class AdminResource {
-
-    @EJB
-    private AdminSessionBeanLocal adminSessionBeanLocal;
-    @EJB
-    private StaffSessionBeanLocal staffSessionBeanLocal;
-    @EJB
-    private StudentSessionBeanLocal studentSessionBeanLocal;
-    
     @EJB
     private PersonSessionBeanLocal personSessionBeanLocal; 
+    
+    //plain text input?
+    @Path("adminLogin")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response adminLogin(@QueryParam("email") String email, @QueryParam("password") String password){
+        try
+        {
+            Person person = personSessionBeanLocal.administratorLogin(email, password);
+            person.setPassword(null);
+
+            return Response.status(Response.Status.OK).entity(new Person(email,password)).build();
+        }
+        catch(InvalidLoginException | NoResultException ex)
+        {    
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
+   
 
     @GET
     @Path("/staffs")
@@ -61,15 +77,15 @@ public class AdminResource {
     @GET
     @Path("/students")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Student> getAllStudent() {
-        return adminSessionBeanLocal.getAllStudents();
+    public List<Person> getAllStudent() {
+        return personSessionBeanLocal.getAllStudents();
     }
 
     @GET
     @Path("/categories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getAllCategories() {
-        return adminSessionBeanLocal.getCategories();
+        return personSessionBeanLocal.getCategories();
     }
 
     @POST
@@ -77,7 +93,7 @@ public class AdminResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Category createCategory(Category c) {
-        adminSessionBeanLocal.addCategories(c);
+        personSessionBeanLocal.addCategories(c);
         return c;
     }
 
@@ -88,11 +104,11 @@ public class AdminResource {
     public Response editCategory(@PathParam("id") Long cId, Category c) {
 
         try {
-            adminSessionBeanLocal.updateCat(c);
+            personSessionBeanLocal.updateCategory(c);
             return Response.status(204).build();
         } catch (Exception e) {
             JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "Not found")
+                    .add("error", " Category not found")
                     .build();
             return Response.status(404).entity(exception)
                     .type(MediaType.APPLICATION_JSON).build();
@@ -104,7 +120,7 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCategory(@PathParam("cid") String name) {
         try {
-            adminSessionBeanLocal.deleteCategory(name);
+            personSessionBeanLocal.deleteCategory(name);
             return Response.status(204).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
@@ -115,11 +131,55 @@ public class AdminResource {
     }
 
     @POST
+    @Path("/maps")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map createMap(Map map) {
+        personSessionBeanLocal.addMap(map);
+        return map;
+    }
+    
+    
+    @PUT
+    @Path("/maps/{mId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editMap(@PathParam("id") Long mId, Map map) {
+
+        try {
+            personSessionBeanLocal.updateMap(map);
+            return Response.status(204).build();
+        } catch (Exception e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Map not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @DELETE
+    @Path("/maps/{mapId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteMap(@PathParam("mapId") Long id) {
+        try {
+            personSessionBeanLocal.deleteMap(id);
+            return Response.status(204).build();
+        } catch (NoResultException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Category not found")
+                    .build();
+            return Response.status(404).entity(exception).build();
+        }
+    }   
+    
+    
+    @POST
     @Path("/facilities")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Facility createFacility(Facility f) {
-        adminSessionBeanLocal.addFacility(f);
+        personSessionBeanLocal.addFacility(f);
         return f;
     }
 
@@ -130,7 +190,7 @@ public class AdminResource {
     public Response editFacility(@PathParam("id") Long fId, Facility f) {
 
         try {
-            adminSessionBeanLocal.updateFacility(f);
+            personSessionBeanLocal.updateFacility(f);
             return Response.status(204).build();
         } catch (Exception e) {
             JsonObject exception = Json.createObjectBuilder()
@@ -145,7 +205,7 @@ public class AdminResource {
     @Path("/facilities/{fid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFacility(@PathParam("fid") Long fId) {
-        adminSessionBeanLocal.deleteFacility(fId);
+        personSessionBeanLocal.deleteFacility(fId);
         return Response.status(204).build();
     }
 
@@ -154,7 +214,7 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response blockStudent(@PathParam("studentId") Long sId) {
         try {
-            adminSessionBeanLocal.blockStu(sId);
+            personSessionBeanLocal.blockUser(sId);
             return Response.status(204).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
@@ -170,7 +230,7 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response unblockStudent(@PathParam("sid") Long sId) {
         try {
-            adminSessionBeanLocal.unblockStu(sId);
+            personSessionBeanLocal.unblockUser(sId);
             return Response.status(204).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
@@ -186,7 +246,7 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response blockStaff(@PathParam("staffId") Long sId) {
         try {
-            adminSessionBeanLocal.blockStaff(sId);
+            personSessionBeanLocal.blockUser(sId);
             return Response.status(204).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
@@ -202,7 +262,7 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response unblockStaff(@PathParam("sid") Long sId) {
         try {
-            adminSessionBeanLocal.unblockStaff(sId);
+            personSessionBeanLocal.unblockUser(sId);
             return Response.status(204).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
