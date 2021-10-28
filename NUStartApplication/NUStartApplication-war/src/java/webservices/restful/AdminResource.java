@@ -5,16 +5,12 @@
  */
 package webservices.restful;
 
-import entity.Guide;
-import entity.Staff;
-import entity.Student;
 import error.NoResultException;
 import java.util.List;
 import entity.Category;
 import entity.Facility;
 import entity.Person;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -30,8 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.AdminSessionBeanLocal;
 import session.PersonSessionBeanLocal;
-import session.StaffSessionBeanLocal;
-import session.StudentSessionBeanLocal;
 
 /**
  *
@@ -42,11 +36,6 @@ public class AdminResource {
 
     @EJB
     private AdminSessionBeanLocal adminSessionBeanLocal;
-    @EJB
-    private StaffSessionBeanLocal staffSessionBeanLocal;
-    @EJB
-    private StudentSessionBeanLocal studentSessionBeanLocal;
-    
     @EJB
     private PersonSessionBeanLocal personSessionBeanLocal; 
 
@@ -61,15 +50,15 @@ public class AdminResource {
     @GET
     @Path("/students")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Student> getAllStudent() {
-        return adminSessionBeanLocal.getAllStudents();
+    public List<Person> getAllStudents() {
+        return personSessionBeanLocal.getAllStudents();
     }
 
     @GET
     @Path("/categories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getAllCategories() {
-        return adminSessionBeanLocal.getCategories();
+        return personSessionBeanLocal.getCategories();
     }
 
     @POST
@@ -77,18 +66,18 @@ public class AdminResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Category createCategory(Category c) {
-        adminSessionBeanLocal.addCategories(c);
+        c.setCreated(new Date());
+        personSessionBeanLocal.addCategories(c);
         return c;
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/categories/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editCategory(@PathParam("id") Long cId, Category c) {
-
         try {
-            adminSessionBeanLocal.updateCat(c);
+            personSessionBeanLocal.updateCategory(c);
             return Response.status(204).build();
         } catch (Exception e) {
             JsonObject exception = Json.createObjectBuilder()
@@ -100,11 +89,11 @@ public class AdminResource {
     }
 
     @DELETE
-    @Path("/{cid}")
+    @Path("/categories/{cid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@PathParam("cid") String name) {
+    public Response deleteCategory(@PathParam("cid") String cId) {
         try {
-            adminSessionBeanLocal.deleteCategory(name);
+            adminSessionBeanLocal.deleteCategory(cId);
             return Response.status(204).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
