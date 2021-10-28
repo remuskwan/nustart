@@ -1,13 +1,13 @@
 import { Route, Switch } from 'react-router';
-import { PrivateRoute, PublicRoute } from './app/util/routes'
+import PublicRoute from './app/util/routes/PublicRoute';
+import PrivateRoute from './app/util/routes/PrivateRoute';
 import HomePage from './app/containers/HomePage';
-import './App.css';
 
 function App() {
   return (
     <div className="content">
       <Switch>
-        <PrivateRoute exact path="/" component={HomePage} />
+        <Route exact path="/" component={HomePage} />
         {/* <PublicRoute path="/register" component={RegisterPage} />
         <PrivateRoute path="/users" component={UsersPage} />
         <PrivateRoute path="/profile" component={ProfilePage} />
