@@ -5,6 +5,7 @@
  */
 package session;
 
+import entity.Category;
 import entity.Guide;
 import entity.Person;
 import error.NoResultException;
@@ -45,7 +46,13 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     public void createGuide(Guide g) {
         em.persist(g);
     }
-
+    
+    @Override
+    public List<Category> getCategories(){
+        Query q = em.createQuery("SELECT c FROM Category c");
+        return q.getResultList();
+    }
+    
     @Override
     public void updateGuide(Guide g) throws NoResultException {
         try {
