@@ -36,7 +36,7 @@ public class Forum implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date created;
     @ManyToOne
-    private Administrator creator;
+    private Person creator;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Thread> threads;
 
@@ -84,11 +84,11 @@ public class Forum implements Serializable {
         this.created = created;
     }
 
-    public Administrator getCreator() {
+    public Person getCreator() {
         return creator;
     }
 
-    public void setCreator(Administrator creator) {
+    public void setCreator(Person creator) {
         this.creator = creator;
     }
 

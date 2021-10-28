@@ -2,12 +2,12 @@ import React from "react";
 import ContactItem from "./ContactItem";
 
 function ContactList(props) {
-    const list = props.notes.map((note) => {
+    const list = props.contacts.map((c) => {
         return (
             <ContactItem
-                key={note.id}
-                id={note.id}
-                value={note.value}
+                key={c.id}
+                id={c.id}
+                value={c.value}
                 onEdit={(id) => props.onEdit(id, true)}
                 onDelete={props.onDelete}
             />
