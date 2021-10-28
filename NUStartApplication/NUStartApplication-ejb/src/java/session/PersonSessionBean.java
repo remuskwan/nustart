@@ -1,5 +1,6 @@
 package session;
 
+import entity.Administrator;
 import entity.Category;
 import entity.Contact;
 import entity.Facility;
@@ -10,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import enumeration.AccountType;
+import error.InvalidLoginException;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -39,6 +41,24 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         Query q = em.createQuery("SELECT p FROM Person p WHERE p.email = :e");
         q.setParameter("e", email);
         return (Person) q.getSingleResult();
+    }
+
+    //might be front end idk
+    @Override 
+    public Person administratorLogin(String username, String password) throws InvalidLoginException, NoResultException {
+        try {
+            //username is email
+            Person admin = getPersonByEmail(username);
+            if (admin.getPassword().equals(password)) {
+                return admin;
+            } else {
+                throw new InvalidLoginException("Administrator username does not exist or invalid password!");
+            }
+        } catch (InvalidLoginException ex) {
+            throw new InvalidLoginException("Administrator username does not exist or invalid password!");
+        } catch (NoResultException e) {
+            throw new NoResultException("Admin not found");
+        }
     }
     
     @Override
@@ -236,9 +256,17 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public void deleteMap(Long mId) {
+    public void deleteMap(Long mId) throws NoResultException {
         Map map = em.find(Map.class, mId);
-        em.remove(map);
+        try {
+            if (map != null) {
+                em.remove(map);
+            } else {
+                throw new NoResultException("Map not found");
+            }
+        } catch (NoResultException ex) {
+            throw new NoResultException("Map not found");
+        }
     }
 
     @Override

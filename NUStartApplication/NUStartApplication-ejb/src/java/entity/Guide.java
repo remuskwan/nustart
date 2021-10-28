@@ -41,7 +41,7 @@ public class Guide implements Serializable {
     private Date datePublished;
     
     @ManyToOne
-    private Person creator;
+    private Person creator; //staff only
 
     public Guide() {
         this.datePublished = null;

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import enumeration.AccountType;
 import java.util.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -33,6 +35,7 @@ public class Person implements Serializable {
     private String course; // student only
     private int yr; //student only
     private boolean deleted;
+    @Temporal(TemporalType.DATE)
     private Date created;
 
 //    @OneToMany(mappedBy = "creator")
@@ -52,6 +55,11 @@ public class Person implements Serializable {
 
     public Person() {
         
+    }
+    public Person(String email, String password) {
+        this();
+        this.email = email;
+        this.password = password;
     }
 
     public Long getId() {

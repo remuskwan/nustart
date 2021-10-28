@@ -5,6 +5,7 @@ import entity.Contact;
 import entity.Facility;
 import entity.Map;
 import entity.Person;
+import error.InvalidLoginException;
 import error.NoResultException;
 import java.util.List;
 import javax.ejb.Local;
@@ -16,6 +17,8 @@ import javax.ejb.Local;
 @Local
 public interface PersonSessionBeanLocal {
 
+    public Person administratorLogin(String username, String password) throws InvalidLoginException, NoResultException;
+    
     public Person getPerson(Long pId) throws NoResultException;
 
     public Person getPersonByEmail(String email) throws NoResultException;
@@ -68,7 +71,7 @@ public interface PersonSessionBeanLocal {
     
     public void updateMap(Map m);
     
-    public void deleteMap(Long mId);
+    public void deleteMap(Long mId) throws NoResultException;
     
     public void approveStaff(Person staff);
     
