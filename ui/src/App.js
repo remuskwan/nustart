@@ -4,6 +4,7 @@ import PrivateRoute from './app/util/routes/PrivateRoute';
 import HomePage from './app/containers/HomePage';
 import AddForumPage from './app/containers/AddForumPage';
 import AddThreadPage from './app/containers/AddPostPage';
+import ProfilePage from './app/containers/ProfilePage';
 
 function App() {
   return (
@@ -17,8 +18,8 @@ function App() {
         <Route path="/:forumId/threads/:threadId/posts" component={ThreadDetailsPage} /> */}
         <Route path="/create" component={AddForumPage} />
         <Route path="/:id/threads/create" component={AddThreadPage} />
+        <Route exact path="/profile" component={ProfilePage}/>
         {/* <PrivateRoute path="/addPost" component={AddPostPage} />
-        <PrivateRoute exact path="/profile" component={ProfilePage}/>
         <PrivateRoute path="/profile/edit" component={EditProfile} />
         <PrivateRoute path="/users" component={UsersPage} />
         <Redirect exact from="/:id" to="/:id/threads" />
