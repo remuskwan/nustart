@@ -1,6 +1,5 @@
 package session;
 
-import entity.Administrator;
 import entity.Category;
 import entity.Contact;
 import entity.Facility;
@@ -40,7 +39,11 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public Person getPersonByEmail(String email) throws NoResultException {
         Query q = em.createQuery("SELECT p FROM Person p WHERE p.email = :e");
         q.setParameter("e", email);
-        return (Person) q.getSingleResult();
+        try {
+            return (Person) q.getSingleResult();
+        } catch (Exception e) {
+            throw new NoResultException("User not found");
+        }
     }
 
     //might be front end idk
