@@ -38,14 +38,6 @@ public class Person implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date created;
 
-//    @OneToMany(mappedBy = "creator")
-//    private List<Forum> forums; //admin only
-//    @OneToMany(mappedBy = "creator")
-//    private List<Thread> threads;
-//    @OneToMany(mappedBy = "creator")
-//    private List<Guide> guides; //staff only
-//    @OneToMany(mappedBy = "creator")
-//    private List<Post> posts;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)

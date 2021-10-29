@@ -149,5 +149,5 @@ public class GuidesResource {
             return Response.status(404).entity(exception).build();
         }
     }
-
+    //TODO: get comment replies (additional feature)
 }
