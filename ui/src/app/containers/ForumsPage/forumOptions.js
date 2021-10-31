@@ -18,16 +18,16 @@ export default function ForumOptions({forum, setForums}) {
   const [openEdit, setOpenEdit] = useState(false)
 
   function deleteForum() {
-    axios.delete(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forum.id}`)
+    axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}`)
       .then(() =>
-        axios.get("http://localhost:8080/IS3106Assignment1-war/webresources/forums")
+        axios.get("http://localhost:8080/NUStartApplication-war/webresources/forums")
           .then((response) => setForums(response.data))
       )
   }
 
   return (
     <Fragment>
-      <Menu as="div" className="relative inline-block text-left z-50">
+      <Menu as="div" className="relative inline-block text-left z-10">
         <div>
           <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
             <span className="sr-only">Open options</span>

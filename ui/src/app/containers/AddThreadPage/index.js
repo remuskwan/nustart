@@ -34,7 +34,7 @@ export default function AddThreadPage() {
 
   function createThread() {
     axios
-      .post(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${id}/threads`, {
+      .post(`http://localhost:8080/NUStartApplication-war/webresources/forums/${id}/threads`, {
         title: title,
         creator: user,
         posts: [
@@ -49,7 +49,7 @@ export default function AddThreadPage() {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/IS3106Assignment1-war/webresources/users/${getUser()}`)
+    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${getUser()}`)
       .then(response => setUser(response.data))
       .catch((error) => (
         setError(error)
@@ -148,7 +148,7 @@ export default function AddThreadPage() {
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                     <button
                       type="submit"
-                      className="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="bg-rose-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                     >
                       Create
                     </button>

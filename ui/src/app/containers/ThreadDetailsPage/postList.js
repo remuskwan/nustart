@@ -54,7 +54,7 @@ export default function PostList({ items, forum, thread, setThread }) {
         : (
           <div className="mt-4">
             <h1 className="sr-only">Posts</h1>
-            <ul role="list" className="space-y-4">
+            <ul className="space-y-4">
               {items.map((post) => (
                 <li key={post.id} className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg">
                   <article aria-labelledby={'post-title-' + post.id}>
@@ -65,15 +65,10 @@ export default function PostList({ items, forum, thread, setThread }) {
                     </div> */}
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            <a href={post.creator.href} className="hover:underline">
-                              {post.creator.displayName}
-                            </a>
+                            {post.creator.username}
                           </p>
                           <p className="text-sm text-gray-500">
-                            <a href={post.href} className="hover:underline">
-                              {/* <time dateTime={post.datetime}>{post.date}</time> */}
-                              {moment().subtract(moment().diff(post.publishedAt.slice(0, -5))).calendar()}
-                            </a>
+                            {moment().subtract(moment().diff(post.createdAt.slice(0, -5))).calendar()}
                           </p>
                         </div>
                         <div className="flex-shrink-0 self-center flex">

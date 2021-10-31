@@ -19,7 +19,7 @@ export default function ThreadOptions({forum, thread, setThread}) {
   const [error, setError] = useState(null);
 
   function deleteThread() {
-    axios.delete(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forum.id}/threads/${thread.id}`)
+    axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}/threads/${thread.id}`)
       .then(() => history.push(`/${forum.id}/threads`))
   }
 
@@ -34,7 +34,7 @@ export default function ThreadOptions({forum, thread, setThread}) {
   }
 
   function updateThread(thread) {
-    axios.put(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forum.id}/threads`, thread)
+    axios.put(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}/threads`, thread)
     .then((response) => setThread(response.data))
     .catch(error => setError(error))
   }
