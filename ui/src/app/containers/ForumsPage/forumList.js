@@ -1,9 +1,8 @@
 import { Link, useRouteMatch } from "react-router-dom"
 import ForumOptions from "./forumOptions"
 
-export default function ForumList({items, contentType, setForums}) {
+export default function ForumList({ items, contentType, setForums, user }) {
   const { url } = useRouteMatch()
-
   return (
     <div>
       {!items || !items.length
@@ -42,7 +41,7 @@ export default function ForumList({items, contentType, setForums}) {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-rose-500"
               >
                 <div className="flex-1 min-w-0">
                   <Link
@@ -53,11 +52,14 @@ export default function ForumList({items, contentType, setForums}) {
                     <p className="text-sm text-gray-500 truncate">{item.description}</p>
                   </Link>
                 </div>
-                <div className="flex-shrink-0 self-center flex">
-                  <ForumOptions
-                    forum={item}
-                    setForums={setForums} />
-                </div>
+                {(user && user.accountType === "ADMIN") &&
+                  <div className="flex-shrink-0 self-center flex">
+                    <ForumOptions
+                      forum={item}
+                      setForums={setForums} />
+                  </div>
+                }
+
               </div>
             )
             )}

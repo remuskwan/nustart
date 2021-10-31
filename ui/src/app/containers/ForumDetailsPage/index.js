@@ -21,12 +21,10 @@ export default function ForumDetailsPage() {
   const { id } = useParams()
   const { url } = useRouteMatch()
   const [forum, setForum] = useState(null)
-  // const [user, setUser] = useState(null)
-  // const [open, setOpen] = useState(false)
   const [error, setError] = useState(null)
-  console.log(url)
+  
   useEffect(() => {
-    axios.get(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${id}`)
+    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/forums/${id}`)
       .then((response) =>
         setForum(response.data)
       )
@@ -52,6 +50,7 @@ export default function ForumDetailsPage() {
           </Link>
         }
       />
+      <Breadcrumb />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
@@ -59,7 +58,7 @@ export default function ForumDetailsPage() {
           </div>
           {forum &&
             <main className="lg:col-span-9 xl:col-span-10">
-              <Breadcrumb />
+              
               <div className="pb-5 border-b border-gray-200">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">{forum.title}</h3>
                 <p className="mt-2 max-w-4xl text-sm text-gray-500">

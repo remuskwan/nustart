@@ -28,7 +28,7 @@ export default function ThreadDetailsPage() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forumId}`)
+    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}`)
       .then((response) => {
         setForum(response.data)
       }
@@ -39,7 +39,7 @@ export default function ThreadDetailsPage() {
   }, [])
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/IS3106Assignment1-war/webresources/threads/${threadId}`)
+    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/threads/${threadId}`)
       .then((response) => {
         setThread(response.data)
       }
@@ -59,7 +59,7 @@ export default function ThreadDetailsPage() {
           <NavBar buttonContent="post" disableButton={thread.closed} component={
             <Link
               to={{
-                pathname: "/addPost",
+                pathname: `/${forumId}/threads/${threadId}/posts/create`,
                 state: {
                   forum: forum,
                   thread: thread
@@ -72,6 +72,15 @@ export default function ThreadDetailsPage() {
               </button>
             </Link>
           } />
+          <Breadcrumb pages={[
+            {
+              name: forum.title,
+              path: {
+                pathname: `/${forum.id}/threads`,
+              }
+            },
+
+          ]} />
           <div className="py-10">
             <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
               <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
@@ -79,18 +88,10 @@ export default function ThreadDetailsPage() {
               </div>
               {thread &&
                 <main className="lg:col-span-9 xl:col-span-10">
-                  <Breadcrumb pages={[
-                    {
-                      name: forum.title,
-                      path: {
-                        pathname: `/${forum.id}/threads`,
-                      }
-                    },
-
-                  ]} />
                   <SectionHeadDrop
                     title={thread.title}
-                    date={moment().subtract(moment().diff(thread.createdAt.slice(0, -5))).calendar()}
+                    creator={thread.creator.username}
+                    date={moment().subtract(moment().diff(thread.created.slice(0, -5))).calendar()}
                     open={!thread.closed}
                     menu={
                       <ThreadOptions forum={forum} thread={thread} setThread={setThread} />
@@ -143,8 +144,8 @@ export default function ThreadDetailsPage() {
                     <h1 className="sr-only">Posts</h1>
                     <PostList
                       items={thread.posts}
-                      forum = {forum}
-                      thread = {thread}
+                      forum={forum}
+                      thread={thread}
                       setThread={setThread}
                       contentType="posts"
                     />

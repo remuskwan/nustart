@@ -23,9 +23,9 @@ export default function EditForumModal({ forum, setForums, open, setOpen }) {
     forum.title = title
     forum.description = description
     axios
-      .put(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forum.id}`, forum)
+      .put(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}`, forum)
       .then(() => {
-        axios.get("http://localhost:8080/IS3106Assignment1-war/webresources/forums")
+        axios.get("http://localhost:8080/NUStartApplication-war/webresources/forums")
           .then((response) => setForums(response.data))
       })
       .catch(error => setError(error))
@@ -33,7 +33,11 @@ export default function EditForumModal({ forum, setForums, open, setOpen }) {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed z-50 inset-0 overflow-y-auto" onClose={setOpen}>
+      <Dialog as="div" className="fixed z-50 inset-0 overflow-y-auto" onClose={() => {
+        setTitle(forum.title)
+        setDescription(forum.description)
+        setOpen(false)
+      }}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -96,7 +100,7 @@ export default function EditForumModal({ forum, setForums, open, setOpen }) {
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="submit"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-rose-600 text-base font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:text-sm"
                   >
                     Save
                   </button>

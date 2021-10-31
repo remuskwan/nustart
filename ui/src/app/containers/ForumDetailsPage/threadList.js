@@ -63,7 +63,7 @@ export default function ThreadList({ items }) {
                   >
                     <div className="px-4 py-4 sm:px-6">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-indigo-600 truncate">{thread.title}</p>
+                        <p className="text-sm font-medium text-rose-600 truncate">{thread.title}</p>
                         <div className="ml-2 flex-shrink-0 flex">
                           <p className={classNames(
                             thread.closed ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800",
@@ -76,11 +76,11 @@ export default function ThreadList({ items }) {
                         <div className="sm:flex">
                           <p className="flex items-center text-sm text-gray-500">
                             <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                            {thread.creator.displayName}
+                            {thread.creator.username}
                           </p>
                           <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
                             <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                            {moment().subtract(moment().diff(thread.createdAt.slice(0, -5))).calendar()}
+                            {moment().subtract(moment().diff(thread.created.slice(0, -5))).calendar()}
                           </p>
                         </div>
                       </div>

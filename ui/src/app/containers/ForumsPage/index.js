@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { Fragment, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { getUser } from '../../util/Common'
-import AddForumModal from './addForum'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import ForumList from './forumList'
@@ -21,10 +21,9 @@ export default function ForumsPage() {
     const [user, setUser] = useState(null)
     const [forums, setForums] = useState(null)
     const [error, setError] = useState(null)
-    const [open, setOpen] = useState(false)
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${getUser()}`)
+        axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/1`)
             .then(response => setUser(response.data))
             .catch((error) => (
                 setError(error)
@@ -49,22 +48,16 @@ export default function ForumsPage() {
                 <div className="relative min-h-screen bg-gray-100">
                     <NavBar
                         buttonContent="forum"
-                        setOpen={setOpen}
                         component={
                             user.accountType === "ADMIN" &&
-                            <button
-                                className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                onClick={() => setOpen(true)}
-                            >
-                                New Forum
-                            </button>}
-                    />
-                    <AddForumModal
-                        open={open}
-                        setOpen={setOpen}
-                        user={user}
-                        forums={forums}
-                        setForums={setForums}
+                            <Link to='/create'>
+                                <button
+                                    className="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                                >
+                                    New Forum
+                                </button>
+                            </Link>
+                        }
                     />
                     <div className="py-10">
                         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
@@ -120,7 +113,9 @@ export default function ForumsPage() {
                                         items={forums}
                                         contentType="forums"
                                         path="/forumDetails"
-                                        setForums={setForums} />
+                                        setForums={setForums}
+                                        user={user}
+                                    />
                                 </div>
                             </main>
                         </div>

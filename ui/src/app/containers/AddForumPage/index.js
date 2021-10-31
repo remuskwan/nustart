@@ -32,7 +32,7 @@ export default function AddForumPage() {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${getUser()}`)
+    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/1`)
       .then(response => setUser(response.data))
       .catch((error) => setError(error))
   }, [])

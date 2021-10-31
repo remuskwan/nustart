@@ -19,7 +19,7 @@ export default function PostOptions({ forum, thread, setThread, post }) {
   const [openEdit, setOpenEdit] = useState(false)
 
   function deletePost() {
-    axios.delete(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forum.id}/threads/${thread.id}/posts/${post.id}`)
+    axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}/threads/${thread.id}/posts/${post.id}`)
       .then((response) => setThread(response.data))
   }
 

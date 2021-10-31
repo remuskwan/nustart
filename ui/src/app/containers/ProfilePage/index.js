@@ -16,8 +16,8 @@ import {
 } from '@heroicons/react/outline'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
-import ContactForm from '../../components/contacts/contactForm'
-import ContactList from '../../components/contacts/contactList'
+import ContactForm from '../../components/contacts/ContactForm'
+import ContactList from '../../components/contacts/ContactList'
 
 const navigation = [
     { name: 'Forums', href: '#', icon: HomeIcon, current: false },

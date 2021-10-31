@@ -111,6 +111,7 @@ public class ForumsResource {
     public Response addThread(@PathParam("id") Long fId, Thread t) {
         try {
             t.setCreated(new Date());
+            t.getPosts().forEach(x -> x.setCreatedAt(new Date()));
             forumSessionBeanLocal.addThread(fId, t);
             Forum f = forumSessionBeanLocal.getForum(fId);
 
