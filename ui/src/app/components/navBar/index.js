@@ -1,36 +1,41 @@
 import { Fragment } from 'react'
-import { Link } from 'react-router-dom'
-import { Popover} from '@headlessui/react'
-import {
-  SearchIcon,
-} from '@heroicons/react/solid'
-import { BellIcon, FireIcon, HomeIcon, MenuIcon, TrendingUpIcon, UserGroupIcon, XIcon } from '@heroicons/react/outline'
-
+import { Link, NavLink, useHistory, useRouteMatch } from 'react-router-dom'
+import { Popover } from '@headlessui/react'
+import { ChatAlt2Icon, MenuIcon, HomeIcon, UserGroupIcon, XIcon } from '@heroicons/react/outline'
+import { KeyIcon, SearchIcon, UserCircleIcon } from '@heroicons/react/solid'
 import ProfileDropDown from './profileDropDown'
-
-const user = {
-  displayName: "Admin01",
-  created: new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })
-}
-
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
-]
-
-const navigation = [
-  { name: 'Guides', href: '#', icon: HomeIcon, current: true },
-  { name: 'Forums', href: '#', icon: FireIcon, current: false },
-  { name: 'Campus', href: '#', icon: UserGroupIcon, current: false },
-  { name: 'Trending', href: '#', icon: TrendingUpIcon, current: false },
-]
+import { removeUserSession } from '../../util/Common'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function NavBar({ disableButton = false, disableSearch = false, ...props }) {
+export default function NavBar({
+  component,
+  disableButton = false,
+  disableSearch = false,
+  editProfile = false,
+  user,
+  userNavigation = [
+    { name: 'Your Profile', path: '/profile' },
+  ],
+  searchString = "",
+  searchItems,
+}) {
+
+  const history = useHistory()
+  const { url } = useRouteMatch()
+
+  const navigation = !editProfile ? [
+    { name: 'Guides', path: '/guides', icon: HomeIcon },
+    { name: 'Forums', path: '/', icon: ChatAlt2Icon },
+    { name: 'Campus', href: '/campus', icon: UserGroupIcon },
+    ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
+  ] : [
+    { name: 'Account', path: '/account/edit', icon: UserCircleIcon },
+    { name: 'Password', path: '/account/edit/password', icon: KeyIcon }
+  ]
+
   return (
     <Popover
       as="header"
@@ -50,7 +55,7 @@ export default function NavBar({ disableButton = false, disableSearch = false, .
                   <Link to="/">
                     <img
                       className="block h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
+                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=500"
                       alt="Workflow"
                     />
                   </Link>
@@ -74,6 +79,8 @@ export default function NavBar({ disableButton = false, disableSearch = false, .
                             className="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
                             placeholder="Search"
                             type="search"
+                            value={searchString}
+                            onChange={(e) => searchItems(e.target.value)}
                           />
                         </div>
                       </Fragment>}
@@ -92,9 +99,9 @@ export default function NavBar({ disableButton = false, disableSearch = false, .
                 </Popover.Button>
               </div>
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-2">
-                {(!disableButton && props.component) && props.component}
+                {(!disableButton && component) && component}
                 {/* Profile dropdown */}
-                <ProfileDropDown />
+                <ProfileDropDown user={user} />
               </div>
             </div>
           </div>
@@ -102,46 +109,44 @@ export default function NavBar({ disableButton = false, disableSearch = false, .
           <Popover.Panel as="nav" className="lg:hidden" aria-label="Global">
             <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
               {navigation.map((item) => (
-                <a
+                <NavLink
                   key={item.name}
-                  href={item.href}
-                  aria-current={item.current ? 'page' : undefined}
+                  to={item.path}
+                  aria-current={item.path === url ? 'page' : undefined}
                   className={classNames(
-                    item.current ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50',
+                    item.path === url ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50',
                     'block rounded-md py-2 px-3 text-base font-medium'
                   )}
                 >
                   {item.name}
-                </a>
+                </NavLink>
               ))}
             </div>
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
-                <div className="flex-shrink-0">
-                  {/* <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" /> */}
+                <div className="ml-1">
+                  <div className="text-base font-medium text-gray-800">{user && user.displayName}</div>
+                  <div className="text-sm font-medium text-gray-500">{user && user.email}</div>
                 </div>
-                <div className="ml-3">
-                  <div className="text-base font-medium text-gray-800">{user.name}</div>
-                  <div className="text-sm font-medium text-gray-500">{user.email}</div>
-                </div>
-                <button
-                  type="button"
-                  className="ml-auto flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
               </div>
               <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
                 {userNavigation.map((item) => (
-                  <a
+                  <NavLink
                     key={item.name}
-                    href={item.href}
+                    to={item.path}
                     className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                   >
                     {item.name}
-                  </a>
+                  </NavLink>
                 ))}
+                <button
+                  className="w-full block rounded-md py-2 px-3 text-base text-left font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                  onClick={() => {
+                    removeUserSession()
+                    history.push("/login")
+                  }}>
+                  Sign out
+                </button>
               </div>
             </div>
 
@@ -152,7 +157,7 @@ export default function NavBar({ disableButton = false, disableSearch = false, .
               >
                 New {props.buttonContent.charAt(0).toUpperCase() + props.buttonContent.slice(1)}
               </a> */}
-              {(!disableButton && props.component) && props.component}
+              {(!disableButton && component) && component}
             </div>
           </Popover.Panel>
         </>
