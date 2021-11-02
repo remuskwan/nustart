@@ -7,11 +7,15 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -29,23 +33,23 @@ public class Guide implements Serializable {
     private Long id;
     private String title;
     private String content;
-    private Boolean published;
-
+//    private Boolean published;
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
-    
-    @Temporal(TemporalType.DATE)
-    private Date dateUpdated;
-    
-    @Temporal(TemporalType.DATE)
-    private Date datePublished;
+//    @Temporal(TemporalType.DATE)
+//    private Date dateUpdated;
+//    @Temporal(TemporalType.DATE)
+//    private Date datePublished;
     
     @ManyToOne
     private Person creator; //staff only
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
     public Guide() {
-        this.datePublished = null;
-        this.dateUpdated = null;
+//        this.datePublished = null;
+//        this.dateUpdated = null;
+    
     }
     
     public Long getId() {
@@ -80,21 +84,21 @@ public class Guide implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Date getDateUpdated() {
-        return dateUpdated;
-    }
-
-    public void setDateUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
-    }
-
-    public Date getDatePublished() {
-        return datePublished;
-    }
-
-    public void setDatePublished(Date datePublished) {
-        this.datePublished = datePublished;
-    }
+//    public Date getDateUpdated() {
+//        return dateUpdated;
+//    }
+//
+//    public void setDateUpdated(Date dateUpdated) {
+//        this.dateUpdated = dateUpdated;
+//    }
+//
+//    public Date getDatePublished() {
+//        return datePublished;
+//    }
+//
+//    public void setDatePublished(Date datePublished) {
+//        this.datePublished = datePublished;
+//    }
 
     public Person getCreator() {
         return creator;
@@ -104,12 +108,20 @@ public class Guide implements Serializable {
         this.creator = creator;
     }
 
-    public Boolean getPublished() {
-        return published;
+//    public Boolean getPublished() {
+//        return published;
+//    }
+//
+//    public void setPublished(Boolean published) {
+//        this.published = published;
+//    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setPublished(Boolean published) {
-        this.published = published;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

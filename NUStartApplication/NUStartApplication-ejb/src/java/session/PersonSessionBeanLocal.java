@@ -7,6 +7,7 @@ import entity.Map;
 import entity.Person;
 import error.InvalidLoginException;
 import error.NoResultException;
+import error.UserBlockedException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,19 +18,15 @@ import javax.ejb.Local;
 @Local
 public interface PersonSessionBeanLocal {
 
-    public Person administratorLogin(String username, String password) throws InvalidLoginException, NoResultException;
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, NoResultException;
     
     public Person getPerson(Long pId) throws NoResultException;
 
     public Person getPersonByEmail(String email) throws NoResultException;
     
-    public void createStaff(Person p);
+    public void createUser(Person p);
 
-    public void createStudent(Person p);
-
-    public void updateStaff(Person s) throws NoResultException;
-    
-    public void updateStudent(Person s) throws NoResultException;
+    public void updateUser(Person p) throws NoResultException;
 
     public void deletePerson(Long pId) throws NoResultException;
 
@@ -39,7 +36,7 @@ public interface PersonSessionBeanLocal {
     
     public void unblockUser(Long pId) throws NoResultException;
     
-    public List<Person> searchUsers();
+    public List<Person> searchUsers(String username);
     
     public List<Person> getAllStaff();
     

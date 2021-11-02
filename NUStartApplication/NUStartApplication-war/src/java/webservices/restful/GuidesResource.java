@@ -5,6 +5,7 @@
  */
 package webservices.restful;
 
+import entity.Category;
 import entity.Guide;
 import error.NoResultException;
 import java.util.Date;
@@ -22,11 +23,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import session.GuideSessionBeanLocal;
 
 /**
@@ -47,6 +46,13 @@ public class GuidesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Guide> getAllGuides() {
         return guideSessionLocal.searchGuides();
+    }
+    
+    @GET
+    @Path("/categories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Category> getAllCategories() {
+        return guideSessionLocal.getCategories();
     }
 
     @GET
@@ -143,5 +149,5 @@ public class GuidesResource {
             return Response.status(404).entity(exception).build();
         }
     }
-
+    //TODO: get comment replies (additional feature)
 }

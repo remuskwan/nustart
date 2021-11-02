@@ -9,10 +9,10 @@ function ContactForm({
   const textboxRef = useRef();
   const [text, setText] = useState(value);
 
-  useEffect(() => {
-    textboxRef.current.focus();
-    textboxRef.current.select();
-  }, []);
+  // useEffect(() => {
+  //   textboxRef.current.focus();
+  //   textboxRef.current.select();
+  // }, []);
 
   function resetState() {
     setText(value);

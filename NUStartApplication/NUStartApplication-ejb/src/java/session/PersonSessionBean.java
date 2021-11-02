@@ -1,17 +1,18 @@
 package session;
 
-import entity.Administrator;
 import entity.Category;
 import entity.Contact;
 import entity.Facility;
 import entity.Map;
 import entity.Person;
+import enumeration.AccountStatus;
 import error.NoResultException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import enumeration.AccountType;
 import error.InvalidLoginException;
+import error.UserBlockedException;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -40,73 +41,94 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public Person getPersonByEmail(String email) throws NoResultException {
         Query q = em.createQuery("SELECT p FROM Person p WHERE p.email = :e");
         q.setParameter("e", email);
-        return (Person) q.getSingleResult();
+        try {
+            return (Person) q.getSingleResult();
+        } catch (Exception e) {
+            throw new NoResultException("User not found");
+        }
     }
 
-
     //might be front end idk
-    @Override 
-    public Person administratorLogin(String username, String password) throws InvalidLoginException, NoResultException {
+    @Override
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, NoResultException {
         try {
-            //username is email
-            Person admin = getPersonByEmail(username);
-            if (admin.getPassword().equals(password)) {
-                return admin;
+            Person p = getPersonByEmail(email);
+            if (!p.getPassword().equals(password)) {
+                throw new InvalidLoginException("Invalid email address or password");
+            } else if (p.getAccountStatus().equals(AccountStatus.BLOCKED)) {
+                throw new UserBlockedException("User blocked");
             } else {
-                throw new InvalidLoginException("Administrator username does not exist or invalid password!");
+                return p.getId();
             }
-        } catch (InvalidLoginException ex) {
-            throw new InvalidLoginException("Administrator username does not exist or invalid password!");
         } catch (NoResultException e) {
-            throw new NoResultException("Admin not found");
+            throw new NoResultException("User not found");
         }
     }
     
     @Override
-    public void createStaff(Person p) {
-        p.setAccountType(AccountType.STAFF);
+    public void createUser(Person p) {
         em.persist(p);
     }
+   
 
+//    @Override
+//    public void createStaff(Person p) {
+//        p.setAccountType(AccountType.STAFF);
+//        em.persist(p);
+//    }
+//
+//    @Override
+//    public void createStudent(Person p) {
+//        p.setAccountType(AccountType.STUDENT);
+//        em.persist(p);
+//    }
+//    
     @Override
-    public void createStudent(Person p) {
-        p.setAccountType(AccountType.STUDENT);
-        em.persist(p);
+    public void updateUser(Person s) throws NoResultException{
+        Person user = getPerson(s.getId());
+
+        user.setFaculty(s.getFaculty());
+        user.setCourse(s.getCourse());
+        user.setFavoriteGuides(s.getFavoriteGuides());
+        user.setFavoriteGuides(s.getFavoriteGuides());
+        user.setFavoritePosts(s.getFavoritePosts());
+        user.setContacts(s.getContacts());
+        user.setProfilePicture(s.getProfilePicture());
+        user.setEmail(s.getEmail());
+        user.setAccountStatus(s.getAccountStatus());
+        user.setPassword(s.getPassword());
+        user.setYr(s.getYr());
     }
 
-    @Override
-    public void updateStaff(Person s) throws NoResultException {
-        Person staff = getPerson(s.getId());
-        staff.setActive(s.isActive());
-        staff.setContacts(s.getContacts());
-        staff.setEmail(s.getEmail());
-        staff.setFavoriteGuides(s.getFavoriteGuides());
-        staff.setFavoritePosts(s.getFavoritePosts());
-        staff.setProfilePicture(s.getProfilePicture());
-//        staff.setGuides(s.getGuides());
-//        staff.setThreads(s.getThreads());
-//        staff.setPosts(s.getPosts());
-        staff.setPassword(s.getPassword());
-        staff.setFaculty(s.getFaculty());
-    }
-
-    @Override
-    public void updateStudent(Person s) throws NoResultException {
-        Person student = getPerson(s.getId());
-
-        student.setFaculty(s.getFaculty());
-        student.setCourse(s.getCourse());
-        student.setFavoriteGuides(s.getFavoriteGuides());
-        student.setFavoriteGuides(s.getFavoriteGuides());
-        student.setFavoritePosts(s.getFavoritePosts());
-//        student.setPosts(s.getPosts());
-        student.setContacts(s.getContacts());
-        student.setProfilePicture(s.getProfilePicture());
-        student.setEmail(s.getEmail());
-        student.setActive(s.isActive());
-        student.setPassword(s.getPassword());
-        student.setYr(s.getYr());
-    }
+//    @Override
+//    public void updateStaff(Person s) throws NoResultException {
+//        Person staff = getPerson(s.getId());
+//        staff.setActive(s.isActive());
+//        staff.setContacts(s.getContacts());
+//        staff.setEmail(s.getEmail());
+//        staff.setFavoriteGuides(s.getFavoriteGuides());
+//        staff.setFavoritePosts(s.getFavoritePosts());
+//        staff.setProfilePicture(s.getProfilePicture());
+//        staff.setPassword(s.getPassword());
+//        staff.setFaculty(s.getFaculty());
+//    }
+//
+//    @Override
+//    public void updateStudent(Person s) throws NoResultException {
+//        Person student = getPerson(s.getId());
+//
+//        student.setFaculty(s.getFaculty());
+//        student.setCourse(s.getCourse());
+//        student.setFavoriteGuides(s.getFavoriteGuides());
+//        student.setFavoriteGuides(s.getFavoriteGuides());
+//        student.setFavoritePosts(s.getFavoritePosts());
+//        student.setContacts(s.getContacts());
+//        student.setProfilePicture(s.getProfilePicture());
+//        student.setEmail(s.getEmail());
+//        student.setActive(s.isActive());
+//        student.setPassword(s.getPassword());
+//        student.setYr(s.getYr());
+//    }
 
     @Override
     public void deletePerson(Long pId) throws NoResultException {
@@ -124,18 +146,26 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void blockUser(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setActive(false);
+        p.setAccountStatus(AccountStatus.BLOCKED);
     }
 
     @Override
     public void unblockUser(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setActive(true);
+        p.setAccountStatus(AccountStatus.ACTIVE);
     }
 
     @Override
-    public List<Person> searchUsers() {
-        Query q = em.createQuery("SELECT p FROM Person p");
+    public List<Person> searchUsers(String username) {
+        Query q;
+        if (username != null) {
+            q = em.createQuery("SELECT p FROM Person p WHERE "
+                    + "LOWER(p.username) LIKE :username");
+            q.setParameter("username", "%" + username.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+        
         return q.getResultList();
     }
 
@@ -246,7 +276,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void approveStaff(Person staff) {
         //check
-        createStaff(staff);
+        createUser(staff);
     }
 
     @Override
@@ -256,4 +286,5 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
 }

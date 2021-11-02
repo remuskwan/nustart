@@ -28,7 +28,7 @@ public class Thread implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Boolean closed;
@@ -39,6 +39,11 @@ public class Thread implements Serializable {
     private List<Post> posts;
     @Temporal(TemporalType.DATE)
     private Date created;
+
+    public Thread() {
+        this.closed = false;
+        this.pinned = false;
+    }
 
     public Long getId() {
         return id;

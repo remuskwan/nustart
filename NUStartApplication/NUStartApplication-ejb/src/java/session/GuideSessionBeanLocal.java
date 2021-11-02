@@ -5,6 +5,8 @@
  */
 package session;
 
+import entity.Category;
+import entity.Comment;
 import entity.Guide;
 import error.NoResultException;
 import java.util.List;
@@ -23,4 +25,9 @@ public interface GuideSessionBeanLocal {
     public void createGuide(Guide g);    
     public void updateGuide(Guide g) throws NoResultException;    
     public void deleteGuide(Long gId) throws NoResultException;
+    public List<Category> getCategories();
+    public void addComment(Long gId, Comment c) throws NoResultException;
+    public void editComment(Comment c) throws NoResultException;
+    public void deleteComment(Long gId, Long cId) throws NoResultException;
+    public List<Comment> getCommentReplies(Long cId);
 }

@@ -1,5 +1,6 @@
 package entity;
 
+import enumeration.AccountStatus;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -8,10 +9,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import enumeration.AccountType;
+import java.util.Date;
+import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -26,22 +29,20 @@ public class Person implements Serializable {
     private Long id;
     private String email;
     private String password;
+    private String username;
     private String profilePicture; 
+    @Enumerated
     private AccountType accountType;
-    private boolean active; //student and staff only
+    @Enumerated
+    private AccountStatus accountStatus;
+//    private boolean active; //student and staff only
     private String faculty; //student and staff only
     private String course; // student only
     private int yr; //student only
     private boolean deleted;
+    @Temporal(TemporalType.DATE)
+    private Date created;
 
-//    @OneToMany(mappedBy = "creator")
-//    private List<Forum> forums; //admin only
-//    @OneToMany(mappedBy = "creator")
-//    private List<Thread> threads;
-//    @OneToMany(mappedBy = "creator")
-//    private List<Guide> guides; //staff only
-//    @OneToMany(mappedBy = "creator")
-//    private List<Post> posts;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -98,13 +99,13 @@ public class Person implements Serializable {
         this.accountType = accountType;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
 
     public String getFaculty() {
         return faculty;
@@ -138,37 +139,14 @@ public class Person implements Serializable {
         this.deleted = deleted;
     }
 
-//    public List<Forum> getForums() {
-//        return forums;
-//    }
-//
-//    public void setForums(List<Forum> forums) {
-//        this.forums = forums;
-//    }
-//
-//    public List<Thread> getThreads() {
-//        return threads;
-//    }
-//
-//    public void setThreads(List<Thread> threads) {
-//        this.threads = threads;
-//    }
-//
-//    public List<Guide> getGuides() {
-//        return guides;
-//    }
-//
-//    public void setGuides(List<Guide> guides) {
-//        this.guides = guides;
-//    }
-//
-//    public List<Post> getPosts() {
-//        return posts;
-//    }
-//
-//    public void setPosts(List<Post> posts) {
-//        this.posts = posts;
-//    }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 
     public List<Contact> getContacts() {
         return contacts;
@@ -192,6 +170,22 @@ public class Person implements Serializable {
 
     public void setFavoritePosts(List<Post> favoritePosts) {
         this.favoritePosts = favoritePosts;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
     }
 
     @Override
