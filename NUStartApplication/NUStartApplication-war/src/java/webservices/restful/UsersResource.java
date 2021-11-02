@@ -6,7 +6,9 @@
 package webservices.restful;
 
 import entity.Person;
+import error.InvalidLoginException;
 import error.NoResultException;
+import error.UserBlockedException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -96,6 +98,35 @@ public class UsersResource {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found")
                     .build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @POST
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response login(Person u) {
+        try {
+            Long uId = personSessionBeanLocal.login(u.getEmail(), u.getPassword());
+            return Response.status(200)
+                    .entity(uId)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (InvalidLoginException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Invalid email address or password").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (UserBlockedException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "User blocked").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "User not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
         }
     }
 }

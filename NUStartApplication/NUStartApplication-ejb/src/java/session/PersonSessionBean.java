@@ -5,12 +5,14 @@ import entity.Contact;
 import entity.Facility;
 import entity.Map;
 import entity.Person;
+import enumeration.AccountStatus;
 import error.NoResultException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import enumeration.AccountType;
 import error.InvalidLoginException;
+import error.UserBlockedException;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -47,20 +49,19 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     //might be front end idk
-    @Override 
-    public Person administratorLogin(String username, String password) throws InvalidLoginException, NoResultException {
+    @Override
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, NoResultException {
         try {
-            //username is email
-            Person admin = getPersonByEmail(username);
-            if (admin.getPassword().equals(password)) {
-                return admin;
+            Person p = getPersonByEmail(email);
+            if (!p.getPassword().equals(password)) {
+                throw new InvalidLoginException("Invalid email address or password");
+            } else if (p.getAccountStatus().equals(AccountStatus.BLOCKED)) {
+                throw new UserBlockedException("User blocked");
             } else {
-                throw new InvalidLoginException("Administrator username does not exist or invalid password!");
+                return p.getId();
             }
-        } catch (InvalidLoginException ex) {
-            throw new InvalidLoginException("Administrator username does not exist or invalid password!");
         } catch (NoResultException e) {
-            throw new NoResultException("Admin not found");
+            throw new NoResultException("User not found");
         }
     }
     
@@ -94,7 +95,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         user.setContacts(s.getContacts());
         user.setProfilePicture(s.getProfilePicture());
         user.setEmail(s.getEmail());
-        user.setActive(s.isActive());
+        user.setAccountStatus(s.getAccountStatus());
         user.setPassword(s.getPassword());
         user.setYr(s.getYr());
     }
@@ -145,13 +146,13 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void blockUser(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setActive(false);
+        p.setAccountStatus(AccountStatus.BLOCKED);
     }
 
     @Override
     public void unblockUser(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setActive(true);
+        p.setAccountStatus(AccountStatus.ACTIVE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package entity;
 
+import enumeration.AccountStatus;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import enumeration.AccountType;
 import java.util.Date;
+import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -29,8 +31,11 @@ public class Person implements Serializable {
     private String password;
     private String username;
     private String profilePicture; 
+    @Enumerated
     private AccountType accountType;
-    private boolean active; //student and staff only
+    @Enumerated
+    private AccountStatus accountStatus;
+//    private boolean active; //student and staff only
     private String faculty; //student and staff only
     private String course; // student only
     private int yr; //student only
@@ -94,13 +99,13 @@ public class Person implements Serializable {
         this.accountType = accountType;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
 
     public String getFaculty() {
         return faculty;
@@ -173,6 +178,14 @@ public class Person implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
     }
 
     @Override
