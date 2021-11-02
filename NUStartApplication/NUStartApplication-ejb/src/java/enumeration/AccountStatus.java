@@ -10,5 +10,8 @@ package enumeration;
  * @author remuskwan
  */
 public enum AccountStatus {
-    
+    ACTIVE,
+    UNAPPROVED,
+    BLOCKED,
+    REJECTED
 }

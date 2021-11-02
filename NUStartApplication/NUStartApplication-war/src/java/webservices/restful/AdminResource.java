@@ -12,7 +12,6 @@ import entity.Facility;
 import entity.Map;
 import entity.Person;
 import java.util.Date;
-import error.InvalidLoginException;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -24,7 +23,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.PersonSessionBeanLocal;
@@ -37,25 +35,6 @@ import session.PersonSessionBeanLocal;
 public class AdminResource {
     @EJB
     private PersonSessionBeanLocal personSessionBeanLocal; 
-    
-    //plain text input?
-    @Path("adminLogin")
-    @GET
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response adminLogin(@QueryParam("email") String email, @QueryParam("password") String password){
-        try
-        {
-            Person person = personSessionBeanLocal.administratorLogin(email, password);
-            person.setPassword(null);
-
-            return Response.status(Response.Status.OK).entity(new Person(email,password)).build();
-        }
-        catch(InvalidLoginException | NoResultException ex)
-        {    
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-        }
-    }
 
     @GET
     @Path("/staffs")
