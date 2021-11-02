@@ -1,38 +1,44 @@
-import { ChatAlt2Icon, HomeIcon, TrendingUpIcon, UserGroupIcon} from '@heroicons/react/outline'
-const navigation = [
-  { name: 'Guides', href: '#', icon: UserGroupIcon, current: true },
-  { name: 'Forums', href: '#', icon: ChatAlt2Icon, current: false },
-  { name: 'Campus', href: '#', icon: HomeIcon, current: false },
-  { name: 'Users', href: '#', icon: UserGroupIcon, current: false },
-]
+import { NavLink, useRouteMatch } from 'react-router-dom'
+import { ChatAlt2Icon, HomeIcon, KeyIcon, UserGroupIcon, UserCircleIcon} from '@heroicons/react/outline'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SideBar() {
+export default function SideBar({editProfile = false, user}) {
+  const { url } = useRouteMatch()
+  
+  const navigation = !editProfile ? [
+    { name: 'Guides', path: '/guides', icon: HomeIcon },
+    { name: 'Forums', path: '/', icon: ChatAlt2Icon },
+    { name: 'Campus', href: '/campus', icon: UserGroupIcon },
+    ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
+  ] : [
+    { name: 'Account', path: '/account/edit', icon: UserCircleIcon },
+    { name: 'Password', path: '/account/edit/password', icon: KeyIcon }
+  ]
+
   return (
     <nav aria-label="Sidebar" className="sticky top-4 divide-y divide-gray-300">
       <div className="pb-8 space-y-1">
         {navigation.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
+          <NavLink
+          key={item.name}
+          to={item.path}
+          className={classNames(
+            item.path === url ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50',
+            'group flex items-center px-3 py-2 text-sm font-medium rounded-md'
+          )}
+          aria-current={item.path === url ? 'page' : undefined}>
+          <item.icon
             className={classNames(
-              item.current ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50',
-              'group flex items-center px-3 py-2 text-sm font-medium rounded-md'
+              item.path === url ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+              'flex-shrink-0 -ml-1 mr-3 h-6 w-6'
             )}
-            aria-current={item.current ? 'page' : undefined}
-          >
-            <item.icon
-              className={classNames(
-                item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                'flex-shrink-0 -ml-1 mr-3 h-6 w-6'
-              )}
-              aria-hidden="true"
-            />
-            <span className="truncate">{item.name}</span>
-          </a>
+            aria-hidden="true"
+          />
+          <span className="truncate">{item.name}</span>
+        </NavLink>
         ))}
       </div>
       
