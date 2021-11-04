@@ -6,6 +6,7 @@
 package session;
 
 import entity.Person;
+import enumeration.AccountStatus;
 import enumeration.AccountType;
 import error.NoResultException;
 import java.util.Date;
@@ -43,6 +44,7 @@ public class DataInitSessionBean {
         try {
             Person a = new Person();
             a.setAccountType(AccountType.ADMIN);
+            a.setAccountStatus(AccountStatus.ACTIVE);
             a.setEmail("admin01@mail.com");
             a.setPassword("1234567aA@");
             a.setCreated(new Date());
