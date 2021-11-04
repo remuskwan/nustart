@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import {
     ChevronRightIcon,
@@ -18,11 +18,8 @@ import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import ContactForm from '../../components/contacts/ContactForm'
 import ContactList from '../../components/contacts/ContactList'
-
-const navigation = [
-    { name: 'Forums', href: '#', icon: HomeIcon, current: false },
-    { name: 'Change Password', href: '#', icon: CalendarIcon, current: false },
-]
+import NewButton from '../../components/newButton'
+import api from '../../util/api'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
@@ -32,23 +29,23 @@ const tabs = [
     { name: 'Favourites', href: '#', current: false },
 ]
 
-const profile = {
-    name: 'Jane Doe',
-    imageUrl:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-    about: `about contents`,
-    faculty: 'Computing',
-    email: 'e0000000@u.nus.edu',
-    accountType: 'Staff',
-    contacts: [
-        { id: '1', value: '@janedoe', }
-    ],
+const defaultUser = {
+    "accountStatus": "ACTIVE",
+    "accountType": "ADMIN",
+    "contacts": [],
+    "created": "2021-11-03T16:00:00Z[UTC]",
+    "deleted": false,
+    "email": "admin01@mail.com",
+    "favoriteGuides": [],
+    "favoritePosts": [],
+    "id": 1,
+    "password": "asdf",
+    "username": "Admin01",
+    "yr": 0
 }
 
 const guides = [
-    { id: '1', title: 'Guide Title', creator: profile, datePublished: 'December 9 at 11:43 AM', dateEdited: 'December 12 at 11:43 AM' }
+    { id: '1', title: 'Guide Title', creator: defaultUser, datePublished: 'December 9 at 11:43 AM', dateEdited: 'December 12 at 11:43 AM' }
 ]
 
 const posts = [
@@ -133,9 +130,19 @@ function classNames(...classes) {
 
 export default function ProfilePage() {
     //const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [user, setUser] = useState(defaultUser)
     const [tab, setTab] = useState(tabs[0])
-    const [contactStore, setNotesStore] = useState({ contacts: profile.contacts, currentId: 0 })
+    const [contactStore, setNotesStore] = useState({ contacts: user.contacts, currentId: 0 })
     const [selected, setSelected] = useState(favouriteFilter[0])
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        api.getUser()
+            .then(response => setUser(response.data))
+            .catch((error) => (
+                setError(error)
+            ))
+    }, [])
 
     function resetTabState(tabName) {
         tabs.filter((t) => t.current === true).map((t) => t.current = false)
@@ -256,7 +263,7 @@ export default function ProfilePage() {
                                         name="user-email"
                                         id="user-email"
                                         className="focus:ring-rose-500 focus:border-rose-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300"
-                                        value={profile.email.replace("@u.nus.edu", "")}
+                                        value={user.email.replace("@u.nus.edu", "")}
                                     />
                                     <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                                         @u.nus.edu
@@ -276,7 +283,7 @@ export default function ProfilePage() {
                                     className="shadow-sm focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm border border-gray-300 rounded-md"
                                     defaultValue={''}
                                     contentEditable='true'
-                                    value={profile.about}
+                                    value={user.about}
                                 />
                             </div>
                         </div>
@@ -618,7 +625,7 @@ export default function ProfilePage() {
     }
 
     function RenderTabs() {
-        if (profile.accountType === 'Student') {
+        if (user.accountType === 'Student') {
             const newTabs = tabs.filter((t) => t.name !== 'Guides')
             return (
                 <nav className="-mb-px flex space-x-8" aria-label="Tabs">
@@ -667,37 +674,40 @@ export default function ProfilePage() {
         )
     }
 
-
-
     return (
         <div className="relative min-h-screen bg-gray-100">
-            <NavBar />
+            <NavBar
+                buttonContent="forum"
+                disableButton={user.accountType !== "ADMIN"}
+                component={<NewButton content='forum' path='/create' />}
+                user={user}
+            />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-                        <SideBar />
+                        <SideBar user={user}/>
                     </div>
                     <main className="lg:col-span-9 xl:col-span-9 bg-white">
                         <article>
                             {/* Profile header */}
                             <div>
                                 <div>
-                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={profile.coverImageUrl} alt="" />
+                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImageUrl} alt="" />
                                 </div>
                                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                         <div className="flex">
                                             <img
                                                 className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-                                                src={profile.imageUrl}
+                                                src={user.imageUrl}
                                                 alt=""
                                             />
                                         </div>
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{profile.name}</h2>
+                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{user.name}</h2>
                                         <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                                            {profile.accountType === 'Staff' ? (
+                                            {user.accountType === 'Staff' ? (
                                                 <div className="mt-2 flex items-center text-sm text-gray-500">
                                                     <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                                                     Staff
@@ -711,7 +721,7 @@ export default function ProfilePage() {
                                             }
                                             <div className="mt-2 flex items-center text-sm text-gray-500">
                                                 <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                {profile.faculty}
+                                                {user.faculty}
                                             </div>
                                         </div>
                                     </div>
