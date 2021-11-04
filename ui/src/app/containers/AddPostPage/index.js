@@ -5,6 +5,7 @@ import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import { getUser } from '../../util/Common';
 import TextArea from '../../components/textArea';
+import api from '../../util/api';
 // import { Editable, withReact, useSlate, Slate } from 'slate-react';
 
 // const HOTKEYS = {
@@ -31,17 +32,16 @@ export default function AddPostPage() {
   }
 
   function createPost() {
-    axios
-      .post(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}/posts`, {
-        content: content,
-        creator: user
-      })
+    api.createPost(forumId, threadId, {
+      content: content,
+      creator: user
+    })
       .then(() => history.goBack())
       .catch(error => setError(error))
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${getUser()}`)
+    api.getUser()
       .then(response => setUser(response.data))
       .catch((error) => (
         setError(error)
@@ -49,12 +49,13 @@ export default function AddPostPage() {
   }, [])
 
   return (
+    user &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar buttonContent="thread" disableButton={true} />
+      <NavBar disableButton={true} user={user} />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-            <SideBar />
+            <SideBar user={user}/>
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
             <div className="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
@@ -115,7 +116,7 @@ export default function AddPostPage() {
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                     <button
                       type="submit"
-                      className="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="bg-rose-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                     >
                       Create
                     </button>

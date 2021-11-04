@@ -34,7 +34,7 @@ public class DataInitSessionBean {
     @PostConstruct
     public void postConstruct() {
         try {
-            personSessionBeanLocal.getPersonByEmail("admin01@gmail.com");
+            personSessionBeanLocal.getPersonByEmail("admin01@mail.com");
         } catch (NoResultException ex) {
             initializeData();
         }
