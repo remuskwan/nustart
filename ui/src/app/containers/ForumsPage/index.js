@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
+import NewButton from '../../components/newButton'
 import ForumList from './forumList'
 import api from '../../util/api'
 
@@ -46,21 +46,14 @@ export default function ForumsPage() {
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
                 buttonContent="forum"
-                component={
-                    user.accountType === "ADMIN" &&
-                    <Link to='/create'>
-                        <button
-                            className="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                        >
-                            New Forum
-                        </button>
-                    </Link>
-                }
+                disableButton={user.accountType !== "ADMIN"}
+                component={<NewButton content='forum' path='/create'/>}
+                user={user}
             />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-                        <SideBar />
+                        <SideBar user={user}/>
                     </div>
                     <main className="lg:col-span-9 xl:col-span-10">
                         <div className="px-4 sm:px-0">

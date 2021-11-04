@@ -15,7 +15,6 @@ function App() {
   return (
     <div className="content">
       <Switch>
-        {/* NOTE: replace with PrivateRoute once LoginPage is complete */}
         <PrivateRoute exact path="/" component={ForumsPage} /> 
         <PublicRoute exact path="/login" component={LoginPage} />
         <PublicRoute path="/register" component={RegisterPage} />

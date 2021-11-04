@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
-import { getUser } from '../../util/Common';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
+import api from '../../util/api';
 
 export default function AddForumPage() {
   const history = useHistory()
@@ -21,29 +21,29 @@ export default function AddForumPage() {
   }
 
   function createForum() {
-    axios
-      .post(`http://localhost:8080/NUStartApplication-war/webresources/forums`, {
-        title: title,
-        description: description,
-        creator: user,
-      })
+    api.createForum({
+      title: title,
+      description: description,
+      creator: user,
+    })
       .then(() => history.goBack())
       .catch(error => setError(error))
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/1`)
+    api.getUser()
       .then(response => setUser(response.data))
       .catch((error) => setError(error))
   }, [])
 
   return (
+    user &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar buttonContent="thread" disableButton={true} />
+      <NavBar disableButton={true} user={user}/>
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-            <SideBar />
+            <SideBar user={user}/>
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
             <div className="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">

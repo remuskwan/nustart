@@ -1,17 +1,17 @@
 import { NavLink, useRouteMatch } from 'react-router-dom'
-import { ChatAlt2Icon, HomeIcon, KeyIcon, UserGroupIcon, UserCircleIcon} from '@heroicons/react/outline'
+import { ChatAlt2Icon, HomeIcon, KeyIcon, UserGroupIcon, UserCircleIcon } from '@heroicons/react/outline'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SideBar({editProfile = false, user}) {
+export default function SideBar({ editProfile = false, user }) {
   const { url } = useRouteMatch()
-  
+
   const navigation = !editProfile ? [
     { name: 'Guides', path: '/guides', icon: HomeIcon },
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Campus', href: '/campus', icon: UserGroupIcon },
+    { name: 'Campus', path: '/campus', icon: UserGroupIcon },
     ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
   ] : [
     { name: 'Account', path: '/account/edit', icon: UserCircleIcon },
@@ -23,25 +23,25 @@ export default function SideBar({editProfile = false, user}) {
       <div className="pb-8 space-y-1">
         {navigation.map((item) => (
           <NavLink
-          key={item.name}
-          to={item.path}
-          className={classNames(
-            item.path === url ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50',
-            'group flex items-center px-3 py-2 text-sm font-medium rounded-md'
-          )}
-          aria-current={item.path === url ? 'page' : undefined}>
-          <item.icon
+            key={item.name}
+            to={item.path}
             className={classNames(
-              item.path === url ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-              'flex-shrink-0 -ml-1 mr-3 h-6 w-6'
+              item.path === url ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50',
+              'group flex items-center px-3 py-2 text-sm font-medium rounded-md'
             )}
-            aria-hidden="true"
-          />
-          <span className="truncate">{item.name}</span>
-        </NavLink>
+            aria-current={item.path === url ? 'page' : undefined}>
+            <item.icon
+              className={classNames(
+                item.path === url ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+                'flex-shrink-0 -ml-1 mr-3 h-6 w-6'
+              )}
+              aria-hidden="true"
+            />
+            <span className="truncate">{item.name}</span>
+          </NavLink>
         ))}
       </div>
-      
+
       {/* User management panel
       <div className="pt-10">
         <p

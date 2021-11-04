@@ -29,7 +29,7 @@ export default function NavBar({
   const navigation = !editProfile ? [
     { name: 'Guides', path: '/guides', icon: HomeIcon },
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Campus', href: '/campus', icon: UserGroupIcon },
+    { name: 'Campus', path: '/campus', icon: UserGroupIcon },
     ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
   ] : [
     { name: 'Account', path: '/account/edit', icon: UserCircleIcon },

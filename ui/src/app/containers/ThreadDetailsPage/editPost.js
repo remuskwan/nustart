@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Dialog, Transition } from '@headlessui/react'
 import TextArea from '../../components/textArea'
 
-export default function EditPostModal({ forum, thread, setThread, post, open, setOpen }) {
+export default function EditPostModal({ forumId, threadId, setThread, post, open, setOpen }) {
   const [content, setContent] = useState(post.content)
   const [error, setError] = useState(null);
 
@@ -19,7 +19,7 @@ export default function EditPostModal({ forum, thread, setThread, post, open, se
   function editPost() {
     post.content = content
     axios
-      .put(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forum.id}/threads/${thread.id}/posts`, post)
+      .put(`http://localhost:8080/IS3106Assignment1-war/webresources/forums/${forumId}/threads/${threadId}/posts`, post)
       .then((response) => {
         setThread(response.data)
       })
@@ -76,7 +76,7 @@ export default function EditPostModal({ forum, thread, setThread, post, open, se
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="submit"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-rose-600 text-base font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:text-sm"
                   >
                     Save
                   </button>

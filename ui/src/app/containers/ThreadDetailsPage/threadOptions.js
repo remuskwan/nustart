@@ -6,12 +6,13 @@ import { TrashIcon } from '@heroicons/react/outline'
 import ConfirmDialog from '../../components/confirmDialog'
 import { useHistory } from 'react-router'
 import EditThreadModal from './editThread'
+import api from '../../util/api'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ThreadOptions({forum, thread, setThread}) {
+export default function ThreadOptions({forumId, thread, setThread}) {
   const history = useHistory()
   const [action, setAction] = useState("")
   const [open, setOpen] = useState(false)
@@ -19,8 +20,8 @@ export default function ThreadOptions({forum, thread, setThread}) {
   const [error, setError] = useState(null);
 
   function deleteThread() {
-    axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}/threads/${thread.id}`)
-      .then(() => history.push(`/${forum.id}/threads`))
+    api.deleteThread(forumId, thread.id)
+      .then(() => history.push(`/${forumId}/threads`))
   }
 
   function toggleClosed(thread) {
@@ -34,7 +35,7 @@ export default function ThreadOptions({forum, thread, setThread}) {
   }
 
   function updateThread(thread) {
-    axios.put(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}/threads`, thread)
+    api.editThread(forumId, thread)
     .then((response) => setThread(response.data))
     .catch(error => setError(error))
   }
@@ -136,7 +137,7 @@ export default function ThreadOptions({forum, thread, setThread}) {
         action={action}
         onConfirm={action === "delete" ? deleteThread : toggleClosed}
       />
-      <EditThreadModal open={openEdit} setOpen={setOpenEdit} forum={forum} thread={thread} setThread={setThread}/>
+      <EditThreadModal open={openEdit} setOpen={setOpenEdit} forumId={forumId} thread={thread} setThread={setThread}/>
     </Fragment>
   )
 }
