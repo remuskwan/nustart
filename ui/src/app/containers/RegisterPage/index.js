@@ -29,8 +29,15 @@ const faculties = [
     { id: 17, name: 'Yale-NUS' },
 ]
 
-const notes = [
-    { id: 1, value: 'aslfdkjas;dlfkaj;dfl' },
+const years = [
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' },
+    { id: 6, name: 'Part-time' },
+    { id: 7, name: 'Graduate' },
+    { id: 8, name: 'PhD' },
 ]
 
 function classNames(...classes) {
@@ -38,78 +45,82 @@ function classNames(...classes) {
 }
 
 export default function RegisterPage() {
-    const [selected, setSelected] = useState(accountType[0])
+    const [position, setPosition] = useState(accountType[0])
     const [faculty, setFaculty] = useState(faculties[0])
-    const [notesStore, setNotesStore] = useState({ notes: [], currentId: 0 })
+    const [ year, setYear ] = useState(years[0])
+    const [contactList, setContactsList] = useState({ contacts: [], currentId: 0 })
 
     function handleEdit(id, editMode) {
-        const { notes } = notesStore;
-        const updatedNotes = notes.map((n) => {
+        const { contacts } = contactList;
+        const updatedContacts = contacts.map((n) => {
             if (n.id === id) {
                 n.editMode = editMode;
             }
             return n;
         });
 
-        setNotesStore((oldNotesStore) => ({
-            currentId: oldNotesStore.currentId,
-            notes: updatedNotes,
+        setContactsList((oldContactList) => ({
+            currentId: oldContactList.currentId,
+            contacts: updatedContacts,
         }));
     } //end handleEdit
 
     function handleDelete(id) {
-        const { notes } = notesStore;
-        const updatedNotes = notes.filter((n) => {
+        const { contacts } = contactList;
+        const updatedContacts = contacts.filter((n) => {
             return n.id !== id;
         });
 
-        setNotesStore((oldNotesStore) => ({
-            currentId: oldNotesStore.currentId,
-            notes: updatedNotes,
+        setContactsList((oldContactList) => ({
+            currentId: oldContactList.currentId,
+            contacts: updatedContacts,
         }));
 
-        console.log("###updatedNotes: ", updatedNotes);
+        console.log("###updatedContacts: ", updatedContacts);
     } //end handleDelete
 
-    function handleAddEdit(note) {
-        console.log("###in handleAddEdit ", note);
-        const { currentId, notes } = notesStore;
-        if (note.id === 0) {
+    function handleAddEdit(contact) {
+        console.log("###in handleAddEdit ", contact);
+        const { currentId, contacts } = contactList;
+        if (contact.id === 0) {
             //add action
-            if (note.value.trim() === "") return;
+            if (contact.value.trim() === "") return;
 
-            note.id = currentId + 1;
+            contact.id = currentId + 1;
 
-            setNotesStore({
-                currentId: note.id,
-                notes: [...notes, note],
+            setContactsList({
+                currentId: contact.id,
+                contacts: [...contacts, contact],
             });
         } else {
             //edit action
-            if (note.value.trim() === "") {
+            if (contact.value.trim() === "") {
                 //cancel edit
-                handleEdit(note.id, false);
+                handleEdit(contact.id, false);
                 return;
             } else {
                 //find the note
-                const updatedNotes = notes.map((n) => {
-                    if (n.id === note.id) {
-                        note.editMode = false;
-                        return note;
+                const updatedContacts = contacts.map((n) => {
+                    if (n.id === contact.id) {
+                        contact.editMode = false;
+                        return contact;
                     } else {
                         return n;
                     }
                 });
 
-                setNotesStore((oldNotesStore) => ({
-                    currentId: oldNotesStore.currentId,
-                    notes: updatedNotes,
+                setContactsList((oldContactList) => ({
+                    currentId: oldContactList.currentId,
+                    contacts: updatedContacts,
                 }));
             }
         }
     }
 
-    const { notes } = notesStore;
+
+
+    const { contacts } = contactList;
+    //console.log(contacts)
 
     return (
         <>
@@ -130,11 +141,11 @@ export default function RegisterPage() {
                         </p>
                     </div>
                     <form className="mt-8 space-y-6" action="#" method="POST">
-                        <Listbox value={selected} onChange={setSelected}>
+                        <Listbox value={position} onChange={setPosition}>
                             <div className="mt-1 relative">
                                 <Listbox.Label className="m-1 block text-sm font-medium text-gray-700">Position</Listbox.Label>
                                 <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
-                                    <span className="block truncate">{selected.name}</span>
+                                    <span className="block truncate">{position.name}</span>
                                     <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                                         <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                                     </span>
@@ -224,6 +235,56 @@ export default function RegisterPage() {
                                 </Transition>
                             </div>
                         </Listbox>
+
+                        <Listbox value={year} onChange={setYear}>
+                            <div className="mt-1 relative">
+                                <Listbox.Label className="m-1 block text-sm font-medium text-gray-700">Year</Listbox.Label>
+                                <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
+                                    <span className="block truncate">{year.name}</span>
+                                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    </span>
+                                </Listbox.Button>
+
+                                <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                    <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                        {years.map((y) => (
+                                            <Listbox.Option
+                                                key={y.id}
+                                                className={({ active }) =>
+                                                    classNames(
+                                                        active ? 'text-white bg-rose-600' : 'text-gray-900',
+                                                        'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                    )
+                                                }
+                                                value={y}
+                                            >
+                                                {({ selected, active }) => (
+                                                    <>
+                                                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                            {y.name}
+                                                        </span>
+
+                                                        {selected ? (
+                                                            <span
+                                                                className={classNames(
+                                                                    active ? 'text-white' : 'text-rose-600',
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-1.5'
+                                                                )}
+                                                            >
+                                                                <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                            </span>
+                                                        ) : null}
+                                                    </>
+                                                )}
+                                            </Listbox.Option>
+                                        ))}
+                                    </Listbox.Options>
+                                </Transition>
+                            </div>
+                        </Listbox>
+
+
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div>
@@ -308,7 +369,7 @@ export default function RegisterPage() {
                                         <ContactForm onDone={handleAddEdit} />
                                         <br />
                                         <ContactList
-                                            notes={notes}
+                                            contacts={contacts}
                                             onDelete={handleDelete}
                                             onDone={handleAddEdit}
                                         />

@@ -1,5 +1,5 @@
 import React from "react";
-import ContactItem from "./ContactItem";
+import ContactItem from "./contactItem";
 
 function ContactList(props) {
     const list = props.contacts.map((c) => {
