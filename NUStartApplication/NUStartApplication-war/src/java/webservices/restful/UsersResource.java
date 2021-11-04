@@ -9,6 +9,7 @@ import entity.Person;
 import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
+import error.UserEmailExistException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -25,6 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.PersonSessionBeanLocal;
+import session.UnknownPersistenceException;
 
 /**
  * REST Web Service
@@ -64,10 +66,25 @@ public class UsersResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Person createUser(Person p) {
-        p.setCreated(new Date());
-        personSessionBeanLocal.createUser(p);
-        return p;
+    public Response createUser(Person p) {
+        try {
+            p.setCreated(new Date());
+            personSessionBeanLocal.createUser(p);
+            return Response.status(200)
+                    .entity(p.getId())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (UserEmailExistException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Account already exists").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (UnknownPersistenceException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
     }
 
     @DELETE

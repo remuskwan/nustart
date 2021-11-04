@@ -1,8 +1,11 @@
 import { Fragment, useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import ContactForm from '../../components/contacts/ContactForm'
 import ContactList from '../../components/contacts/ContactList'
+import api from '../../util/api'
+import { setUserSession } from '../../util/Common'
 
 const accountType = [
     { id: 1, name: 'Student' },
@@ -45,10 +48,17 @@ function classNames(...classes) {
 }
 
 export default function RegisterPage() {
+    const history = useHistory()
     const [position, setPosition] = useState(accountType[0])
     const [faculty, setFaculty] = useState(faculties[0])
     const [ year, setYear ] = useState(years[0])
     const [contactList, setContactsList] = useState({ contacts: [], currentId: 0 })
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [error, setError] = useState(null);
 
     function handleEdit(id, editMode) {
         const { contacts } = contactList;
@@ -117,7 +127,37 @@ export default function RegisterPage() {
         }
     }
 
+    function handleSubmit(evt) {
+        evt.preventDefault()
+        if (password !== confirmPassword) {
+          setError(new Error("Passwords do not match."))
+        } else if (!password.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+          setError(new Error("Passwords must be minimum eight characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character."))
+        } else {
+          register()
+        }
+      }
 
+    function register() {
+        api.register({
+          email: email,
+          password: password,
+          username: `${firstName} ${lastName}`,
+          accountType: position.id === 1 ? 'STUDENT' : 'STAFF',
+          accountStatus: position.id === 1 ? 'ACTIVE' : 'UNAPPROVED',
+          faculty: faculty.name,
+          yr: year.name,
+          contacts: contactList.contacts
+        })
+          .then((response) => {
+            setUserSession({ userId: response.data })
+          })
+          .then(() => history.push("/"))
+          .catch(error => {
+            if (error.response.status === 404) setError(error.response.data.message)
+            else setError("Something went wrong. Please try again later.")
+          })
+      }
 
     const { contacts } = contactList;
     //console.log(contacts)
@@ -135,12 +175,12 @@ export default function RegisterPage() {
                         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Register a new account</h2>
                         <p className="mt-2 text-center text-sm text-gray-600">
                             Or{' '}
-                            <a href="/" className="font-medium text-rose-600 hover:text-rose-500">
-                                Login
-                            </a>
+                            <Link to="/login" className="font-medium text-rose-600 hover:text-rose-500">
+                                log in
+                            </Link>
                         </p>
                     </div>
-                    <form className="mt-8 space-y-6" action="#" method="POST">
+                    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                         <Listbox value={position} onChange={setPosition}>
                             <div className="mt-1 relative">
                                 <Listbox.Label className="m-1 block text-sm font-medium text-gray-700">Position</Listbox.Label>
@@ -297,6 +337,8 @@ export default function RegisterPage() {
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                     placeholder="First name"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
                                 />
                             </div>
                             <div>
@@ -309,6 +351,8 @@ export default function RegisterPage() {
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                     placeholder="Last name"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
                                 />
                             </div>
                             <div className="col-span-3 sm:col-span-2">
@@ -319,6 +363,8 @@ export default function RegisterPage() {
                                         id="email"
                                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-bl-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                         placeholder='e0000000'
+                                        value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     />
                                     <span className="inline-flex items-center px-3 rounded-br-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                                         @u.nus.edu
@@ -339,6 +385,8 @@ export default function RegisterPage() {
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                     placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
                             <div>
@@ -353,6 +401,8 @@ export default function RegisterPage() {
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                     placeholder="Confirm password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
                             </div>
                         </div>

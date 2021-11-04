@@ -13,7 +13,9 @@ import javax.persistence.PersistenceContext;
 import enumeration.AccountType;
 import error.InvalidLoginException;
 import error.UserBlockedException;
+import error.UserEmailExistException;
 import java.util.List;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 /**
@@ -66,8 +68,18 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
     
     @Override
-    public void createUser(Person p) {
-        em.persist(p);
+    public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
+        try {
+            em.persist(p);
+        } catch (PersistenceException ex) {
+            if (ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
+                throw new UserEmailExistException("Account already exists");
+            } else {
+                throw new UnknownPersistenceException(ex.getMessage());
+            }
+        }
+        
     }
    
 
@@ -276,7 +288,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void approveStaff(Person staff) {
         //check
-        createUser(staff);
+//        createUser(staff);
     }
 
     @Override

@@ -5,6 +5,9 @@ const api = {
   login(user) {
     return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/users/login`, user)
   },
+  register(user) {
+    return axios.post("http://localhost:8080/NUStartApplication-war/webresources/users", user)
+  },
   getUsers() {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users`)
   },

@@ -8,6 +8,7 @@ import entity.Person;
 import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
+import error.UserEmailExistException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -24,7 +25,7 @@ public interface PersonSessionBeanLocal {
 
     public Person getPersonByEmail(String email) throws NoResultException;
     
-    public void createUser(Person p);
+    public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException;
 
     public void updateUser(Person p) throws NoResultException;
 
