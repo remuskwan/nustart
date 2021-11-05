@@ -66,7 +66,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
             throw new NoResultException("User not found");
         }
     }
-    
+
     @Override
     public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
         try {
@@ -79,9 +79,8 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
         }
-        
+
     }
-   
 
 //    @Override
 //    public void createStaff(Person p) {
@@ -96,20 +95,19 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 //    }
 //    
     @Override
-    public void updateUser(Person s) throws NoResultException{
+    public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
 
         user.setFaculty(s.getFaculty());
         user.setCourse(s.getCourse());
-        user.setFavoriteGuides(s.getFavoriteGuides());
-        user.setFavoriteGuides(s.getFavoriteGuides());
-        user.setFavoritePosts(s.getFavoritePosts());
-        user.setContacts(s.getContacts());
+        //user.setFavoriteGuides(s.getFavoriteGuides());
+        //user.setFavoriteGuides(s.getFavoriteGuides());
+        //user.setFavoritePosts(s.getFavoritePosts());
         user.setProfilePicture(s.getProfilePicture());
         user.setEmail(s.getEmail());
-        user.setAccountStatus(s.getAccountStatus());
         user.setPassword(s.getPassword());
         user.setYr(s.getYr());
+
     }
 
 //    @Override
@@ -141,7 +139,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 //        student.setPassword(s.getPassword());
 //        student.setYr(s.getYr());
 //    }
-
     @Override
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);
@@ -177,7 +174,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         } else {
             q = em.createQuery("SELECT p FROM Person p");
         }
-        
+
         return q.getResultList();
     }
 
@@ -294,9 +291,13 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void rejectStaff(Person staff) {
         //show on front end rejection?
-       //or send email?
+        //or send email?
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+    @Override
+    public int getContacts() {
+        return em.createQuery("SELECT c FROM Contact c").getResultList().size();
+    }
+
 }

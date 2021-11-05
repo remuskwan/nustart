@@ -82,10 +82,10 @@ export default function UsersPage() {
         if (activeTab[0].name === 'All Users') {
             return <AllUsersTab />
         } else if (activeTab[0].name === 'To Approve') {
-            console.log('guides')
+            //console.log('guides')
             return null
         } else if (activeTab[0].name === 'Staff') {
-            console.log('posts')
+            //console.log('posts')
             return null
         } else if (activeTab[0].name === 'Students') {
             return null
@@ -134,9 +134,10 @@ export default function UsersPage() {
                                                 </div>
                                                 <div className="mt-2 flex">
                                                     <div className="flex items-center text-sm text-gray-500">
-                                                        <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                        {user.accountStatus}
+                                                        <CalendarIcon className="ml-2 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                                                         <p>
-                                                            Created on <time dateTime={user.datePublished}>{user.datePublished}</time>
+                                                            Created on <time dateTime={user.created}>{user.created}</time>
                                                         </p>
                                                     </div>
                                                 </div>

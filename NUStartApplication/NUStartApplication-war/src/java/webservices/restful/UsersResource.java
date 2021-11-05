@@ -51,11 +51,31 @@ public class UsersResource {
     public Response getUser(@PathParam("id") Long sId) {
         try {
             Person p = personSessionBeanLocal.getPerson(sId);
+            System.out.println(p.getContacts());
             return Response.status(200)
                     .entity(p)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+    }
+    
+    @GET
+    @Path("/contactsId")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getContactId() {
+        try {
+            int latestId = personSessionBeanLocal.getContacts();
+            System.out.println(latestId);
+            return Response.status(200)
+                    .entity(latestId)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
@@ -69,6 +89,7 @@ public class UsersResource {
     public Response createUser(Person p) {
         try {
             p.setCreated(new Date());
+            System.out.println(p.getContacts());
             personSessionBeanLocal.createUser(p);
             return Response.status(200)
                     .entity(p.getId())

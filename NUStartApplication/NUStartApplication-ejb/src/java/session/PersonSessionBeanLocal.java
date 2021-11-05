@@ -32,6 +32,8 @@ public interface PersonSessionBeanLocal {
     public void deletePerson(Long pId) throws NoResultException;
 
     public void addContact(Contact c, Long pId) throws NoResultException;
+    
+    public int getContacts();
 
     public void blockUser(Long pId) throws NoResultException; 
     

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
@@ -51,7 +51,8 @@ export default function RegisterPage() {
     const history = useHistory()
     const [position, setPosition] = useState(accountType[0])
     const [faculty, setFaculty] = useState(faculties[0])
-    const [ year, setYear ] = useState(years[0])
+    const [year, setYear] = useState(years[0])
+    const [course, setCourse] = useState("")
     const [contactList, setContactsList] = useState({ contacts: [], currentId: 0 })
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -59,6 +60,11 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [error, setError] = useState(null);
+
+    useEffect(async () => {
+        const size = await api.getContactSize()
+        setContactsList({ contacts: [], currentId: size.data + 1})
+    }, [])
 
     function handleEdit(id, editMode) {
         const { contacts } = contactList;
@@ -86,11 +92,11 @@ export default function RegisterPage() {
             contacts: updatedContacts,
         }));
 
-        console.log("###updatedContacts: ", updatedContacts);
+        //console.log("###updatedContacts: ", updatedContacts);
     } //end handleDelete
 
     function handleAddEdit(contact) {
-        console.log("###in handleAddEdit ", contact);
+        //console.log("###in handleAddEdit ", contact);
         const { currentId, contacts } = contactList;
         if (contact.id === 0) {
             //add action
@@ -130,37 +136,38 @@ export default function RegisterPage() {
     function handleSubmit(evt) {
         evt.preventDefault()
         if (password !== confirmPassword) {
-          setError(new Error("Passwords do not match."))
+            setError(new Error("Passwords do not match."))
         } else if (!password.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
-          setError(new Error("Passwords must be minimum eight characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character."))
+            setError(new Error("Passwords must be minimum eight characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character."))
         } else {
-          register()
+            register()
         }
-      }
+    }
 
     function register() {
+        //console.log(position.id === 1)
         api.register({
-          email: email,
-          password: password,
-          username: `${firstName} ${lastName}`,
-          accountType: position.id === 1 ? 'STUDENT' : 'STAFF',
-          accountStatus: position.id === 1 ? 'ACTIVE' : 'UNAPPROVED',
-          faculty: faculty.name,
-          yr: year.name,
-          contacts: contactList.contacts
+            email: email,
+            password: password,
+            username: `${firstName} ${lastName}`,
+            accountType: position.id === 1 ? 'STUDENT' : 'STAFF',
+            accountStatus: position.id === 1 ? 'ACTIVE' : 'UNAPPROVED',
+            faculty: faculty.name,
+            yr: year.name,
+            course: course,
+            contacts: contactList.contacts
         })
-          .then((response) => {
-            setUserSession({ userId: response.data })
-          })
-          .then(() => history.push("/"))
-          .catch(error => {
-            if (error.response.status === 404) setError(error.response.data.message)
-            else setError("Something went wrong. Please try again later.")
-          })
-      }
+            .then((response) => {
+                setUserSession({ userId: response.data })
+            })
+            .then(() => history.push("/"))
+            .catch(error => {
+                if (error.response.status === 404) setError(error.response.data.message)
+                else setError("Something went wrong. Please try again later.")
+            })
+    }
 
     const { contacts } = contactList;
-    //console.log(contacts)
 
     return (
         <>
@@ -324,6 +331,23 @@ export default function RegisterPage() {
                             </div>
                         </Listbox>
 
+                        <input type="hidden" name="remember" defaultValue="true" />
+                        <div className="rounded-md shadow-sm -space-y-px">
+                            <div>
+                                <label htmlFor="course" className="sr-only">
+                                    Course
+                                </label>
+                                <input
+                                    id="course"
+                                    name="course"
+                                    required
+                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
+                                    placeholder="Course"
+                                    value={course}
+                                    onChange={(e) => setCourse(e.target.value)}
+                                />
+                            </div>
+                        </div>
 
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
@@ -364,7 +388,7 @@ export default function RegisterPage() {
                                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-bl-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                         placeholder='e0000000'
                                         value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                     <span className="inline-flex items-center px-3 rounded-br-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                                         @u.nus.edu
