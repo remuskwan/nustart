@@ -22,6 +22,7 @@ import NewButton from '../../components/newButton'
 import api from '../../util/api'
 import { getUser } from '../../util/Common'
 import ProfileTab from './profileTab'
+import { useParams } from 'react-router'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
@@ -176,11 +177,14 @@ export default function ProfilePage() {
     const [error, setError] = useState(null)
     const [selectedFile, setSelectedFile] = useState();
     const [isFilePicked, setIsFilePicked] = useState(false);
+    const { uid } = useParams()
 
-    useEffect(async () => {
-        const u = await api.getUser(getUser())
-        getLoggedInUser(u.data)
-
+    useEffect(() => {
+        async function getUser() {
+            const u = await api.getUser(getUser())
+            getLoggedInUser(u.data)
+        }
+        getUser()
     }, [])
 
     function getLoggedInUser(u) {
@@ -193,6 +197,7 @@ export default function ProfilePage() {
         const f = faculties.filter((f) => f.name === u.faculty)[0]
         setFaculty(f)
         setContactStore({ contacts: u.contacts, currentId: 0 })
+        console.log(year)
     }
 
     const changeHandler = (event) => {

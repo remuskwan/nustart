@@ -1,13 +1,6 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import {
-    ChevronRightIcon,
-    CheckIcon,
-    SelectorIcon,
-    StarIcon,
-    FilterIcon,
-} from '@heroicons/react/solid'
-import {
     CalendarIcon,
     HomeIcon,
     BriefcaseIcon,
@@ -22,12 +15,13 @@ import ContactForm from '../../components/contacts/ContactForm'
 import ContactList from '../../components/contacts/ContactList'
 import NewButton from '../../components/newButton'
 import api from '../../util/api'
+import AllUsersTab from './allUsersTab'
+import BlockTab from './BlockTab'
 
 const tabs = [
     { name: 'All Users', href: '#', current: true },
     { name: 'To Approve', href: '#', current: false },
-    { name: 'Staff', href: '#', current: false },
-    { name: 'Students', href: '#', current: false },
+    { name: 'Block', href: '#', current: false },
 ]
 
 const defaultUser = {
@@ -53,19 +47,11 @@ export default function UsersPage() {
     const [tab, setTab] = useState(tabs[0])
     const [user, setUser] = useState(defaultUser)
     const [error, setError] = useState(null)
-    const [allUsers, setAllUsers] = useState([])
+
 
     useEffect(() => {
         api.getUser()
             .then(response => setUser(response.data))
-            .catch((error) => (
-                setError(error)
-            ))
-    }, [])
-
-    useEffect(() => {
-        api.getUsers()
-            .then(response => setAllUsers(response.data))
             .catch((error) => (
                 setError(error)
             ))
@@ -84,81 +70,12 @@ export default function UsersPage() {
         } else if (activeTab[0].name === 'To Approve') {
             //console.log('guides')
             return null
-        } else if (activeTab[0].name === 'Staff') {
+        } else if (activeTab[0].name === 'Block') {
             //console.log('posts')
-            return null
-        } else if (activeTab[0].name === 'Students') {
-            return null
+            return <BlockTab user={user} />
         } else {
             return null
         }
-    }
-
-    function AllUsersTab() {
-        return (
-            <div>
-                <div className="px-6 pt-6 pb-4">
-                    <p className="mt-1 text-sm text-gray-600">Search directory of {allUsers.length} users</p>
-                    <form className="mt-6 flex space-x-4" action="#">
-                        <div className="flex-1 min-w-0">
-                            <label htmlFor="search" className="sr-only">
-                                Search
-                            </label>
-                            <div className="relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="search"
-                                    name="search"
-                                    id="search"
-                                    className="focus:ring-pink-500 focus:border-pink-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Search"
-                                />
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-                <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                    <ul role="list" className="divide-y divide-gray-200">
-                        {allUsers.map((user) => (
-                            <li key={user.id}>
-                                <a href="#" className="block hover:bg-gray-50">
-                                    <div className="px-4 py-4 flex items-center sm:px-6">
-                                        <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                            <div className="truncate">
-                                                <div className="flex text-sm items-center">
-                                                    <p className="text-xl font-medium text-rose-500 truncate">{user.email}</p>
-                                                    <p className="ml-3 flex-shrink-0 font-normal text-gray-500">{user.accountType}</p>
-                                                </div>
-                                                <div className="mt-2 flex">
-                                                    <div className="flex items-center text-sm text-gray-500">
-                                                        {user.accountStatus}
-                                                        <CalendarIcon className="ml-2 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                        <p>
-                                                            Created on <time dateTime={user.created}>{user.created}</time>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                                <div className="flex overflow-hidden -space-x-1">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="ml-5 flex-shrink-0">
-                                            <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-        )
     }
 
     return (
@@ -242,7 +159,6 @@ export default function UsersPage() {
                                     </nav>
                                 </div>
                             </div>
-
                             <CurrentTab />
                         </article>
                     </main>
