@@ -72,4 +72,12 @@ public interface PersonSessionBeanLocal {
     public void approveStaff(Person staff);
     
     public void rejectStaff(Person staff);
+    
+    public List<Person> searchByEmail(String email);
+    
+    public List<Person> searchByFaculty(String faculty);
+    public List<Person> searchByCourse(String course);
+    public List<Person> searchByStudent();
+    public List<Person> searchByStaff();
+    
 }
