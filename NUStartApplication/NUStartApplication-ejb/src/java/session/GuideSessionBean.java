@@ -137,4 +137,10 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
         q.setParameter("cId", cId);
         return q.getResultList();
     }
+
+    @Override
+    public List<Comment> getComments(Long gId) throws NoResultException{
+        Guide guide = getGuide(gId);
+        return guide.getComments();
+    }
 }

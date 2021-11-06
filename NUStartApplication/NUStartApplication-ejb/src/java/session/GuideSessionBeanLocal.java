@@ -30,4 +30,5 @@ public interface GuideSessionBeanLocal {
     public void editComment(Comment c) throws NoResultException;
     public void deleteComment(Long gId, Long cId) throws NoResultException;
     public List<Comment> getCommentReplies(Long cId);
+    public List<Comment> getComments(Long gId)throws NoResultException;
 }
