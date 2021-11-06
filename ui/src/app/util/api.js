@@ -17,6 +17,12 @@ const api = {
   getContactSize() {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/contactsId`)
   },
+  getGuides(){
+    return axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides")
+  },
+  getGuide(id) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${id}`)
+  },
   getForums() {
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/forums")
   },

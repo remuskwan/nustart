@@ -132,7 +132,7 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public List<Comment> getCommentReplies(Long cId) {
+    public List<Comment> getCommentReplies(Long cId) throws NoResultException{
         Query q = em.createQuery("SELECT c FROM Comment c WHERE c.parent.id = :cId");
         q.setParameter("cId", cId);
         return q.getResultList();

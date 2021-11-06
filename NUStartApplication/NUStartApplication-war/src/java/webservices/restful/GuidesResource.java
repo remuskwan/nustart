@@ -6,6 +6,7 @@
 package webservices.restful;
 
 import entity.Category;
+import entity.Comment;
 import entity.Guide;
 import error.NoResultException;
 import java.util.Date;
@@ -62,6 +63,42 @@ public class GuidesResource {
         try {
             Guide c = guideSessionLocal.getGuide(gid);
             return Response.status(200).entity(c).build();
+        } catch (NoResultException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @GET
+    @Path("/{gid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getComments(@PathParam("gid") Long gid) {
+        try {
+            List<Comment> comments = guideSessionLocal.getComments(gid);
+            GenericEntity<List<Comment>> entity = new GenericEntity<List<Comment>>(comments) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (NoResultException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @GET
+    @Path("/{cid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCommentReplies(@PathParam("cid") Long cid) {
+        try {
+            List<Comment> comments = guideSessionLocal.getCommentReplies(cid);
+            GenericEntity<List<Comment>> entity = new GenericEntity<List<Comment>>(comments) {
+            };
+            return Response.status(200).entity(entity).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found")
