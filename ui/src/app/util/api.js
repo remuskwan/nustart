@@ -17,11 +17,29 @@ const api = {
   getContactSize() {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/contactsId`)
   },
+  getCatogories(){
+    return axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides/categories")
+  },
   getGuides(){
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides")
   },
-  getGuide(id) {
-    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${id}`)
+  getGuide(gid) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`)
+  },
+  createGuide(guide) {
+    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/guides`, guide)
+  },
+  editGuide(gid, guide) {
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`, guide)
+  },
+  deleteGuide(gid) {
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`)
+  },
+  getComments(gid) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`)
+  },
+  getCommentReplies(cid) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${cid}`)
   },
   getForums() {
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/forums")

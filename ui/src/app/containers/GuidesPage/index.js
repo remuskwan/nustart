@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import NewButton from '../../components/newButton'
-import ForumList from './forumList'
+import GuideList from './guideList'
 import api from '../../util/api'
 
 const tabs = [

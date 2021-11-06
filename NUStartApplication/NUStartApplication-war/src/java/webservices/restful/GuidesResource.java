@@ -155,10 +155,10 @@ public class GuidesResource {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/{gid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editGuide(@PathParam("id") Long gId, Guide g) {
+    public Response editGuide(@PathParam("gid") Long gId, Guide g) {
         g.setId(gId);
         try {
             guideSessionLocal.updateGuide(g);
