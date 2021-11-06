@@ -6,7 +6,7 @@ import NewButton from '../../components/newButton'
 import GuideList from './guideList'
 import api from '../../util/api'
 
-const tabs = [
+const tabs = [//need to change to category
     { name: 'Recent', href: '#', current: true },
     { name: 'Most Liked', href: '#', current: false },
     { name: 'Most Answers', href: '#', current: false },
@@ -16,9 +16,9 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function ForumsPage() {
+export default function GuidesPage() {
     const [user, setUser] = useState(null)
-    const [forums, setForums] = useState(null)
+    const [guides, setGuides] = useState(null)
     const [error, setError] = useState(null)
 
     useEffect(() => {
@@ -30,9 +30,9 @@ export default function ForumsPage() {
     }, [])
 
     useEffect(() => {
-        api.getForums()
+        api.getGuides()
             .then((response) =>
-                setForums(response.data)
+                setGuides(response.data)
             )
             .catch((error) => (
                 setError(error)
@@ -45,9 +45,9 @@ export default function ForumsPage() {
         user &&
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
-                buttonContent="forum"
-                disableButton={user.accountType !== "ADMIN"}
-                component={<NewButton content='forum' path='/create'/>}
+                buttonContent="guide"
+                disableButton={user.accountType === "STUDENT"}
+                component={<NewButton content='guide' path='/create'/>}
                 user={user}
             />
             <div className="py-10">
@@ -99,12 +99,12 @@ export default function ForumsPage() {
                             </div>
                         </div>
                         <div className="mt-4">
-                            <h1 className="sr-only">Forums</h1>
-                            <ForumList
-                                items={forums}
-                                contentType="forums"
-                                path="/forumDetails"
-                                setForums={setForums}
+                            <h1 className="sr-only">Guides</h1>
+                            <GuideList
+                                items={guides}
+                                contentType="guides"
+                                path="/guideDetails"
+                                setGuides={setGuides}
                                 user={user}
                             />
                         </div>
