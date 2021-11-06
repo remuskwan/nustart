@@ -32,6 +32,8 @@ public interface PersonSessionBeanLocal {
     public void deletePerson(Long pId) throws NoResultException;
 
     public void addContact(Contact c, Long pId) throws NoResultException;
+    
+    public int getContacts();
 
     public void blockUser(Long pId) throws NoResultException; 
     
@@ -70,4 +72,12 @@ public interface PersonSessionBeanLocal {
     public void approveStaff(Person staff);
     
     public void rejectStaff(Person staff);
+    
+    public List<Person> searchByEmail(String email);
+    
+    public List<Person> searchByFaculty(String faculty);
+    public List<Person> searchByCourse(String course);
+    public List<Person> searchByStudent();
+    public List<Person> searchByStaff();
+    
 }

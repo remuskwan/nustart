@@ -14,6 +14,9 @@ const api = {
   getUser(id = getUser()) {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${id}`)
   },
+  getContactSize() {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/contactsId`)
+  },
   getForums() {
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/forums")
   },
@@ -45,6 +48,7 @@ const api = {
   deleteThread(forumId, threadId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}`)
   }
+  
 }
 
 export default api

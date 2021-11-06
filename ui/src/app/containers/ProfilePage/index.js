@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import {
     ChevronRightIcon,
@@ -18,37 +18,37 @@ import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import ContactForm from '../../components/contacts/ContactForm'
 import ContactList from '../../components/contacts/ContactList'
-
-const navigation = [
-    { name: 'Forums', href: '#', icon: HomeIcon, current: false },
-    { name: 'Change Password', href: '#', icon: CalendarIcon, current: false },
-]
+import NewButton from '../../components/newButton'
+import api from '../../util/api'
+import { getUser } from '../../util/Common'
+import ProfileTab from './profileTab'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
+    { name: 'Contacts', href: '#', current: false },
     { name: 'Guides', href: '#', current: false },
     { name: 'Threads', href: '#', current: false },
     { name: 'Posts', href: '#', current: false },
     { name: 'Favourites', href: '#', current: false },
 ]
 
-const profile = {
-    name: 'Jane Doe',
-    imageUrl:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-    about: `about contents`,
-    faculty: 'Computing',
-    email: 'e0000000@u.nus.edu',
-    accountType: 'Staff',
-    contacts: [
-        { id: '1', value: '@janedoe', }
-    ],
+const defaultUser = {
+    "accountStatus": "ACTIVE",
+    "accountType": "ADMIN",
+    "contacts": [],
+    "created": "2021-11-03T16:00:00Z[UTC]",
+    "deleted": false,
+    "email": "admin01@mail.com",
+    "favoriteGuides": [],
+    "favoritePosts": [],
+    "id": 1,
+    "password": "asdf",
+    "username": "Admin01",
+    "yr": 0
 }
 
 const guides = [
-    { id: '1', title: 'Guide Title', creator: profile, datePublished: 'December 9 at 11:43 AM', dateEdited: 'December 12 at 11:43 AM' }
+    { id: '1', title: 'Guide Title', creator: defaultUser, datePublished: 'December 9 at 11:43 AM', dateEdited: 'December 12 at 11:43 AM' }
 ]
 
 const posts = [
@@ -127,15 +127,78 @@ const favourites = [
     },
 ]
 
+const years = [
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' },
+    { id: 6, name: 'Part-time' },
+    { id: 7, name: 'Graduate' },
+    { id: 8, name: 'PhD' },
+]
+
+const faculties = [
+    { id: 1, name: 'Arts & Social Sciences' },
+    { id: 2, name: 'Business' },
+    { id: 3, name: 'Computing' },
+    { id: 4, name: 'Continuing and Lifelong Education' },
+    { id: 5, name: 'Dentistry' },
+    { id: 6, name: 'Design & Environment' },
+    { id: 7, name: 'Duke-NUS' },
+    { id: 8, name: 'Engineering' },
+    { id: 9, name: 'Integrative Sciences & Engineering' },
+    { id: 10, name: 'Law' },
+    { id: 11, name: 'Medicine' },
+    { id: 12, name: 'Music' },
+    { id: 13, name: 'Public Health' },
+    { id: 14, name: 'Public Policy' },
+    { id: 15, name: 'Science' },
+    { id: 16, name: 'University Scholars Program' },
+    { id: 17, name: 'Yale-NUS' },
+]
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function ProfilePage() {
     //const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [user, setUser] = useState(defaultUser)
     const [tab, setTab] = useState(tabs[0])
-    const [contactStore, setNotesStore] = useState({ contacts: profile.contacts, currentId: 0 })
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [year, setYear] = useState(years[0])
+    const [faculty, setFaculty] = useState(faculties[0])
+    const [course, setCourse] = useState("")
+    const [contactStore, setContactStore] = useState({ contacts: user.contacts, currentId: 0 })
     const [selected, setSelected] = useState(favouriteFilter[0])
+    const [error, setError] = useState(null)
+    const [selectedFile, setSelectedFile] = useState();
+    const [isFilePicked, setIsFilePicked] = useState(false);
+
+    useEffect(async () => {
+        const u = await api.getUser(getUser())
+        getLoggedInUser(u.data)
+
+    }, [])
+
+    function getLoggedInUser(u) {
+        setUser(u)
+        setEmail(u.email)
+        setName(u.username)
+        setCourse(u.course)
+        const y = years.filter((y) => y.name === u.yr.toString())[0]
+        setYear(y)
+        const f = faculties.filter((f) => f.name === u.faculty)[0]
+        setFaculty(f)
+        setContactStore({ contacts: u.contacts, currentId: 0 })
+    }
+
+    const changeHandler = (event) => {
+        setSelectedFile(event.target.files[0]);
+        setIsFilePicked(true);
+    };
 
     function resetTabState(tabName) {
         tabs.filter((t) => t.current === true).map((t) => t.current = false)
@@ -147,11 +210,11 @@ export default function ProfilePage() {
         const activeTab = tabs.filter((t) => t.current === true)
         if (activeTab[0].name === 'Profile') {
             return <ProfileTab />;
+        } else if (activeTab[0].name === 'Contacts') {
+            return <ContactsTab />;
         } else if (activeTab[0].name === 'Guides') {
-            console.log('guides')
             return <GuidesTab />;
         } else if (activeTab[0].name === 'Posts') {
-            console.log('posts')
             return <PostsTab />;
         } else if (activeTab[0].name === 'Threads') {
             return <ThreadsTab />;
@@ -166,16 +229,16 @@ export default function ProfilePage() {
             return n.id !== id;
         });
 
-        setNotesStore((oldNotesStore) => ({
+        setContactStore((oldNotesStore) => ({
             currentId: oldNotesStore.currentId,
             contacts: updatedNotes,
         }));
 
-        console.log("###updatedNotes: ", updatedNotes);
+        //console.log("###updatedNotes: ", updatedNotes);
     } //end handleDelete
 
     function handleAddEdit(note) {
-        console.log("###in handleAddEdit ", note);
+        //console.log("###in handleAddEdit ", note);
         const { currentId, contacts } = contactStore;
         if (note.id === 0) {
             //add action
@@ -183,7 +246,7 @@ export default function ProfilePage() {
 
             note.id = currentId + 1;
 
-            setNotesStore({
+            setContactStore({
                 currentId: note.id,
                 contacts: [...contacts, note],
             });
@@ -203,7 +266,7 @@ export default function ProfilePage() {
                     }
                 });
 
-                setNotesStore((oldContactsStore) => ({
+                setContactStore((oldContactsStore) => ({
                     currentId: oldContactsStore.currentId,
                     contacts: updatedNotes,
                 }));
@@ -211,165 +274,30 @@ export default function ProfilePage() {
         }
     }
 
-    const { contacts } = contactStore;
+    const { contacts } = contactStore
 
-    function ProfileTab() {
+    function ContactsTab() {
         return (
-            <div className="mt-5 md:mt-0 md:col-span-2">
-                <form className="space-y-6 p-4" action="#" method="PUT">
-                    <div>
-                        <div className="mt-3 grid grid-cols-4 gap-6">
-                            <div className="col-span-4 sm:col-span-2">
-                                <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                                    First name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="first-name"
-                                    id="first-name"
-                                    autoComplete="cc-given-name"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-600 focus:border-rose-600 sm:text-sm"
-                                />
-                            </div>
-                            <div className="col-span-4 sm:col-span-2">
-                                <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                                    Last name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="last-name"
-                                    id="last-name"
-                                    autoComplete="cc-family-name"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-600 focus:border-rose-600 sm:text-sm"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-6">
-                            <div className="mt-3 col-span-6 sm:col-span-2">
-                                <label htmlFor="user-email" className="block text-sm font-medium text-gray-700">
-                                    Email
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow-sm">
-                                    <input
-                                        type="text"
-                                        name="user-email"
-                                        id="user-email"
-                                        className="focus:ring-rose-500 focus:border-rose-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300"
-                                        value={profile.email.replace("@u.nus.edu", "")}
-                                    />
-                                    <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                        @u.nus.edu
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-3">
-                            <label htmlFor="about" className="block text-sm font-medium text-gray-700">
-                                About
-                            </label>
-                            <div className="mt-1">
-                                <textarea
-                                    id="about"
-                                    name="about"
-                                    rows={3}
-                                    className="shadow-sm focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm border border-gray-300 rounded-md"
-                                    defaultValue={''}
-                                    contentEditable='true'
-                                    value={profile.about}
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-3 sm:col-span-6">
-                            <label htmlFor="photo" className="block text-sm font-medium text-gray-700">
-                                Photo
-                            </label>
-                            <div className="mt-1 flex items-center">
-                                <span className="h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                                    <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                    </svg>
-                                </span>
-                                <div className="p-3 flex text-sm text-gray-600">
-                                    <label
-                                        htmlFor="file-upload"
-                                        className="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-grey-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                    >
-                                        <span>Change</span>
-                                        <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                    </label>
-                                    <button
-                                        type="button"
-                                        className="ml-3 bg-transparent py-2 px-3 border border-transparent rounded-md text-sm font-medium text-rose-600 hover:text-blue-gray-700 focus:outline-none focus:border-blue-gray-300 focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-gray-50 focus:ring-blue-500"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-3 sm:col-span-6">
-                            <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700">
-                                Cover photo
-                            </label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                <div className="space-y-1 text-center">
-                                    <svg
-                                        className="mx-auto h-12 w-12 text-gray-400"
-                                        stroke="currentColor"
-                                        fill="none"
-                                        viewBox="0 0 48 48"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            strokeWidth={2}
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                    <div className="flex text-sm text-gray-600">
-                                        <label
-                                            htmlFor="file-upload"
-                                            className="relative cursor-pointer bg-white rounded-md font-medium text-rose-500 hover:text-rose-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-rose-500"
-                                        >
-                                            <span>Upload a file</span>
-                                            <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                        </label>
-                                        <p className="pl-1">or drag and drop</p>
-                                    </div>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="rounded-md shadow-sm -space-y-px">
-                            <div className="bg-white sm:rounded-lg">
-                                <div className="px-4 py-5 sm:p-3">
-                                    <h3 className="text-lg leading-6 font-medium text-gray-900">Contacts</h3>
-                                    <span className="text-sm text-gray-500" id="email-optional">
-                                        Optional
-                                    </span>
-                                    <br />
-                                    <div className="note-container">
-                                        <ContactForm onDone={handleAddEdit} />
-                                        <br />
-                                        <ContactList
-                                            contacts={contacts}
-                                            onDelete={handleDelete}
-                                            onDone={handleAddEdit}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+            <div className="rounded-md shadow-sm -space-y-px">
+                <div className="bg-white sm:rounded-lg">
+                    <div className="px-4 py-5 sm:p-3">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900">Contacts</h3>
+                        <span className="text-sm text-gray-500" id="email-optional">
+                            Optional
+                        </span>
+                        <br />
+                        <div className="note-container">
+                            <ContactForm onDone={handleAddEdit} />
                             <br />
+                            <ContactList
+                                contacts={contacts}
+                                onDelete={handleDelete}
+                                onDone={handleAddEdit}
+                            />
                         </div>
-                        <button
-                            type="submit"
-                            className="mt-3 inline-flex items-end px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                        >
-                            Save
-                        </button>
                     </div>
-                </form>
+                </div>
+                <br />
             </div>
         )
     }
@@ -618,7 +546,7 @@ export default function ProfilePage() {
     }
 
     function RenderTabs() {
-        if (profile.accountType === 'Student') {
+        if (user.accountType === 'Student') {
             const newTabs = tabs.filter((t) => t.name !== 'Guides')
             return (
                 <nav className="-mb-px flex space-x-8" aria-label="Tabs">
@@ -667,37 +595,40 @@ export default function ProfilePage() {
         )
     }
 
-
-
     return (
         <div className="relative min-h-screen bg-gray-100">
-            <NavBar />
+            <NavBar
+                buttonContent="forum"
+                disableButton={user.accountType !== "ADMIN"}
+                component={<NewButton content='forum' path='/create' />}
+                user={user}
+            />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-                        <SideBar />
+                        <SideBar user={user} />
                     </div>
                     <main className="lg:col-span-9 xl:col-span-9 bg-white">
                         <article>
                             {/* Profile header */}
                             <div>
                                 <div>
-                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={profile.coverImageUrl} alt="" />
+                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src="" alt="" />
                                 </div>
                                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                         <div className="flex">
                                             <img
                                                 className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-                                                src={profile.imageUrl}
+                                                src={user.profilePicture}
                                                 alt=""
                                             />
                                         </div>
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{profile.name}</h2>
+                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{user.name}</h2>
                                         <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                                            {profile.accountType === 'Staff' ? (
+                                            {user.accountType === 'Staff' ? (
                                                 <div className="mt-2 flex items-center text-sm text-gray-500">
                                                     <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                                                     Staff
@@ -711,7 +642,7 @@ export default function ProfilePage() {
                                             }
                                             <div className="mt-2 flex items-center text-sm text-gray-500">
                                                 <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                {profile.faculty}
+                                                {user.faculty}
                                             </div>
                                         </div>
                                     </div>

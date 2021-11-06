@@ -10,6 +10,7 @@ import ForumDetailsPage from './app/containers/ForumDetailsPage';
 import LoginPage from './app/containers/LoginPage';
 import RegisterPage from './app/containers/RegisterPage'
 import ThreadDetailsPage from './app/containers/ThreadDetailsPage';
+import UsersPage from './app/containers/UsersPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <PrivateRoute path="/create" component={AddForumPage} />
         <PrivateRoute path="/:id/threads/create" component={AddThreadPage} />
         <PrivateRoute exact path="/profile" component={ProfilePage}/>
+        <PrivateRoute exact path="/users" component={UsersPage}/>
         <PrivateRoute path="/:forumId/threads/:threadId/posts/create" component={AddPostPage} />
         {/* <PrivateRoute path="/profile/edit" component={EditProfile} />
         <PrivateRoute path="/users" component={UsersPage} />
