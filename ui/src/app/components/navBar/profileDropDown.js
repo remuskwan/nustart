@@ -12,7 +12,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ProfileDropDown() {
+export default function ProfileDropDown({ user }) {
   const history = useHistory()
   return (
     <Menu as="div" className="flex-shrink-0 relative ml-5">
@@ -35,7 +35,7 @@ export default function ProfileDropDown() {
           <Menu.Item key='Your Profile'>
               {({ active }) => (
                 <Link
-                  to="/profile"
+                  to={`/profile/${user.id}`}
                   className={classNames(
                     active ? 'bg-gray-100' : '',
                     'block py-2 px-4 text-sm text-gray-700'

@@ -23,7 +23,7 @@ function App() {
         <PrivateRoute exact path="/:forumId/threads/:threadId/posts" component={ThreadDetailsPage} />
         <PrivateRoute path="/create" component={AddForumPage} />
         <PrivateRoute path="/:id/threads/create" component={AddThreadPage} />
-        <PrivateRoute exact path="/profile" component={ProfilePage}/>
+        <PrivateRoute exact path="/profile/:uid" component={ProfilePage}/>
         <PrivateRoute exact path="/users" component={UsersPage}/>
         <PrivateRoute path="/:forumId/threads/:threadId/posts/create" component={AddPostPage} />
         {/* <PrivateRoute path="/profile/edit" component={EditProfile} />
