@@ -23,6 +23,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.PersonSessionBeanLocal;
@@ -167,4 +169,43 @@ public class UsersResource {
                     .build();
         }
     }
+    
+    @GET
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchUsers(@QueryParam("username") String username, @QueryParam("email") String email, 
+            @QueryParam("faculty") String faculty, @QueryParam("course") String course){
+        if(username != null){
+            List<Person> results = personSessionBeanLocal.searchUsers(username);
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
+            return Response.status(200).entity(entity).build();
+        }else if(email != null){
+            List<Person> results = personSessionBeanLocal.searchByEmail(email);
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
+            return Response.status(200).entity(entity).build();    
+        }else if(faculty != null){
+            List<Person> results = personSessionBeanLocal.searchByFaculty(faculty);
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
+            return Response.status(200).entity(entity).build(); 
+        }else if(course != null){
+            List<Person> results = personSessionBeanLocal.searchByFaculty(course);
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
+            return Response.status(200).entity(entity).build(); 
+        }else{
+            //if search for staff   // COME BACK TO THIS. maybe front end parse a number? 1? 0 for student, 1 for staff
+            //filter using accountType 
+            
+            List<Person> results = personSessionBeanLocal.searchByStaff();
+            //List<Person> stu = personSessionBeanLocal.searchByStudent();
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
+            return Response.status(200).entity(entity).build(); 
+            
+        
+        }
+        
+        
+    
+    }
+    
+    
 }

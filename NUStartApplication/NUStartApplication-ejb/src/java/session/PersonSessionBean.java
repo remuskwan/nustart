@@ -299,5 +299,80 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public int getContacts() {
         return em.createQuery("SELECT c FROM Contact c").getResultList().size();
     }
+    @Override
+    public List<Person> searchByEmail(String email) {
+        Query q;
+        if (email != null) {
+            q = em.createQuery("SELECT u FROM Person u WHERE "
+                    + "LOWER(u.email) LIKE :email");
+            q.setParameter("email", "%" + email.toLowerCase() + "%");
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+    @Override
+    public List<Person> searchByFaculty(String faculty) {
+        Query q;
+        if (faculty != null) {
+            q = em.createQuery("SELECT u FROM Person u WHERE "
+                    + "LOWER(u.faculty) LIKE :faculty");
+            q.setParameter("faculty", "%" + faculty.toLowerCase() + "%");
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+    @Override
+    public List<Person> searchByCourse(String course) {
+        Query q;
+        if (course != null) {
+            q = em.createQuery("SELECT u FROM Person u WHERE "
+                    + "LOWER(u.course) LIKE :course");
+            q.setParameter("course", "%" + course.toLowerCase() + "%");
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+    @Override
+    public List<Person> searchByStaff() {
+        Query q;
+        q = em.createQuery("SELECT u FROM Person u");
+
+        if (q != null) {
+            q = em.createQuery("SELECT u FROM Person u where u.accountType LIKE 1");
+
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+    
+    @Override
+    public List<Person> searchByStudent() {
+        Query q;
+        q = em.createQuery("SELECT u FROM Person u");
+
+        if (q != null) {
+            q = em.createQuery("SELECT u FROM Person u where u.accountType LIKE 0");
+
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+    
+    
 
 }
