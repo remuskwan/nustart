@@ -5,6 +5,7 @@ import {
     CheckIcon,
     SelectorIcon,
     StarIcon,
+    UserAddIcon,
 } from '@heroicons/react/solid'
 import {
     CalendarIcon,
@@ -32,6 +33,7 @@ const years = [
     { id: 6, name: 'Part-time' },
     { id: 7, name: 'Graduate' },
     { id: 8, name: 'PhD' },
+    { id: 9, name: 'admin' },
 ]
 
 const faculties = [
@@ -88,22 +90,37 @@ export default function ProfileTab() {
     useEffect(() => {
         async function getLogged() {
             const u = await api.getUser()
-            console.log(u.data)
+            //console.log(u.data)
             getLoggedInUser(u.data)
         }
         getLogged()
     }, [])
 
     function getLoggedInUser(u) {
+        if (u.accountType === "STUDENT") {
+            setCourse(u.course)
+            const y = years.filter((y) => y.name === u.yr.toString())[0]
+            setYear(y)
+            //console.log(y)
+            //console.log(year)
+            const f = faculties.filter((f) => f.name === u.faculty)[0]
+            //console.log(faculties.filter((f) => f.name === u.faculty)[0])
+            setFaculty(f)
+            setEmail(u.email)
+            setName(u.username)
+        } else if (u.accountType === "STAFF") {
+            //console.log(year)
+            const f = faculties.filter((f) => f.name === u.faculty)[0]
+            //console.log(faculties.filter((f) => f.name === u.faculty)[0])
+            setFaculty(f)
+            setEmail(u.email)
+            setName(u.username)
+        } else {
+            setEmail(u.email)
+            setName(u.username)
+        }
         setUser(u)
-        setEmail(u.email)
-        setName(u.username)
-        setCourse(u.course)
-        const y = years.filter((y) => y.name === u.yr.toString())[0]
-        setYear(y)
-        const f = faculties.filter((f) => f.name === u.faculty)[0]
-        console.log(faculties.filter((f) => f.name === u.faculty)[0])
-        setFaculty(f)
+
         setSelectedFile(u.profilePicture)
     }
 
@@ -123,9 +140,9 @@ export default function ProfileTab() {
             profilePicture: user.profilePicture,
             username: name,
             faculty: faculty.name,
-            //yr: year.name,
+            yr: year.name,
             course: course,
-        }).then(response => console.log(response.data))
+        })//.then(response => console.log(response.data))
     }
 
     return (
@@ -165,139 +182,147 @@ export default function ProfileTab() {
                     </div>
                 </div>
 
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label htmlFor="country" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Year
-                    </label>
-                    <Listbox value={year} onChange={setYear}>
-                        <div className="mt-1 relative">
-                            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
-                                <span className="block truncate">{year.name}</span>
-                                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                    <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </span>
-                            </Listbox.Button>
+                {user.accountType === "STUDENT"
+                    ?
+                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label htmlFor="country" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                            Year
+                        </label>
+                        <Listbox value={year} onChange={setYear}>
+                            <div className="mt-1 relative">
+                                <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
+                                    <span className="block truncate">{year.name}</span>
+                                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    </span>
+                                </Listbox.Button>
 
-                            <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                                <Listbox.Options className="absolute z-10 mt-1 max-w-lg block w-full bg-white shadow-sm max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:max-w-xs sm:text-sm">
-                                    {years.map((y) => (
-                                        <Listbox.Option
-                                            key={y.id}
-                                            className={({ active }) =>
-                                                classNames(
-                                                    active ? 'text-white bg-rose-600' : 'text-gray-900',
-                                                    'cursor-default select-none relative py-2 pl-8 pr-4'
-                                                )
-                                            }
-                                            value={y}
-                                        >
-                                            {({ selected, active }) => (
-                                                <>
-                                                    <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                        {y.name}
-                                                    </span>
-
-                                                    {selected ? (
-                                                        <span
-                                                            className={classNames(
-                                                                active ? 'text-white' : 'text-rose-600',
-                                                                'absolute inset-y-0 left-0 flex items-center pl-1.5'
-                                                            )}
-                                                        >
-                                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                    <Listbox.Options className="absolute z-10 mt-1 max-w-lg block w-full bg-white shadow-sm max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:max-w-xs sm:text-sm">
+                                        {years.map((y) => (
+                                            <Listbox.Option
+                                                key={y.id}
+                                                className={({ active }) =>
+                                                    classNames(
+                                                        active ? 'text-white bg-rose-600' : 'text-gray-900',
+                                                        'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                    )
+                                                }
+                                                value={y}
+                                            >
+                                                {({ selected, active }) => (
+                                                    <>
+                                                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                            {y.name}
                                                         </span>
-                                                    ) : null}
-                                                </>
-                                            )}
-                                        </Listbox.Option>
-                                    ))}
-                                </Listbox.Options>
-                            </Transition>
-                        </div>
-                    </Listbox>
-                    {/* <div className="mt-1 sm:mt-0 sm:col-span-2">
-                <select
-                  id="country"
-                  name="country"
-                  autoComplete="country-name"
-                  className="max-w-lg block focus:ring-rose-500 focus:border-rose-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
-                </select>
-              </div> */}
-                </div>
 
-
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label htmlFor="street-address" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Faculty
-                    </label>
-                    <Listbox value={faculty} onChange={setFaculty}>
-                        <div className="mt-3 relative">
-                            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
-                                <span className="block truncate">{faculty.name}</span>
-                                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                    <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </span>
-                            </Listbox.Button>
-
-                            <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                                <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                                    {faculties.map((faculty) => (
-                                        <Listbox.Option
-                                            key={faculty.id}
-                                            className={({ active }) =>
-                                                classNames(
-                                                    active ? 'text-white bg-rose-600' : 'text-gray-900',
-                                                    'cursor-default select-none relative py-2 pl-8 pr-4'
-                                                )
-                                            }
-                                            value={faculty}
-                                        >
-                                            {({ selected, active }) => (
-                                                <>
-                                                    <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                        {faculty.name}
-                                                    </span>
-
-                                                    {selected ? (
-                                                        <span
-                                                            className={classNames(
-                                                                active ? 'text-white' : 'text-rose-600',
-                                                                'absolute inset-y-0 left-0 flex items-center pl-1.5'
-                                                            )}
-                                                        >
-                                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                        </span>
-                                                    ) : null}
-                                                </>
-                                            )}
-                                        </Listbox.Option>
-                                    ))}
-                                </Listbox.Options>
-                            </Transition>
-                        </div>
-                    </Listbox>
-                </div>
-
-                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label htmlFor="course" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Course
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                        <input
-                            type="text"
-                            name="course"
-                            id="course"
-                            autoComplete="course"
-                            value={course}
-                            onChange={(e) => { setCourse(e.target.value) }}
-                            className="max-w-lg block w-full shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
-                        />
+                                                        {selected ? (
+                                                            <span
+                                                                className={classNames(
+                                                                    active ? 'text-white' : 'text-rose-600',
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-1.5'
+                                                                )}
+                                                            >
+                                                                <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                            </span>
+                                                        ) : null}
+                                                    </>
+                                                )}
+                                            </Listbox.Option>
+                                        ))}
+                                    </Listbox.Options>
+                                </Transition>
+                            </div>
+                        </Listbox>
+                        {/* <div className="mt-1 sm:mt-0 sm:col-span-2">
+            <select
+              id="country"
+              name="country"
+              autoComplete="country-name"
+              className="max-w-lg block focus:ring-rose-500 focus:border-rose-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+            >
+              <option>United States</option>
+              <option>Canada</option>
+              <option>Mexico</option>
+            </select>
+          </div> */}
                     </div>
-                </div>
+                    : null
+                }
+                {user.accountType !== "ADMIN"
+                    ? <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label htmlFor="street-address" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                            Faculty
+                        </label>
+                        <Listbox value={faculty} onChange={setFaculty}>
+                            <div className="mt-3 relative">
+                                <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
+                                    <span className="block truncate">{faculty.name}</span>
+                                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    </span>
+                                </Listbox.Button>
+
+                                <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                    <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                        {faculties.map((faculty) => (
+                                            <Listbox.Option
+                                                key={faculty.id}
+                                                className={({ active }) =>
+                                                    classNames(
+                                                        active ? 'text-white bg-rose-600' : 'text-gray-900',
+                                                        'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                    )
+                                                }
+                                                value={faculty}
+                                            >
+                                                {({ selected, active }) => (
+                                                    <>
+                                                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                            {faculty.name}
+                                                        </span>
+
+                                                        {selected ? (
+                                                            <span
+                                                                className={classNames(
+                                                                    active ? 'text-white' : 'text-rose-600',
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-1.5'
+                                                                )}
+                                                            >
+                                                                <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                            </span>
+                                                        ) : null}
+                                                    </>
+                                                )}
+                                            </Listbox.Option>
+                                        ))}
+                                    </Listbox.Options>
+                                </Transition>
+                            </div>
+                        </Listbox>
+                    </div>
+                    : null
+                }
+
+                {user.accountType === "STUDENT"
+                    ? <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label htmlFor="course" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                            Course
+                        </label>
+                        <div className="mt-1 sm:mt-0 sm:col-span-2">
+                            <input
+                                type="text"
+                                name="course"
+                                id="course"
+                                autoComplete="course"
+                                value={course}
+                                onChange={(e) => { setCourse(e.target.value) }}
+                                className="max-w-lg block w-full shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+                            />
+                        </div>
+                    </div>
+                    : null
+                }
 
                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5 sm:border-b">
                     <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
@@ -331,7 +356,7 @@ export default function ProfileTab() {
                             <button
                                 type="button"
                                 className="ml-3 bg-transparent py-2 px-3 border border-transparent rounded-md text-sm font-medium text-rose-600 hover:text-blue-gray-700 focus:outline-none focus:border-blue-gray-300 focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-gray-50 focus:ring-blue-500"
-                                onClick={() => console.log('remove picture')}
+                                //onClick={() => console.log('remove picture')}
                             >
                                 Remove
                             </button>

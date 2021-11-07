@@ -63,7 +63,7 @@ export default function RegisterPage() {
 
     useEffect(async () => {
         const size = await api.getContactSize()
-        setContactsList({ contacts: [], currentId: size.data + 1})
+        setContactsList({ contacts: [], currentId: size.data + 1 })
     }, [])
 
     function handleEdit(id, editMode) {
@@ -92,11 +92,9 @@ export default function RegisterPage() {
             contacts: updatedContacts,
         }));
 
-        //console.log("###updatedContacts: ", updatedContacts);
     } //end handleDelete
 
     function handleAddEdit(contact) {
-        //console.log("###in handleAddEdit ", contact);
         const { currentId, contacts } = contactList;
         if (contact.id === 0) {
             //add action
@@ -145,7 +143,6 @@ export default function RegisterPage() {
     }
 
     function register() {
-        //console.log(position.id === 1)
         api.register({
             email: email,
             password: password,
@@ -158,6 +155,7 @@ export default function RegisterPage() {
             contacts: contactList.contacts
         })
             .then((response) => {
+                console.log(response.data)
                 setUserSession({ userId: response.data })
             })
             .then(() => history.push("/"))
@@ -188,6 +186,7 @@ export default function RegisterPage() {
                         </p>
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+
                         <Listbox value={position} onChange={setPosition}>
                             <div className="mt-1 relative">
                                 <Listbox.Label className="m-1 block text-sm font-medium text-gray-700">Position</Listbox.Label>
@@ -200,21 +199,21 @@ export default function RegisterPage() {
 
                                 <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
                                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                                        {accountType.map((account) => (
+                                        {accountType.map((type) => (
                                             <Listbox.Option
-                                                key={account.id}
+                                                key={type.id}
                                                 className={({ active }) =>
                                                     classNames(
                                                         active ? 'text-white bg-rose-600' : 'text-gray-900',
                                                         'cursor-default select-none relative py-2 pl-8 pr-4'
                                                     )
                                                 }
-                                                value={account}
+                                                value={type}
                                             >
                                                 {({ selected, active }) => (
                                                     <>
                                                         <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                            {account.name}
+                                                            {type.name}
                                                         </span>
 
                                                         {selected ? (
@@ -385,14 +384,14 @@ export default function RegisterPage() {
                                         type="email"
                                         name="email"
                                         id="email"
-                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-bl-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
+                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                         placeholder='e0000000'
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
-                                    <span className="inline-flex items-center px-3 rounded-br-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                    {/* <span className="inline-flex items-center px-3 rounded-br-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                                         @u.nus.edu
-                                    </span>
+                                    </span> */}
                                 </div>
                             </div>
                         </div>

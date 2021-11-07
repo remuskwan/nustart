@@ -15,16 +15,24 @@ import { Link } from 'react-router-dom'
 
 export default function BlockTab() {
     const [allUsers, setAllUsers] = useState([])
-    const [open, setOpen] = useState(false)
+    //const [open, setOpen] = useState(false)
     const cancelButtonRef = useRef(null)
+    const [status, setStatus] = useState('ACTIVE')
 
     useEffect(() => {
         let isMounted = true;
         api.getUsers().then(users => {
-            if (isMounted) setAllUsers(users.data);    // add conditional check
+            if (isMounted) setAllUsers(users.data);    
         })
         return () => { isMounted = false };
     }, [])
+
+    useEffect(() => {       
+        api.getUsers().then(users => {
+            setAllUsers(users.data);   
+        })
+        console.log(allUsers)
+    }, [status])
 
     function blockUser(user) {
         // axios.put(`http://localhost:8080/NUStartApplication-war/webresources/users/${user.id}`,
@@ -40,7 +48,7 @@ export default function BlockTab() {
         // )
         // setOpen(false)
         api.editUser(user.id, {
-            accountStatus: "BLOCKED",
+            accountStatus: status,
             email: user.email,
             faculty: user.faculty,
             course: user.course,
@@ -52,7 +60,7 @@ export default function BlockTab() {
 
     function unblockUser(user) {
         api.editUser(user.id, {
-            accountStatus: "ACTIVE",
+            accountStatus: status,
             email: user.email,
             faculty: user.faculty,
             course: user.course,
@@ -63,6 +71,7 @@ export default function BlockTab() {
     }
 
     return (
+        allUsers &&
         <div>
             {/* <div className="px-6 pt-6 pb-4">
                 <form className="mt-6 flex space-x-4" action="#">
@@ -105,7 +114,11 @@ export default function BlockTab() {
                                         <button
                                             type="button"
                                             className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                            onClick={() => unblockUser(user)}
+                                            onClick={() => {
+                                                console.log('unblock')
+                                                setStatus('ACTIVE');
+                                                unblockUser(user);
+                                            }}
                                         >
                                             <CheckCircleIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
                                             Unblock
@@ -114,7 +127,11 @@ export default function BlockTab() {
                                         <button
                                             type="button"
                                             className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                            onClick={() => blockUser(user)}
+                                            onClick={() => {
+                                                console.log('block')
+                                                // setStatus('BLOCKED');
+                                                // blockUser(user);
+                                            }}
                                         >
                                             <BanIcon className="mr-3 h-4 w-4" aria-hidden="true"
                                             />
