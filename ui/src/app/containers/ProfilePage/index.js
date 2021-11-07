@@ -179,12 +179,27 @@ export default function ProfilePage() {
     const [isFilePicked, setIsFilePicked] = useState(false);
     const { uid } = useParams()
 
+<<<<<<< Updated upstream
     useEffect(() => {
         async function getUser() {
             const u = await api.getUser(getUser())
             getLoggedInUser(u.data)
         }
         getUser()
+=======
+    // useEffect(async () => {
+    //     const u = await api.getUser(getUser())
+    //     getLoggedInUser(u.data)
+
+    // }, [])
+
+    useEffect(() => {
+        api.getUser()
+            .then(response => setUser(response.data))
+            .catch((error) => (
+                setError(error)
+            ))
+>>>>>>> Stashed changes
     }, [])
 
     function getLoggedInUser(u) {
