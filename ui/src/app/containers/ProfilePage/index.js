@@ -180,11 +180,12 @@ export default function ProfilePage() {
     const { uid } = useParams()
 
     useEffect(() => {
-        async function getUser() {
-            const u = await api.getUser(getUser())
+        async function setLogged() {
+            const u = await api.getUser(uid)
+            console.log(u.data)
             getLoggedInUser(u.data)
         }
-        getUser()
+        setLogged()
     }, [])
 
     function getLoggedInUser(u) {
@@ -192,12 +193,11 @@ export default function ProfilePage() {
         setEmail(u.email)
         setName(u.username)
         setCourse(u.course)
-        const y = years.filter((y) => y.name === u.yr.toString())[0]
-        setYear(y)
+        setYear(years[0])
         const f = faculties.filter((f) => f.name === u.faculty)[0]
         setFaculty(f)
         setContactStore({ contacts: u.contacts, currentId: 0 })
-        console.log(year)
+        //console.log(year)
     }
 
     const changeHandler = (event) => {
