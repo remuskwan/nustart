@@ -51,55 +51,7 @@ public class AdminResource {
         return personSessionBeanLocal.getAllStudents();
     }
 
-    @GET
-    @Path("/categories")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Category> getAllCategories() {
-        return personSessionBeanLocal.getCategories();
-    }
-
-    @POST
-    @Path("/categories")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Category createCategory(Category c) {
-        c.setCreated(new Date());
-        personSessionBeanLocal.addCategories(c);
-        return c;
-    }
-
-    @PUT
-    @Path("/categories/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editCategory(@PathParam("id") Long cId, Category c) {
-        try {
-            personSessionBeanLocal.updateCategory(c);
-            return Response.status(204).build();
-        } catch (Exception e) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", " Category not found")
-                    .build();
-            return Response.status(404).entity(exception)
-                    .type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @DELETE
-    @Path("/categories/{cid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@PathParam("cid") String cId) {
-        try {
-            personSessionBeanLocal.deleteCategory(cId);
-            return Response.status(204).build();
-        } catch (NoResultException e) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "Category not found")
-                    .build();
-            return Response.status(404).entity(exception).build();
-        }
-    }
-
+    
     @POST
     @Path("/maps")
     @Consumes(MediaType.APPLICATION_JSON)

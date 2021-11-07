@@ -22,13 +22,14 @@ public interface GuideSessionBeanLocal {
     public List<Guide> searchGuides();    
     public List<Guide> searchGuidesByTitle(String title);    
     public List<Guide> searchGuidesByCreator(String email) throws NoResultException;    
-    public void createGuide(Guide g);    
+    public void createGuide(Long cId, Guide g) throws NoResultException;     
     public void updateGuide(Guide g) throws NoResultException;    
-    public void deleteGuide(Long gId) throws NoResultException;
+    public void deleteGuide(Long cId, Long gId) throws NoResultException;
     public List<Category> getCategories();
     public void addComment(Long gId, Comment c) throws NoResultException;
     public void editComment(Comment c) throws NoResultException;
     public void deleteComment(Long gId, Long cId) throws NoResultException;
     public List<Comment> getCommentReplies(Long cId)throws NoResultException;
     public List<Comment> getComments(Long gId)throws NoResultException;
+    public Category getCategory(Long cId) throws NoResultException;
 }
