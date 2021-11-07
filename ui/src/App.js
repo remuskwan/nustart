@@ -11,13 +11,15 @@ import LoginPage from './app/containers/LoginPage';
 import RegisterPage from './app/containers/RegisterPage'
 import ThreadDetailsPage from './app/containers/ThreadDetailsPage';
 import UsersPage from './app/containers/UsersPage';
+import GuidesPage from './app/containers/GuidesPage';
 
 function App() {
   return (
     <div className="content">
       <Switch>
         <PrivateRoute exact path="/" component={ForumsPage} /> 
-        <PublicRoute exact path="/login" component={LoginPage} />
+        <PrivateRoute path="/guides" component={GuidesPage} /> 
+        <PublicRoute path="/login" component={LoginPage} />
         <PublicRoute path="/register" component={RegisterPage} />
         <PrivateRoute exact path='/:id/threads' component={ForumDetailsPage} />
         <PrivateRoute exact path="/:forumId/threads/:threadId/posts" component={ThreadDetailsPage} />

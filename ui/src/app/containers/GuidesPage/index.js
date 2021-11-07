@@ -5,6 +5,7 @@ import NavBar from '../../components/navBar'
 import NewButton from '../../components/newButton'
 import GuideList from './guideList'
 import api from '../../util/api'
+import GuideCategories from '../../components/guideCategories'
 
 const tabs = [//need to change to category
     { name: 'Recent', href: '#', current: true },
@@ -18,7 +19,8 @@ function classNames(...classes) {
 
 export default function GuidesPage() {
     const [user, setUser] = useState(null)
-    const [guides, setGuides] = useState(null)
+    const [guides, setGuides] = useState([])
+    const [categories, setCategories] = useState([])
     const [error, setError] = useState(null)
 
     useEffect(() => {
@@ -33,6 +35,16 @@ export default function GuidesPage() {
         api.getGuides()
             .then((response) =>
                 setGuides(response.data)
+            )
+            .catch((error) => (
+                setError(error)
+            ))
+    }, [])
+
+    useEffect(() => {
+        api.getCategories()
+            .then((response) =>
+                setCategories(response.data)
             )
             .catch((error) => (
                 setError(error)
@@ -56,6 +68,7 @@ export default function GuidesPage() {
                         <SideBar user={user}/>
                     </div>
                     <main className="lg:col-span-9 xl:col-span-10">
+                        <GuideCategories categories={categories}/>
                         <div className="px-4 sm:px-0">
                             <div className="sm:hidden">
                                 <label htmlFor="question-tabs" className="sr-only">

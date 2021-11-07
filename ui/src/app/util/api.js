@@ -17,7 +17,7 @@ const api = {
   getContactSize() {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/contactsId`)
   },
-  getCatogories(){
+  getCategories(){
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides/categories")
   },
   getGuides(){
