@@ -38,6 +38,12 @@ export default function AddGuidePage() {
       .catch((error) => setError(error))
   }, [])
 
+  useEffect(() => {
+    api.getCategories()
+      .then(response => setUser(response.data))
+      .catch((error) => setError(error))
+  }, [])
+
   return (
     user &&
     <div className="relative min-h-screen bg-gray-100">

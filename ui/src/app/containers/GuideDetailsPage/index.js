@@ -10,7 +10,7 @@ import CommentsList from '../../components/commentsList';
 import CommentsSection from '../../components/commentsSection';
 import api from '../../util/api';
 
-export default function AddGuidePage() {
+export default function GuideDeatailsPage() {
   const history = useHistory()
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState("")
@@ -76,22 +76,6 @@ export default function AddGuidePage() {
                             </li>
                           </ul>
                         </div>
-                        <div>
-                          <h2 className="text-sm font-medium text-gray-500">Catogories</h2>
-                          <ul role="list" className="mt-2 leading-8">
-                            <li className="inline">
-                              <a
-                                href="#"
-                                className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5"
-                              >
-                                <div className="absolute flex-shrink-0 flex items-center justify-center">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" aria-hidden="true" />
-                                </div>
-                                <div className="ml-3.5 text-sm font-medium text-gray-900">GuideCategory</div>{/* needs to change*/}
-                              </a>{' '}
-                            </li>
-                          </ul>
-                        </div>
                       </aside>
                       <div className="py-3 xl:pt-6 xl:pb-0">
                         <div className="prose max-w-none">
@@ -107,7 +91,7 @@ export default function AddGuidePage() {
             </div>
 
 
-            
+
           </main>
         </div>
       </div>
