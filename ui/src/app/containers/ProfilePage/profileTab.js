@@ -73,7 +73,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function AccountTab() {
+export default function ProfileTab() {
     const [user, setUser] = useState(defaultUser)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -85,10 +85,13 @@ export default function AccountTab() {
 
     const history = useHistory()
 
-    useEffect(async () => {
-        const u = await api.getUser(getUser())
-        getLoggedInUser(u.data)
-
+    useEffect(() => {
+        async function getLogged() {
+            const u = await api.getUser()
+            console.log(u.data)
+            getLoggedInUser(u.data)
+        }
+        getLogged()
     }, [])
 
     function getLoggedInUser(u) {
@@ -99,6 +102,7 @@ export default function AccountTab() {
         const y = years.filter((y) => y.name === u.yr.toString())[0]
         setYear(y)
         const f = faculties.filter((f) => f.name === u.faculty)[0]
+        console.log(faculties.filter((f) => f.name === u.faculty)[0])
         setFaculty(f)
         setSelectedFile(u.profilePicture)
     }
@@ -119,7 +123,7 @@ export default function AccountTab() {
             profilePicture: user.profilePicture,
             username: name,
             faculty: faculty.name,
-            yr: year.name,
+            //yr: year.name,
             course: course,
         }).then(response => console.log(response.data))
     }
