@@ -178,7 +178,7 @@ export default function ProfilePage() {
     const [selectedFile, setSelectedFile] = useState();
     const [isFilePicked, setIsFilePicked] = useState(false);
     const { uid } = useParams()
-
+    
     useEffect(() => {
         async function setLogged() {
             const u = await api.getUser(uid)
