@@ -73,7 +73,7 @@ public class GuidesResource {
     }
     
     @GET
-    @Path("/{gid}")
+    @Path("/{gid}/comments")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getComments(@PathParam("gid") Long gid) {
         try {
@@ -91,9 +91,9 @@ public class GuidesResource {
     }
     
     @GET
-    @Path("/{cid}")
+    @Path("/{gId}/comments/{cid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCommentReplies(@PathParam("cid") Long cid) {
+    public Response getCommentReplies(@PathParam("gId") Long gId, @PathParam("cid") Long cid) {
         try {
             List<Comment> comments = guideSessionLocal.getCommentReplies(cid);
             GenericEntity<List<Comment>> entity = new GenericEntity<List<Comment>>(comments) {
