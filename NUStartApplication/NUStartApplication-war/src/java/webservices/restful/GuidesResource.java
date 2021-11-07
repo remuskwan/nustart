@@ -145,46 +145,8 @@ public class GuidesResource {
         }
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Guide createGuide(Guide g) {
-        g.setDateCreated(new Date());
-        guideSessionLocal.createGuide(g);
-        return g;
-    }
+    
 
-    @PUT
-    @Path("/{gid}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editGuide(@PathParam("gid") Long gId, Guide g) {
-        g.setId(gId);
-        try {
-            guideSessionLocal.updateGuide(g);
-            return Response.status(204).build();
-        } catch (NoResultException e) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "Not found")
-                    .build();
-            return Response.status(404).entity(exception)
-                    .type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @DELETE
-    @Path("/{gid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteGuide(@PathParam("gid") Long gId) {
-        try {
-            guideSessionLocal.deleteGuide(gId);
-            return Response.status(204).build();
-        } catch (NoResultException e) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "Guide not found")
-                    .build();
-            return Response.status(404).entity(exception).build();
-        }
-    }
+    
     //TODO: get comment replies (additional feature)
 }

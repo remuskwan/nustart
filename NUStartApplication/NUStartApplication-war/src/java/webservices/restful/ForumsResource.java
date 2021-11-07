@@ -132,7 +132,6 @@ public class ForumsResource {
     public Response editThread(@PathParam("id") Long fId, Thread t) {
         try {
             forumSessionBeanLocal.editThread(t);
-//            Forum forum = forumSessionBeanLocal.getForum(fId);
             
             return Response.status(200).entity(t).build();
         } catch (NoResultException ex) {

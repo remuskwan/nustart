@@ -20,7 +20,8 @@ function App() {
     <div className="content">
       <Switch>
         <PrivateRoute exact path="/" component={ForumsPage} /> 
-        <PublicRoute exact path="/login" component={LoginPage} />
+        <PrivateRoute path="/guides" component={GuidesPage} /> 
+        <PublicRoute path="/login" component={LoginPage} />
         <PublicRoute path="/register" component={RegisterPage} />
         <PrivateRoute exact path='/:id/threads' component={ForumDetailsPage} />
         <PrivateRoute exact path="/:forumId/threads/:threadId/posts" component={ThreadDetailsPage} />

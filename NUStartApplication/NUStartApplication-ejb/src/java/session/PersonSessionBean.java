@@ -82,18 +82,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
     }
 
-//    @Override
-//    public void createStaff(Person p) {
-//        p.setAccountType(AccountType.STAFF);
-//        em.persist(p);
-//    }
-//
-//    @Override
-//    public void createStudent(Person p) {
-//        p.setAccountType(AccountType.STUDENT);
-//        em.persist(p);
-//    }
-//    
     @Override
     public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
@@ -110,35 +98,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
     }
 
-//    @Override
-//    public void updateStaff(Person s) throws NoResultException {
-//        Person staff = getPerson(s.getId());
-//        staff.setActive(s.isActive());
-//        staff.setContacts(s.getContacts());
-//        staff.setEmail(s.getEmail());
-//        staff.setFavoriteGuides(s.getFavoriteGuides());
-//        staff.setFavoritePosts(s.getFavoritePosts());
-//        staff.setProfilePicture(s.getProfilePicture());
-//        staff.setPassword(s.getPassword());
-//        staff.setFaculty(s.getFaculty());
-//    }
-//
-//    @Override
-//    public void updateStudent(Person s) throws NoResultException {
-//        Person student = getPerson(s.getId());
-//
-//        student.setFaculty(s.getFaculty());
-//        student.setCourse(s.getCourse());
-//        student.setFavoriteGuides(s.getFavoriteGuides());
-//        student.setFavoriteGuides(s.getFavoriteGuides());
-//        student.setFavoritePosts(s.getFavoritePosts());
-//        student.setContacts(s.getContacts());
-//        student.setProfilePicture(s.getProfilePicture());
-//        student.setEmail(s.getEmail());
-//        student.setActive(s.isActive());
-//        student.setPassword(s.getPassword());
-//        student.setYr(s.getYr());
-//    }
     @Override
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);

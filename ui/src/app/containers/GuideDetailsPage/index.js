@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
+import { CalendarIcon } from '@heroicons/react/solid';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
 import Comment from '../../components/comment';

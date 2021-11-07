@@ -43,10 +43,14 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public void createGuide(Guide g) {
+    public void createGuide(Long cId, Guide g) throws NoResultException {
+        g.setTitle(g.getTitle().trim());
+        g.setContent(g.getContent().trim());
+        Category c = getCategory(cId);
         em.persist(g);
+        c.getGuides().add(g);
     }
-
+    
     @Override
     public List<Category> getCategories() {
         Query q = em.createQuery("SELECT c FROM Category c");
@@ -59,11 +63,6 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
             Guide oldG = getGuide(g.getId());
             oldG.setTitle(g.getTitle());
             oldG.setContent(g.getContent());
-//            if (g.getPublished()) {
-//                oldG.setDatePublished(new Date());
-//            } else {
-//                oldG.setDateUpdated(new Date());
-//            }
         } catch (NoResultException ex) {
             Logger.getLogger(GuideSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,9 +70,16 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public void deleteGuide(Long gId) throws NoResultException {
+    public void deleteGuide(Long cId, Long gId) throws NoResultException {
+        Category c = getCategory(cId);
         Guide g = getGuide(gId);
-        em.remove(g);
+        
+        if (c != null) {
+            c.getGuides().remove(g);
+            em.remove(g);
+        } else {
+            throw new NoResultException("Not found");
+        }
     }
 
     @Override
@@ -142,5 +148,16 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     public List<Comment> getComments(Long gId) throws NoResultException{
         Guide guide = getGuide(gId);
         return guide.getComments();
+    }
+
+    @Override
+    public Category getCategory(Long cId) throws NoResultException {
+        Category f = em.find(Category.class, cId);
+        
+        if (f != null) {
+            return f;
+        } else {
+            throw new NoResultException("Not found");
+        }
     }
 }
