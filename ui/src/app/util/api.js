@@ -66,6 +66,9 @@ const api = {
     return axios
       .post(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads`, thread)
   },
+  createCategory(category) {
+    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/admin/categories`, category)
+  },
   deletePost(forumId, threadId, postId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}/posts/${postId}`)
   },

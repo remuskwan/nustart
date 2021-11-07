@@ -10,6 +10,7 @@ import api from '../../util/api';
 export default function AddGuidePage() {
   const history = useHistory()
   const [user, setUser] = useState(null)
+  const [category, setCategory] = useState("")
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
@@ -25,6 +26,7 @@ export default function AddGuidePage() {
       title: title,
       content: content,
       creator: user,
+      category: category,
     })
       .then(() => history.goBack())
       .catch(error => setError(error))
@@ -39,11 +41,11 @@ export default function AddGuidePage() {
   return (
     user &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar disableButton={true} user={user}/>
+      <NavBar disableButton={true} user={user} />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-            <SideBar user={user}/>
+            <SideBar user={user} />
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
             <div className="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
@@ -53,6 +55,24 @@ export default function AddGuidePage() {
                     <div>
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Add a new guide！</h3>
                     </div>
+
+                    <div>
+                      <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                        Category
+                      </label>
+                      <select
+                        id="category"
+                        name="category"
+                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        defaultValue="CCA"
+                        onChange={(e) => setCategory(e.target.value)}
+                      >
+                        <option>United States</option>
+                        <option>Canada</option>    {/* needs to change*/}
+                        <option>Mexico</option>
+                      </select>
+                    </div>
+
                     <div className="grid grid-cols-3 gap-6">
                       <div className="col-span-3 sm:col-span-2">
                         <InputText

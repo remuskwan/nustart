@@ -12,6 +12,8 @@ import RegisterPage from './app/containers/RegisterPage'
 import ThreadDetailsPage from './app/containers/ThreadDetailsPage';
 import UsersPage from './app/containers/UsersPage';
 import GuidesPage from './app/containers/GuidesPage';
+import GuideDetailsPage from './app/containers/GuideDetailsPage';
+import AddGuidePage from './app/containers/AddGuidePage';
 
 function App() {
   return (
@@ -28,6 +30,10 @@ function App() {
         <PrivateRoute exact path="/profile/:uid" component={ProfilePage}/>
         <PrivateRoute exact path="/users" component={UsersPage}/>
         <PrivateRoute path="/:forumId/threads/:threadId/posts/create" component={AddPostPage} />
+        <PrivateRoute exact path="/guides" component={GuidesPage} />
+        <PrivateRoute exact path='/guides/:id' component={GuideDetailsPage} />
+        <PrivateRoute path="/guides/create" component={AddGuidePage} />
+
         {/* <PrivateRoute path="/profile/edit" component={EditProfile} />
         <PrivateRoute path="/users" component={UsersPage} />
         <Redirect exact from="/:id" to="/:id/threads" />
