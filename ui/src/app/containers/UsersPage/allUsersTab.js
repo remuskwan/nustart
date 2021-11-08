@@ -1,5 +1,6 @@
 import { Fragment, useState, useEffect, useRef } from 'react'
 import { Transition, Dialog } from '@headlessui/react'
+import moment from 'moment'
 import {
     ChevronRightIcon,
 } from '@heroicons/react/solid'
@@ -140,15 +141,13 @@ export default function AllUsersTab() {
                                             <div className="flex items-center text-sm text-gray-500">
                                                 {user.accountStatus}
                                                 <CalendarIcon className="ml-2 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    Created on <time dateTime={user.created}>{user.created}</time>
-                                                </p>
+                                                {moment().subtract(moment().diff(user.created.slice(0, -5))).calendar()}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
                                         <div className="flex overflow-hidden -space-x-1">
-                                            
+
                                         </div>
                                     </div>
                                 </div>
