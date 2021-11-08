@@ -135,6 +135,7 @@ export default function ProfileTab() {
     }
 
     function updateProfile() {
+        
         api.editUser(user.id, {
             email: email,
             profilePicture: user.profilePicture,

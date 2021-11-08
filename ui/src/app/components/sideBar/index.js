@@ -9,9 +9,8 @@ export default function SideBar({ editProfile = false, user }) {
   const { url } = useRouteMatch()
 
   const navigation = !editProfile ? [
-    { name: 'Guides', path: '/guides', icon: HomeIcon },
+    { name: 'Guides', path: '/categories', icon: HomeIcon },
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Campus', path: '/campus', icon: UserGroupIcon },
     ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
   ] : [
     { name: 'Account', path: '/account/edit', icon: UserCircleIcon },

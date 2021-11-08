@@ -204,7 +204,8 @@ public class ForumsResource {
             @PathParam("post_id") Long pId) {
         try {
             threadSessionBeanLocal.deletePost(tId, pId);
-            return Response.status(204).build();
+            Thread t = threadSessionBeanLocal.getThread(tId);
+            return Response.status(200).entity(t).build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found")

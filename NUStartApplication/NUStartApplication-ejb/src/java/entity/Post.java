@@ -36,6 +36,10 @@ public class Post implements Serializable {
 //    private Date updatedAt;
     private Long likes;
 
+    public Post() {
+        this.likes = 0l;
+    }
+
     public Long getId() {
         return id;
     }

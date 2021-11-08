@@ -17,6 +17,7 @@ import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
@@ -28,7 +29,10 @@ import javax.persistence.Query;
 public class PersonSessionBean implements PersonSessionBeanLocal {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
+
+    @EJB
+    private GuideSessionBeanLocal guideSessionBeanLocal;
 
     @Override
     public Person getPerson(Long pId) throws NoResultException {
@@ -61,6 +65,8 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
                 throw new InvalidLoginException("Invalid email address or password");
             } else if (p.getAccountStatus().equals(AccountStatus.BLOCKED)) {
                 throw new UserBlockedException("User blocked");
+            } else if (p.getAccountStatus().equals(AccountStatus.UNAPPROVED)) {
+                throw new UserBlockedException("Please wait to be approved");
             } else {
                 return p.getId();
             }
@@ -87,13 +93,14 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
-
+        
+        user.setAccountStatus(s.getAccountStatus());
+        user.setAccountType(s.getAccountType());
         user.setFaculty(s.getFaculty());
         user.setCourse(s.getCourse());
-        //user.setFavoriteGuides(s.getFavoriteGuides());
-        //user.setFavoriteGuides(s.getFavoriteGuides());
-        //user.setFavoritePosts(s.getFavoritePosts());
-        user.setProfilePicture(s.getProfilePicture());
+//        user.setProfilePicture(s.getProfilePicture());
+        user.setLikedGuides(s.getLikedGuides());
+        user.setLikedPosts(s.getLikedPosts());
         user.setEmail(s.getEmail());
         user.setPassword(s.getPassword());
         user.setYr(s.getYr());
@@ -171,20 +178,10 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public void deleteCategory(String name) throws NoResultException {
+    public void deleteCategory(Long cId) throws NoResultException {
         //if there are guides and forum using category, i cannot delete right?
-        Query q = em.createQuery("SELECT DISTINCT c from Category c WHERE c.name = :name");
-        q.setParameter("name", name);
-        try {
-            Category c = (Category) q.getResultList();
-            if (c != null) {
-                em.remove(c);
-            } else {
-                throw new NoResultException("Category not found");
-            }
-        } catch (NoResultException ex) {
-            throw new NoResultException("Category not found");
-        }
+        Category c = guideSessionBeanLocal.getCategory(cId);
+        em.remove(c);
     }
 
     @Override
@@ -260,6 +257,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public int getContacts() {
         return em.createQuery("SELECT c FROM Contact c").getResultList().size();
     }
+
     @Override
     public List<Person> searchByEmail(String email) {
         Query q;
@@ -274,6 +272,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Person> searchByFaculty(String faculty) {
         Query q;
@@ -288,6 +287,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Person> searchByCourse(String course) {
         Query q;
@@ -302,6 +302,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Person> searchByStaff() {
         Query q;
@@ -317,7 +318,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
-    
+
     @Override
     public List<Person> searchByStudent() {
         Query q;
@@ -333,7 +334,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
-
     @Override
     public List<Guide> getGuidesCreated(Long pId) {
         Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator.id = :id");

@@ -51,7 +51,6 @@ public class AdminResource {
         return personSessionBeanLocal.getAllStudents();
     }
 
-    
     @POST
     @Path("/maps")
     @Consumes(MediaType.APPLICATION_JSON)
