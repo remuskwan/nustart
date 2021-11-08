@@ -20,6 +20,9 @@ const api = {
   getCategories(){
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/categories")
   },
+  getCategory(categoryId){
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/categories/${categoryId}`)
+  },
   getGuides(){
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides")
   },

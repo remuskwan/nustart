@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import { CalendarIcon } from '@heroicons/react/solid';
@@ -11,7 +11,7 @@ import CommentsList from '../../components/commentsList';
 import CommentsSection from '../../components/commentsSection';
 import api from '../../util/api';
 
-export default function GuideDeatailsPage() {
+export default function GuideDetailsPage() {
   const history = useHistory()
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState("")
@@ -90,9 +90,6 @@ export default function GuideDeatailsPage() {
                 </div>
               </div>
             </div>
-
-
-
           </main>
         </div>
       </div>

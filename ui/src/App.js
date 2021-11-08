@@ -32,8 +32,8 @@ function App() {
         <PrivateRoute exact path="/profile/:uid" component={ProfilePage}/>
         <PrivateRoute exact path="/users" component={UsersPage}/>
         <PrivateRoute path="/:forumId/threads/:threadId/posts/create" component={AddPostPage} />
-        <PrivateRoute exact path="/guides" component={GuidesPage} />
-        <PrivateRoute exact path='/guides/:id' component={GuideDetailsPage} />
+        <PrivateRoute exact path="/guides/:id" component={GuidesPage} />
+        <PrivateRoute exact path='/guides/:catId/:guideId' component={GuideDetailsPage} />
         <PrivateRoute path="/guides/create" component={AddGuidePage} />
         <PrivateRoute path="/admin/categories/create" component={AddCategoryPage} />
         <PrivateRoute exact path="/admin/categories" component={CategoriesPage} />

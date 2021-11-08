@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router'
 
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
@@ -18,7 +19,9 @@ function classNames(...classes) {
 }
 
 export default function GuidesPage() {
+    const { id } = useParams()
     const [user, setUser] = useState(null)
+    const [category, setCategory] = useState(null)
     const [guides, setGuides] = useState([])
     const [categories, setCategories] = useState([])
     const [error, setError] = useState(null)
@@ -32,14 +35,15 @@ export default function GuidesPage() {
     }, [])
 
     useEffect(() => {
-        api.getGuides()
-            .then((response) =>
-                setGuides(response.data)
-            )
+        api.getCategory(id)
+            .then((response) => {
+                setCategory(response.data)
+                setGuides(response.data.guides)
+            })
             .catch((error) => (
                 setError(error)
             ))
-    }, [])
+    }, [id])
 
     useEffect(() => {
         api.getCategories()
@@ -59,16 +63,16 @@ export default function GuidesPage() {
             <NavBar
                 buttonContent="guide"
                 disableButton={user.accountType === "STUDENT"}
-                component={<NewButton content='guide' path='/create'/>}
+                component={<NewButton content='guide' path='/create' />}
                 user={user}
             />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-                        <SideBar user={user}/>
+                        <SideBar user={user} />
                     </div>
                     <main className="lg:col-span-9 xl:col-span-10">
-                        <GuideCategories categories={categories}/>
+                        <GuideCategories categories={categories} />
                         <div className="px-4 sm:px-0">
                             <div className="sm:hidden">
                                 <label htmlFor="question-tabs" className="sr-only">
