@@ -3,8 +3,10 @@ package session;
 import entity.Category;
 import entity.Contact;
 import entity.Facility;
+import entity.Guide;
 import entity.Map;
 import entity.Person;
+import entity.Post;
 import enumeration.AccountStatus;
 import error.NoResultException;
 import javax.ejb.Stateless;
@@ -331,7 +333,26 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
+    @Override
+    public List<Guide> getGuidesCreated(Long pId) {
+        Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator.id = :id");
+        q.setParameter("id", pId);
+        return q.getResultList();
+    }
     
+    @Override
+    public List<Thread> getThreadsCreated(Long pId) {
+        Query q = em.createQuery("SELECT t FROM Thread t WHERE t.creator.id = :id");
+        q.setParameter("id", pId);
+        return q.getResultList();
+    }
     
+    @Override
+    public List<Post> getPostsCreated(Long pId) {
+        Query q = em.createQuery("SELECT p FROM Post p WHERE p.creator.id = :id");
+        q.setParameter("id", pId);
+        return q.getResultList();
+    }
 
 }
