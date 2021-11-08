@@ -51,7 +51,7 @@ public interface PersonSessionBeanLocal {
     
     public void updateCategory(Category c);
     
-    public void deleteCategory(String name) throws NoResultException;
+    public void deleteCategory(Long cId) throws NoResultException;
     
     public List<Facility> getFacilities();
     

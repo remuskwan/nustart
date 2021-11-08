@@ -14,6 +14,8 @@ import UsersPage from './app/containers/UsersPage';
 import GuidesPage from './app/containers/GuidesPage';
 import GuideDetailsPage from './app/containers/GuideDetailsPage';
 import AddGuidePage from './app/containers/AddGuidePage';
+import CategoriesPage from './app/containers/CategoriesPage';
+import AddCategoryPage from './app/containers/AddCategoryPage';
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
         <PrivateRoute exact path="/guides" component={GuidesPage} />
         <PrivateRoute exact path='/guides/:id' component={GuideDetailsPage} />
         <PrivateRoute path="/guides/create" component={AddGuidePage} />
+        <PrivateRoute path="/admin/categories/create" component={AddCategoryPage} />
+        <PrivateRoute exact path="/admin/categories" component={CategoriesPage} />
 
         {/* <PrivateRoute path="/profile/edit" component={EditProfile} />
         <PrivateRoute path="/users" component={UsersPage} />

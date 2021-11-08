@@ -74,7 +74,7 @@ public class CategoriesResource {
     @DELETE
     @Path("/{cid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@PathParam("cid") String cId) {
+    public Response deleteCategory(@PathParam("cid") Long cId) {
         try {
             personSessionBeanLocal.deleteCategory(cId);
             return Response.status(204).build();

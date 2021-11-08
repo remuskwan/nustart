@@ -48,13 +48,6 @@ public class GuidesResource {
     public List<Guide> getAllGuides() {
         return guideSessionLocal.searchGuides();
     }
-    
-    @GET
-    @Path("/categories")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Category> getAllCategories() {
-        return guideSessionLocal.getCategories();
-    }
 
     @GET
     @Path("/{gid}")

@@ -15,6 +15,7 @@ import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
@@ -26,7 +27,10 @@ import javax.persistence.Query;
 public class PersonSessionBean implements PersonSessionBeanLocal {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
+    
+    @EJB
+    private GuideSessionBeanLocal guideSessionBeanLocal;
 
     @Override
     public Person getPerson(Long pId) throws NoResultException {
@@ -169,20 +173,10 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public void deleteCategory(String name) throws NoResultException {
+    public void deleteCategory(Long cId) throws NoResultException {
         //if there are guides and forum using category, i cannot delete right?
-        Query q = em.createQuery("SELECT DISTINCT c from Category c WHERE c.name = :name");
-        q.setParameter("name", name);
-        try {
-            Category c = (Category) q.getResultList();
-            if (c != null) {
-                em.remove(c);
-            } else {
-                throw new NoResultException("Category not found");
-            }
-        } catch (NoResultException ex) {
-            throw new NoResultException("Category not found");
-        }
+        Category c = guideSessionBeanLocal.getCategory(cId);
+        em.remove(c);
     }
 
     @Override

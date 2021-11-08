@@ -16,7 +16,7 @@ export default function GuideCategories({ categories }) {
   return (
     <div>
       <h2 className="text-gray-500 text-xs font-medium uppercase tracking-wide">Categories</h2>
-      <ul role="list" className="mt-3 grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mt-3 grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {categories.map((cat) => (
           <li key={cat.name} className="col-span-1 flex shadow-sm rounded-md">
             <div
