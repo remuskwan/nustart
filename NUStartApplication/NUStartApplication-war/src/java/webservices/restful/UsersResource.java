@@ -5,7 +5,9 @@
  */
 package webservices.restful;
 
+import entity.Guide;
 import entity.Person;
+import entity.Post;
 import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
@@ -65,7 +67,7 @@ public class UsersResource {
                     .build();
         }
     }
-    
+
     @GET
     @Path("/contactsId")
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,6 +85,42 @@ public class UsersResource {
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
         }
+    }
+
+    @GET
+    @Path("/{id}/guides")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserGuides(@PathParam("id") Long id) {
+        List<Guide> g = personSessionBeanLocal.getGuidesCreated(id);
+        System.out.println(g);
+        return Response.status(200)
+                .entity(g)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    
+    @GET
+    @Path("/{id}/threads")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserThreads(@PathParam("id") Long id) {
+        List<Thread> t = personSessionBeanLocal.getThreadsCreated(id);
+        System.out.println(t);
+        return Response.status(200)
+                .entity(t)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    
+    @GET
+    @Path("/{id}/posts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserPosts(@PathParam("id") Long id) {
+        List<Post> p = personSessionBeanLocal.getPostsCreated(id);
+        System.out.println(p);
+        return Response.status(200)
+                .entity(p)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     @POST
@@ -140,7 +178,7 @@ public class UsersResource {
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
@@ -169,43 +207,44 @@ public class UsersResource {
                     .build();
         }
     }
-    
+
     @GET
     @Path("/query")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchUsers(@QueryParam("username") String username, @QueryParam("email") String email, 
-            @QueryParam("faculty") String faculty, @QueryParam("course") String course){
-        if(username != null){
+    public Response searchUsers(@QueryParam("username") String username, @QueryParam("email") String email,
+            @QueryParam("faculty") String faculty, @QueryParam("course") String course) {
+        if (username != null) {
             List<Person> results = personSessionBeanLocal.searchUsers(username);
-            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results) {
+            };
             return Response.status(200).entity(entity).build();
-        }else if(email != null){
+        } else if (email != null) {
             List<Person> results = personSessionBeanLocal.searchByEmail(email);
-            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
-            return Response.status(200).entity(entity).build();    
-        }else if(faculty != null){
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else if (faculty != null) {
             List<Person> results = personSessionBeanLocal.searchByFaculty(faculty);
-            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
-            return Response.status(200).entity(entity).build(); 
-        }else if(course != null){
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else if (course != null) {
             List<Person> results = personSessionBeanLocal.searchByFaculty(course);
-            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
-            return Response.status(200).entity(entity).build(); 
-        }else{
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else {
             //if search for staff   // COME BACK TO THIS. maybe front end parse a number? 1? 0 for student, 1 for staff
             //filter using accountType 
-            
+
             List<Person> results = personSessionBeanLocal.searchByStaff();
             //List<Person> stu = personSessionBeanLocal.searchByStudent();
-            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results){};
-            return Response.status(200).entity(entity).build(); 
-            
-        
+            GenericEntity<List<Person>> entity = new GenericEntity<List<Person>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+
         }
-        
-        
-    
+
     }
-    
-    
+
 }
