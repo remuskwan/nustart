@@ -93,7 +93,7 @@ export default function GuideDetailsPage() {
                           <div className="flex items-center space-x-2">
                             <CalendarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                             <span className="text-gray-900 text-sm font-medium">
-                              Created on {moment(guide.dateCreated.slice(0, -5)).format("MMMM Do, YYYY")}
+                              Created on {moment(guide.dateCreated.slice(0, -5)).format("MMM Do, YYYY")}
                             </span>
                           </div>
                         </div>
@@ -158,7 +158,7 @@ export default function GuideDetailsPage() {
                     <div className="flex items-center space-x-2">
                       <CalendarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                       <span className="text-gray-900 text-sm font-medium">
-                        Created on {moment(guide.dateCreated.slice(0, -5)).format("MMMM Do, YYYY")}
+                        Created on {moment(guide.dateCreated.slice(0, -5)).format("MMM D, YYYY")}
                       </span>
                     </div>
                   </div>

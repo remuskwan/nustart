@@ -20,12 +20,12 @@ function classNames(...classes) {
 
 export default function GuidesListPage() {
   const { id } = useParams()
-  const {url} = useRouteMatch()
   const [user, setUser] = useState(null)
   const [guides, setGuides] = useState([])
   const [category, setCategory] = useState(null)
   const [categories, setCategories] = useState([])
   const [error, setError] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   useEffect(() => {
     api.getUser()
@@ -37,17 +37,19 @@ export default function GuidesListPage() {
 
   useEffect(() => {
     api.getCategories()
-      .then((response) =>
+      .then((response) => {
         setCategories(response.data)
-      )
+        // console.log(response.data.forEach((cat) => console.log(cat.id)))
+        setSelected(response.data.find((cat) => cat.id == id))
+      })
       .catch((error) => (
         setError(error)
       ))
-  }, [])
+  }, [id])
 
   useEffect(() => {
     api.getCategory(id)
-      .then((response) => { 
+      .then((response) => {
         setCategory(response.data)
         setGuides(response.data.guides)
       })
@@ -64,7 +66,7 @@ export default function GuidesListPage() {
       <NavBar
         buttonContent="guide"
         disableButton={user.accountType === "STUDENT"}
-        component={<NewButton content='guide' path="/createGuide"/>}
+        component={<NewButton content='guide' path="/createGuide" />}
         user={user}
       />
       <div className="py-10">
@@ -73,7 +75,9 @@ export default function GuidesListPage() {
             <SideBar user={user} />
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
-            <GuideCategories categories={categories} />
+            {(categories.length && selected) &&
+              <GuideCategories categories={categories} selected={selected} setSelected={setSelected} />
+            }
             <div className="px-4 sm:px-0">
               <div className="sm:hidden">
                 <label htmlFor="question-tabs" className="sr-only">

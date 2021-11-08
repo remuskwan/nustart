@@ -14,7 +14,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function CommentOptions({ guideId, setGuide, comment, setComments }) {
+export default function CommentOptions({ guideId, setGuide, comment, setComments, edit, setEdit }) {
   const [open, setOpen] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
   const [show, setShow] = useState(false)
@@ -62,7 +62,7 @@ export default function CommentOptions({ guideId, setGuide, comment, setComments
                       'w-full flex justify-left px-4 py-2 text-sm'
                     )}
                     onClick={() => {
-                      setOpenEdit(true)
+                      setEdit(true)
                     }}
                   >
                     <PencilIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
