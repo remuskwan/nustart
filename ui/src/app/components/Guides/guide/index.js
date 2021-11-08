@@ -61,6 +61,5 @@ export default function Guide({ id, title, creator, created, guide }) {
       </div>
     </article> 
     </Link>
-    
   )
 }

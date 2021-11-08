@@ -63,6 +63,8 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
                 throw new InvalidLoginException("Invalid email address or password");
             } else if (p.getAccountStatus().equals(AccountStatus.BLOCKED)) {
                 throw new UserBlockedException("User blocked");
+            } else if (p.getAccountStatus().equals(AccountStatus.UNAPPROVED)) {
+                throw new UserBlockedException("Please wait to be approved");
             } else {
                 return p.getId();
             }
@@ -89,7 +91,9 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
-
+        
+        user.setAccountStatus(s.getAccountStatus());
+        user.setAccountType(s.getAccountType());
         user.setFaculty(s.getFaculty());
         user.setCourse(s.getCourse());
 //        user.setProfilePicture(s.getProfilePicture());

@@ -28,11 +28,11 @@ export default function LoginPage() {
       .then(() => history.push("/"))
       .catch(error => {
         if (!error.response) setError(new Error("Failed to connect to server"))
-        else if (error.response.status === 404) setError(error)
+        else if (error.response.status === 404) setError(new Error(error.response.data.error))
         else setError("Something went wrong. Please try again later.")
       })
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
