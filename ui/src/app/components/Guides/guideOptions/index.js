@@ -5,24 +5,31 @@ import {
   DotsVerticalIcon,
   TrashIcon,
 } from '@heroicons/react/solid'
-import ConfirmDialog from '../../components/confirmDialog'
-import EditPostModal from './editPost'
-import api from '../../util/api'
+import ConfirmDialog from '../../confirmDialog'
+import Notification from '../../notification'
+import api from '../../../util/api'
+import EditGuideModal from '../editGuideModal'
+import { useHistory } from 'react-router'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function PostOptions({ forumId, threadId, setThread, post, setPosts }) {
+export default function GuideOptions({ categoryId, guide, setGuide }) {
+  const history = useHistory()
   const [open, setOpen] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
+  const [show, setShow] = useState(false)
+  const [notifTitle, setNotifTitle] = useState("")
 
-  function deletePost() {
-    api.deletePost(forumId, threadId, post.id)
-      .then((response) => {
-        setThread(response.data)
-        setPosts(response.data.posts)
-      })
+  function deleteGuide() {
+    api.deleteGuide(categoryId, guide.id)
+      .then(() => history.goBack())
+  }
+
+  function triggerNotification() {
+    setShow(true)
+    setTimeout(() => setShow(false), 3000)
   }
 
   return (
@@ -58,7 +65,7 @@ export default function PostOptions({ forumId, threadId, setThread, post, setPos
                     }}
                   >
                     <PencilIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span>Edit post</span>
+                    <span>Edit guide</span>
                   </button>
                 )}
               </Menu.Item>
@@ -74,7 +81,7 @@ export default function PostOptions({ forumId, threadId, setThread, post, setPos
                     }}
                   >
                     <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span>Delete post</span>
+                    <span>Delete guide</span>
                   </button>
                 )}
               </Menu.Item>
@@ -83,20 +90,22 @@ export default function PostOptions({ forumId, threadId, setThread, post, setPos
         </Transition>
       </Menu>
       <ConfirmDialog
-        title="post"
+        title="guide"
+        item={guide}
         open={open}
         setOpen={setOpen}
-        onConfirm={deletePost}
+        onConfirm={deleteGuide}
       />
-      <EditPostModal
-        forumId={forumId}
-        threadId={threadId}
-        setThread={setThread}
-        post={post}
+      <EditGuideModal
+        categoryId={categoryId}
+        guide={guide}
+        setGuide={setGuide}
         open={openEdit}
         setOpen={setOpenEdit}
+        setNotifTitle={setNotifTitle}
+        triggerNotification={triggerNotification}
       />
+      <Notification show={show} setShow={setShow} action={notifTitle} />
     </Fragment>
-
   )
 }

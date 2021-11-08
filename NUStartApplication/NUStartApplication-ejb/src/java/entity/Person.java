@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import enumeration.AccountType;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
@@ -45,13 +46,12 @@ public class Person implements Serializable {
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Guide> favoriteGuides;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Post> favoritePosts;
+    private List<Long> likedPosts;
+    private List<Long> likedGuides;
 
     public Person() {
-        
+        this.likedPosts = new ArrayList<>();
+        this.likedGuides = new ArrayList<>();
     }
     public Person(String email, String password) {
         this();
@@ -156,22 +156,6 @@ public class Person implements Serializable {
         this.contacts = contacts;
     }
 
-    public List<Guide> getFavoriteGuides() {
-        return favoriteGuides;
-    }
-
-    public void setFavoriteGuides(List<Guide> favoriteGuides) {
-        this.favoriteGuides = favoriteGuides;
-    }
-
-    public List<Post> getFavoritePosts() {
-        return favoritePosts;
-    }
-
-    public void setFavoritePosts(List<Post> favoritePosts) {
-        this.favoritePosts = favoritePosts;
-    }
-
     public Date getCreated() {
         return created;
     }
@@ -186,6 +170,22 @@ public class Person implements Serializable {
 
     public void setAccountStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
+    }
+
+    public List<Long> getLikedPosts() {
+        return likedPosts;
+    }
+
+    public void setLikedPosts(List<Long> likedPosts) {
+        this.likedPosts = likedPosts;
+    }
+
+    public List<Long> getLikedGuides() {
+        return likedGuides;
+    }
+
+    public void setLikedGuides(List<Long> likedGuides) {
+        this.likedGuides = likedGuides;
     }
 
     @Override

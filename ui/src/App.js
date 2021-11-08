@@ -16,13 +16,13 @@ import GuideDetailsPage from './app/containers/GuideDetailsPage';
 import AddGuidePage from './app/containers/AddGuidePage';
 import CategoriesPage from './app/containers/CategoriesPage';
 import AddCategoryPage from './app/containers/AddCategoryPage';
+import GuidesListPage from './app/containers/GuidesListPage';
 
 function App() {
   return (
     <div className="content">
       <Switch>
         <PrivateRoute exact path="/" component={ForumsPage} /> 
-        <PrivateRoute path="/guides" component={GuidesPage} /> 
         <PublicRoute path="/login" component={LoginPage} />
         <PublicRoute path="/register" component={RegisterPage} />
         <PrivateRoute exact path='/:id/threads' component={ForumDetailsPage} />
@@ -32,9 +32,10 @@ function App() {
         <PrivateRoute exact path="/profile/:uid" component={ProfilePage}/>
         <PrivateRoute exact path="/users" component={UsersPage}/>
         <PrivateRoute path="/:forumId/threads/:threadId/posts/create" component={AddPostPage} />
-        <PrivateRoute exact path="/guides/:id" component={GuidesPage} />
-        <PrivateRoute exact path='/guides/:catId/:guideId' component={GuideDetailsPage} />
-        <PrivateRoute path="/guides/create" component={AddGuidePage} />
+        <PrivateRoute exact path="/categories" component={GuidesPage} />
+        <PrivateRoute exact path="/categories/:id/guides" component={GuidesListPage} />
+        <PrivateRoute path='/categories/:categoryId/guides/:guideId' component={GuideDetailsPage} />
+        <PrivateRoute path="/createGuide" component={AddGuidePage} />
         <PrivateRoute path="/admin/categories/create" component={AddCategoryPage} />
         <PrivateRoute exact path="/admin/categories" component={CategoriesPage} />
 

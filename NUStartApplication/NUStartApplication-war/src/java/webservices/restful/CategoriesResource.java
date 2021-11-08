@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package filter;
+package webservices.restful;
 
 import entity.Category;
 import entity.Guide;
@@ -43,6 +43,24 @@ public class CategoriesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getAllCategories() {
         return guideSessionBeanLocal.getCategories();
+    }
+    
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getForum(@PathParam("id") Long fId) {
+        try {
+            Category f = guideSessionBeanLocal.getCategory(fId);
+            return Response.status(200)
+                    .entity(f)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
     }
     
     @POST
@@ -114,7 +132,7 @@ public class CategoriesResource {
     public Response editGuide(@PathParam("id") Long cId, Guide g) {
         try {
             guideSessionBeanLocal.updateGuide(g);
-            return Response.status(204).build();
+            return Response.status(200).entity(g).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found")

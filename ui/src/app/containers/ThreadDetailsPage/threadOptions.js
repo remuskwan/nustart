@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { DotsVerticalIcon, PencilIcon } from '@heroicons/react/solid'
@@ -12,7 +11,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ThreadOptions({forumId, thread, setThread}) {
+export default function ThreadOptions({ forumId, thread, setThread }) {
   const history = useHistory()
   const [action, setAction] = useState("")
   const [open, setOpen] = useState(false)
@@ -36,8 +35,8 @@ export default function ThreadOptions({forumId, thread, setThread}) {
 
   function updateThread(thread) {
     api.editThread(forumId, thread)
-    .then((response) => setThread(response.data))
-    .catch(error => setError(error))
+      .then((response) => setThread(response.data))
+      .catch(error => setError(error))
   }
 
   return (
@@ -75,23 +74,24 @@ export default function ThreadOptions({forumId, thread, setThread}) {
                   </button>
                 )}
               </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'w-full flex justify-right px-4 py-2 text-sm'
-                    )}
-                    onClick={() => {
-                      setAction("delete")
-                      setOpen(true)
-                    }}
-                  >
-                    <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span>Delete thread</span>
-                  </button>
-                )}
-              </Menu.Item>
+              {!thread.posts.length &&
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={classNames(
+                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                        'w-full flex justify-right px-4 py-2 text-sm'
+                      )}
+                      onClick={() => {
+                        setAction("delete")
+                        setOpen(true)
+                      }}
+                    >
+                      <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                      <span>Delete thread</span>
+                    </button>
+                  )}
+                </Menu.Item>}
               <Menu.Item>
                 {({ active }) => (
                   <button
@@ -137,7 +137,7 @@ export default function ThreadOptions({forumId, thread, setThread}) {
         action={action}
         onConfirm={action === "delete" ? deleteThread : toggleClosed}
       />
-      <EditThreadModal open={openEdit} setOpen={setOpenEdit} forumId={forumId} thread={thread} setThread={setThread}/>
+      <EditThreadModal open={openEdit} setOpen={setOpenEdit} forumId={forumId} thread={thread} setThread={setThread} />
     </Fragment>
   )
 }

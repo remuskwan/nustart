@@ -26,17 +26,11 @@ const api = {
   getGuides(){
     return axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides")
   },
-  getGuide(gid) {
-    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`)
+  getGuide(guideId) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}`)
   },
-  createGuide(guide) {
-    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/guides`, guide)
-  },
-  editGuide(gid, guide) {
-    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`, guide)
-  },
-  deleteGuide(gid) {
-    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`)
+  createGuide(categoryId, guide) {
+    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/categories/${categoryId}/guides`, guide)
   },
   getComments(gid) {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${gid}`)
@@ -56,8 +50,17 @@ const api = {
   editUser(id, user) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/users/${id}`, user)
   },
+  editGuide(categoryId, guide) {
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/categories/${categoryId}/guides`, guide)
+  },
   editThread(forumId, thread) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads`, thread)
+  },
+  editPost(forumId, threadId, post) {
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}/posts`, post)
+  },
+  createComment(guideId, comment) {
+    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments`, comment)
   },
   createForum(forum) {
     return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/forums`, forum)
@@ -75,11 +78,17 @@ const api = {
   deletePost(forumId, threadId, postId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}/posts/${postId}`)
   },
+  deleteGuide(categoryId, guideId) {
+    return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/categories/${categoryId}/guides/${guideId}`)
+  },
   deleteThread(forumId, threadId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}`)
   },
   deleteCategory(categoryId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/categories/${categoryId}`)
+  },
+  deleteComment(guideId, commentId) {
+    return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments/${commentId}`)
   }
 }
 

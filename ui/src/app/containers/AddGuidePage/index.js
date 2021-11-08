@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import NavBar from "../../components/navBar";
@@ -6,11 +5,13 @@ import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
 import api from '../../util/api';
+import CatSelectMenu from '../../components/catSelectMenu';
 
 export default function AddGuidePage() {
   const history = useHistory()
   const [user, setUser] = useState(null)
-  const [category, setCategory] = useState("")
+  const [category, setCategory] = useState(null)
+  const [categories, setCategories] = useState([])
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
@@ -22,11 +23,10 @@ export default function AddGuidePage() {
   }
 
   function createGuide() {
-    api.createGuide({
+    api.createGuide(category.id, {
       title: title,
       content: content,
       creator: user,
-      category: category,
     })
       .then(() => history.goBack())
       .catch(error => setError(error))
@@ -40,7 +40,10 @@ export default function AddGuidePage() {
 
   useEffect(() => {
     api.getCategories()
-      .then(response => setUser(response.data))
+      .then(response => {
+        setCategories(response.data)
+        setCategory(response.data[0])
+      })
       .catch((error) => setError(error))
   }, [])
 
@@ -59,27 +62,11 @@ export default function AddGuidePage() {
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
                   <div className="bg-white py-6 px-4 space-y-6 sm:p-6">
                     <div>
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">Add a new guide！</h3>
-                    </div>
-
-                    <div>
-                      <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                        Category
-                      </label>
-                      <select
-                        id="category"
-                        name="category"
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                        defaultValue="CCA"
-                        onChange={(e) => setCategory(e.target.value)}
-                      >
-                        <option>United States</option>
-                        <option>Canada</option>    {/* needs to change*/}
-                        <option>Mexico</option>
-                      </select>
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">New guide</h3>
                     </div>
 
                     <div className="grid grid-cols-3 gap-6">
+                    
                       <div className="col-span-3 sm:col-span-2">
                         <InputText
                           type="text"
@@ -93,11 +80,14 @@ export default function AddGuidePage() {
                           onChange={(e) => setTitle(e.target.value)}
                         />
                       </div>
+                      <div className="col-span-3 sm:col-span-1">
+                    <CatSelectMenu options={categories} category={category} setCategory={setCategory} />
+                    </div>
                       <div className="col-span-3">
                         <TextArea
                           name="content"
                           id="content"
-                          label="content"
+                          label="Content"
                           required={true}
                           value={content}
                           onChange={(e) => setContent(e.target.value)}

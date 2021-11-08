@@ -1,34 +1,40 @@
 import { Fragment, useState } from 'react'
-import axios from 'axios'
 import { Dialog, Transition } from '@headlessui/react'
-import TextArea from '../../components/textArea'
-import api from '../../util/api'
+import InputText from '../../inputText'
+import api from '../../../util/api'
+import TextArea from '../../textArea'
 
-export default function EditPostModal({ forumId, threadId, setThread, post, open, setOpen }) {
-  const [content, setContent] = useState(post.content)
+export default function EditGuideModal({ categoryId, guide, setGuide, open, setOpen, setNotifTitle, triggerNotification }) {
+  const [title, setTitle] = useState(guide.title)
+  const [content, setContent] = useState(guide.content)
   const [error, setError] = useState(null);
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    if (content !== '') {
-      editPost()
+    if (title !== '') {
+      editGuide()
       setOpen(false)
-      alert("Successfully edited thread.")
+      setNotifTitle("saved guide")
+      triggerNotification()
     }
   }
 
-  function editPost() {
-    post.content = content
-    api.editPost(forumId, threadId, post)
-      .then((response) => {
-        setThread(response.data)
-      })
+  function editGuide() {
+    guide.title = title
+    guide.content = content
+    api.editGuide(categoryId, guide)
+      .then((response) =>
+        setGuide(response.data)
+      )
       .catch(error => setError(error))
   }
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpen}>
+      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={() => {
+        setTitle(guide.title)
+        setOpen(false)
+      }}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -59,15 +65,27 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
                 <div className="mt-3 text-center sm:mt-5">
                   <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                    Edit post
+                    Edit guide
                   </Dialog.Title>
+                  <div className="mt-2 gap-6 text-left">
+                    <InputText
+                      type="text"
+                      name="title"
+                      id="title"
+                      label="Title"
+                      placeholder="Enter a forum title"
+                      autoComplete="title"
+                      required={true}
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </div>
                   <div className="mt-2 gap-6 text-left">
                     <TextArea
                       name="content"
                       id="content"
-                      label="Post"
+                      label="Content"
                       required={true}
-                      autoFocus={true}
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                     />

@@ -28,7 +28,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @EJB
     private GuideSessionBeanLocal guideSessionBeanLocal;
 
@@ -92,10 +92,9 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         user.setFaculty(s.getFaculty());
         user.setCourse(s.getCourse());
-        //user.setFavoriteGuides(s.getFavoriteGuides());
-        //user.setFavoriteGuides(s.getFavoriteGuides());
-        //user.setFavoritePosts(s.getFavoritePosts());
-        user.setProfilePicture(s.getProfilePicture());
+//        user.setProfilePicture(s.getProfilePicture());
+        user.setLikedGuides(s.getLikedGuides());
+        user.setLikedPosts(s.getLikedPosts());
         user.setEmail(s.getEmail());
         user.setPassword(s.getPassword());
         user.setYr(s.getYr());
@@ -252,6 +251,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public int getContacts() {
         return em.createQuery("SELECT c FROM Contact c").getResultList().size();
     }
+
     @Override
     public List<Person> searchByEmail(String email) {
         Query q;
@@ -266,6 +266,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Person> searchByFaculty(String faculty) {
         Query q;
@@ -280,6 +281,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Person> searchByCourse(String course) {
         Query q;
@@ -294,6 +296,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Person> searchByStaff() {
         Query q;
@@ -309,7 +312,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
-    
+
     @Override
     public List<Person> searchByStudent() {
         Query q;
@@ -325,7 +328,5 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
-    
-    
 
 }

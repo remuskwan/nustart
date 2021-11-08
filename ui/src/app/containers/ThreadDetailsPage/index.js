@@ -26,6 +26,7 @@ export default function ThreadDetailsPage() {
   const [user, setUser] = useState(null)
   const [forum, setForum] = useState(null)
   const [thread, setThread] = useState(null)
+  const [posts, setPosts] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -44,17 +45,18 @@ export default function ThreadDetailsPage() {
       .catch((error) => (
         setError(error)
       ))
-  }, [])
+  }, [forumId])
 
   useEffect(() => {
     api.getThread(threadId)
       .then((response) => {
         setThread(response.data)
+        setPosts(response.data.posts)
       })
       .catch((error) => (
         setError(error)
       ))
-  }, [])
+  }, [threadId])
 
   if (error) return `Error: ${error.message}`
 
@@ -137,11 +139,14 @@ export default function ThreadDetailsPage() {
               <div className="mt-4">
                 <h1 className="sr-only">Posts</h1>
                 <PostList
-                  items={thread.posts}
+                user={user}
+                setUser={setUser}
+                  items={posts}
                   forumId={forumId}
                   threadId={threadId}
                   setThread={setThread}
                   contentType="posts"
+                  setPosts={setPosts}
                 />
               </div>
             </main>

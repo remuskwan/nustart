@@ -1,33 +1,41 @@
-import axios from 'axios'
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import {
-  DotsVerticalIcon,
   PencilIcon,
+  DotsVerticalIcon,
+  TrashIcon,
 } from '@heroicons/react/solid'
-import { TrashIcon } from '@heroicons/react/outline'
-import ConfirmDialog from '../../components/confirmDialog'
-import EditGuideModal from './editGuide'
+import ConfirmDialog from '../confirmDialog'
+import EditPostModal from '../../containers/ThreadDetailsPage/editPost'
+import Notification from '../notification'
+import api from '../../util/api'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function GuideOptions({guide, setGuides}) {
+export default function CommentOptions({ guideId, setGuide, comment, setComments }) {
   const [open, setOpen] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
+  const [show, setShow] = useState(false)
+  const [notifTitle, setNotifTitle] = useState("")
 
-  function deleteGuide() {
-    axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guide.id}`)
-      .then(() =>
-        axios.get("http://localhost:8080/NUStartApplication-war/webresources/guides")
-          .then((response) => setGuides(response.data))
-      )
+  function deleteComment() {
+    api.deleteComment(guideId, comment.id)
+      .then((response) => {
+        setGuide(response.data)
+        setComments(response.data.comments)
+      })
+  }
+
+  function triggerNotification() {
+    setShow(true)
+    setTimeout(() => setShow(false), 3000)
   }
 
   return (
     <Fragment>
-      <Menu as="div" className="relative inline-block text-left z-10">
+      <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
             <span className="sr-only">Open options</span>
@@ -51,12 +59,14 @@ export default function GuideOptions({guide, setGuides}) {
                   <button
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'w-full flex px-4 py-2 text-sm'
+                      'w-full flex justify-left px-4 py-2 text-sm'
                     )}
-                    onClick={() => setOpenEdit(true)}
+                    onClick={() => {
+                      setOpenEdit(true)
+                    }}
                   >
                     <PencilIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span>Edit guide</span>
+                    <span>Edit comment</span>
                   </button>
                 )}
               </Menu.Item>
@@ -65,13 +75,14 @@ export default function GuideOptions({guide, setGuides}) {
                   <button
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'w-full flex px-4 py-2 text-sm'
+                      'w-full flex justify-left px-4 py-2 text-sm'
                     )}
-                    onClick={() => setOpen(true)}
+                    onClick={() => {
+                      setOpen(true)
+                    }}
                   >
                     <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span>Delete guide</span>
-
+                    <span>Delete comment</span>
                   </button>
                 )}
               </Menu.Item>
@@ -80,14 +91,22 @@ export default function GuideOptions({guide, setGuides}) {
         </Transition>
       </Menu>
       <ConfirmDialog
-        title="guide"
-        item={guide}
+        title="comment"
         open={open}
         setOpen={setOpen}
-        onConfirm={deleteGuide}
+        onConfirm={deleteComment}
       />
-      <EditGuideModal guide={guide} setGuides={setGuides} open={openEdit} setOpen={setOpenEdit} />
+      {/* <EditPostModal
+        forum={forum}
+        thread={thread}
+        setPosts={setPosts}
+        post={post}
+        open={openEdit}
+        setOpen={setOpenEdit}
+        setNotifTitle={setNotifTitle}
+        triggerNotification={triggerNotification}
+      /> */}
+      <Notification show={show} setShow={setShow} action={notifTitle} />
     </Fragment>
-
   )
 }
