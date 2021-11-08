@@ -88,10 +88,11 @@ public class GuidesResource {
     @Path("/{id}/comments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editComment(@PathParam("id") Long cId, Comment c) {
+    public Response editComment(@PathParam("id") Long gId, Comment c) {
         try {
             guideSessionBeanLocal.editComment(c);
-            return Response.status(204).build();
+            Guide g = guideSessionBeanLocal.getGuide(gId);
+            return Response.status(200).entity(g).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found")

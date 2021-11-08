@@ -11,17 +11,16 @@ import api from "../../util/api"
 
 export default function Post({ user, setUser, post, forumId, threadId, setThread, setPosts }) {
   function toggleLike() {
-    console.log(post.id)
-    const likedPosts = user.likedPosts
+    // console.log(post.id)
+    let likedPosts = user.likedPosts
     if (likedPosts.includes(post.id)) {
-      likedPosts.filter((p) => parseInt(p) !== parseInt(post.id))
+      likedPosts = [...likedPosts].filter((p) => p != post.id)
       post.likes = post.likes - 1
     } else {
-      likedPosts.push(post.id)
+      likedPosts = [...likedPosts].push(post.id)
       post.likes = post.likes + 1
     }
     user.likedPosts = likedPosts
-    console.log(user)
     api.editUser(user.id, user)
       .then((response) => {
         setUser(response.data)

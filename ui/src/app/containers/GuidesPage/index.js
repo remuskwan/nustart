@@ -13,15 +13,11 @@ const tabs = [//need to change to category
     { name: 'Most Answers', href: '#', current: false },
 ]
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
 export default function GuidesPage() {
     const [user, setUser] = useState(null)
-    const [guides, setGuides] = useState([])
     const [categories, setCategories] = useState([])
     const [error, setError] = useState(null)
+    const [selected, setSelected] = useState(null)
 
     useEffect(() => {
         api.getUser()
@@ -33,9 +29,10 @@ export default function GuidesPage() {
 
     useEffect(() => {
         api.getCategories()
-            .then((response) =>
+            .then((response) =>{
                 setCategories(response.data)
-            )
+                setSelected(response.data[0])
+            })
             .catch((error) => (
                 setError(error)
             ))
@@ -58,8 +55,8 @@ export default function GuidesPage() {
                         <SideBar user={user} />
                     </div>
                     <main className="lg:col-span-9 xl:col-span-10">
-                        {categories ?
-                            <GuideCategories categories={categories} />
+                        {categories.length && selected ?
+                            <GuideCategories categories={categories} selected={selected} setSelected={setSelected}/>
                             : <div className="text-center">
                                 <svg
                                     className="mx-auto h-12 w-12 text-gray-400"

@@ -46,8 +46,8 @@ public class Person implements Serializable {
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
-    private List<Long> likedPosts;
-    private List<Long> likedGuides;
+    private List<Integer> likedPosts;
+    private List<Integer> likedGuides;
 
     public Person() {
         this.likedPosts = new ArrayList<>();
@@ -172,19 +172,19 @@ public class Person implements Serializable {
         this.accountStatus = accountStatus;
     }
 
-    public List<Long> getLikedPosts() {
+    public List<Integer> getLikedPosts() {
         return likedPosts;
     }
 
-    public void setLikedPosts(List<Long> likedPosts) {
+    public void setLikedPosts(List<Integer> likedPosts) {
         this.likedPosts = likedPosts;
     }
 
-    public List<Long> getLikedGuides() {
+    public List<Integer> getLikedGuides() {
         return likedGuides;
     }
 
-    public void setLikedGuides(List<Long> likedGuides) {
+    public void setLikedGuides(List<Integer> likedGuides) {
         this.likedGuides = likedGuides;
     }
 
