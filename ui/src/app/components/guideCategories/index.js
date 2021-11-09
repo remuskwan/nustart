@@ -1,5 +1,5 @@
-import { Fragment, useState } from 'react'
-import { Link, useRouteMatch } from 'react-router-dom'
+import { Fragment } from 'react'
+import { Link } from 'react-router-dom'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 
@@ -31,6 +31,7 @@ export default function GuideCategories({ categories, selected, setSelected }) {
               >
                 <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                   {categories.map((category) => (
+                    <Link to={`/categories/${category.id}/guides`}>
                     <Listbox.Option
                       key={category.id}
                       className={({ active }) =>
@@ -43,7 +44,6 @@ export default function GuideCategories({ categories, selected, setSelected }) {
                     >
                       {({ selected, active }) => (
                         <>
-                        <Link to={`/categories/${category.id}/guides`}>
                           <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
                             {category.name}
                           </span>
@@ -59,10 +59,10 @@ export default function GuideCategories({ categories, selected, setSelected }) {
                             </span>
                             
                             ) : null}
-                            </Link>
                         </>
                       )}
                     </Listbox.Option>
+                      </Link>
                   ))}
                 </Listbox.Options>
               </Transition>

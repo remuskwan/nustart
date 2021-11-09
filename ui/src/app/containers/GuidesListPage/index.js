@@ -125,8 +125,6 @@ export default function GuidesListPage() {
               <GuideList
                 items={guides}
                 contentType="guides"
-                categoryId={category.id}
-                setCategory={setCategory}
                 setGuides={setGuides}
                 user={user}
               />

@@ -7,6 +7,7 @@ package webservices.restful;
 
 import entity.Comment;
 import entity.Guide;
+import entity.Link;
 import error.NoResultException;
 import java.util.Date;
 import java.util.List;
@@ -151,6 +152,59 @@ public class GuidesResource {
                     .build();
             return Response.status(404).entity(exception)
                     .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @POST
+    @Path("/{id}/links")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addLink(@PathParam("id") Long gId, Link c) {
+        try {
+            guideSessionBeanLocal.addLink(gId, c);
+            Guide g = guideSessionBeanLocal.getGuide(gId);
+            
+            return Response.status(200).entity(g).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Forum not found")
+                    .build();
+
+            return Response.status(404).entity(exception).build();
+        }
+    }
+    
+    @PUT
+    @Path("/{id}/links")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editLink(@PathParam("id") Long gId, Link c) {
+        try {
+            guideSessionBeanLocal.editLink(c);
+            Guide g = guideSessionBeanLocal.getGuide(gId);
+            return Response.status(200).entity(g).build();
+        } catch (NoResultException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{gId}/links/{lId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteLink(@PathParam("gId") Long gId, @PathParam("lId") Long lId) {
+        try {
+            guideSessionBeanLocal.deleteComment(gId, lId);
+            Guide g = guideSessionBeanLocal.getGuide(gId);
+            return Response.status(200).entity(g).build();
+        } catch (NoResultException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception).build();
         }
     }
 

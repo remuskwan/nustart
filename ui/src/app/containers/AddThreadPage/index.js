@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import NavBar from "../../components/navBar";
@@ -6,16 +5,6 @@ import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
 import api from '../../util/api';
-// import { Editable, withReact, useSlate, Slate } from 'slate-react';
-
-// const HOTKEYS = {
-//   'mod+b': 'bold',
-//   'mod+i': 'italic',
-//   'mod+u': 'underline',
-//   'mod+`': 'code',
-// }
-
-// const LIST_TYPES = ['numbered-list', 'bulleted-list']
 
 export default function AddThreadPage() {
   const history = useHistory()
@@ -101,43 +90,20 @@ export default function AddThreadPage() {
                           value={content}
                           onChange={(e) => setContent(e.target.value)}
                         />
-                        {/* <Slate editor={editor} value={content} onChange={(e) => setContent(e.target.value)}>
-                            <Toolbar>
-                              <MarkButton format="bold" icon="format_bold" />
-                              <MarkButton format="italic" icon="format_italic" />
-                              <MarkButton format="underline" icon="format_underlined" />
-                              <MarkButton format="code" icon="code" />
-                              <BlockButton format="heading-one" icon="looks_one" />
-                              <BlockButton format="heading-two" icon="looks_two" />
-                              <BlockButton format="block-quote" icon="format_quote" />
-                              <BlockButton format="numbered-list" icon="format_list_numbered" />
-                              <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-                            </Toolbar>
-                            <Editable
-                              renderElement={renderElement}
-                              renderLeaf={renderLeaf}
-                              placeholder="Enter some rich text…"
-                              spellCheck
-                              autoFocus
-                              onKeyDown={event => {
-                                for (const hotkey in HOTKEYS) {
-                                  if (isHotkey(hotkey, event)) {
-                                    event.preventDefault()
-                                    const mark = HOTKEYS[hotkey]
-                                    toggleMark(editor, mark)
-                                  }
-                                }
-                              }}
-                            />
-
-                          </Slate> */}
                       </div>
                     </div>
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                  <button
+                      type="button"
+                      className="bg-white border border-gray-300 rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+                      onClick={() => history.goBack()}
+                    >
+                      Cancel
+                    </button>
                     <button
                       type="submit"
-                      className="bg-rose-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                      className="ml-5 bg-rose-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                     >
                       Create
                     </button>

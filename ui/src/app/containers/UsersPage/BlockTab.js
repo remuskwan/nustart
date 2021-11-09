@@ -11,7 +11,7 @@ export default function BlockTab() {
     useEffect(() => {
         api.getUsers()
             .then(users => {
-                setAllUsers(users.data.filter((user) => user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED'));
+                setAllUsers(users.data.filter((user) => (user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED') && user.accountType !== "ADMIN"));
             })
     }, [])
 

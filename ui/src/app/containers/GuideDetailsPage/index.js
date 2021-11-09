@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import GuideOptions from '../../components/Guides/guideOptions';
 import {
@@ -102,29 +102,17 @@ export default function GuideDetailsPage() {
                         </div>
                         <div className="mt-6 border-t border-b border-gray-200 py-6 space-y-8">
                           <div>
-                            <h2 className="text-sm font-medium text-gray-500">Tags</h2>
+                            <h2 className="text-sm font-medium text-gray-500">Category</h2>
                             <ul className="mt-2 leading-8">
                               <li className="inline">
-                                <a
-                                  href="#"
-                                  className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5"
-                                >
+                                <Link
+                                  to={`/categories/${categoryId}/guides`}
+                                  className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5">
                                   <div className="absolute flex-shrink-0 flex items-center justify-center">
                                     <span className="h-1.5 w-1.5 rounded-full bg-rose-500" aria-hidden="true" />
                                   </div>
-                                  <div className="ml-3.5 text-sm font-medium text-gray-900">Bug</div>
-                                </a>{' '}
-                              </li>
-                              <li className="inline">
-                                <a
-                                  href="#"
-                                  className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5"
-                                >
-                                  <div className="absolute flex-shrink-0 flex items-center justify-center">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" aria-hidden="true" />
-                                  </div>
-                                  <div className="ml-3.5 text-sm font-medium text-gray-900">Accessibility</div>
-                                </a>{' '}
+                                  <div className="ml-3.5 text-sm font-medium text-gray-900">{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</div>
+                                </Link>
                               </li>
                             </ul>
                           </div>
