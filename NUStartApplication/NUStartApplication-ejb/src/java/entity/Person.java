@@ -38,11 +38,9 @@ public class Person implements Serializable {
     private AccountType accountType;
     @Enumerated
     private AccountStatus accountStatus;
-//    private boolean active; //student and staff only
     private String faculty; //student and staff only
     private String course; // student only
-    private int yr; //student only
-    private boolean deleted;
+    private String yr; //student only
     @Temporal(TemporalType.DATE)
     private Date created;
 
@@ -125,20 +123,12 @@ public class Person implements Serializable {
         this.course = course;
     }
 
-    public int getYr() {
+    public String getYr() {
         return yr;
     }
 
-    public void setYr(int yr) {
+    public void setYr(String yr) {
         this.yr = yr;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getUsername() {

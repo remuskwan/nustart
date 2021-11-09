@@ -51,13 +51,11 @@ public class DataInitSessionBean {
             a.setPassword("1234567aA@");
             a.setCreated(new Date());
             a.setUsername("Admin01");
-            a.setFaculty(" ");
-            a.setCourse(" ");
-            a.setYr(0);
-            a.setProfilePicture("   ");
+            a.setFaculty("");
+            a.setCourse("");
+            a.setYr("");
+            a.setProfilePicture("");
             personSessionBeanLocal.createUser(a);
-            
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
