@@ -101,7 +101,7 @@ export default function AccountTab() {
             setUser(u.data)
         }
         getLogged()
-    }, [year])
+    }, [])
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
