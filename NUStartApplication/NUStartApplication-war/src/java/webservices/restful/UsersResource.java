@@ -5,7 +5,6 @@
  */
 package webservices.restful;
 
-import entity.Guide;
 import entity.Person;
 import entity.Post;
 import error.InvalidLoginException;
@@ -55,7 +54,7 @@ public class UsersResource {
     public Response getUser(@PathParam("id") Long sId) {
         try {
             Person p = personSessionBeanLocal.getPerson(sId);
-            System.out.println(p.getContacts());
+            System.out.println(p);
             return Response.status(200)
                     .entity(p)
                     .type(MediaType.APPLICATION_JSON)
@@ -87,18 +86,19 @@ public class UsersResource {
         }
     }
 
-    @GET
-    @Path("/{id}/guides")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserGuides(@PathParam("id") Long id) {
-        List<Guide> g = personSessionBeanLocal.getGuidesCreated(id);
-        System.out.println(g);
-        return Response.status(200)
-                .entity(g)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
-    }
-    
+//    @GET
+//    @Path("/{id}/guides")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public void getUserGuides(@PathParam("id") Long id) {
+//        //List<Guide> g = 
+//        personSessionBeanLocal.getGuidesCreated(id);
+        //System.out.println(g);
+//        return Response.status(200)
+//                .entity(g)
+//                .type(MediaType.APPLICATION_JSON)
+//                .build();
+//    }
+
     @GET
     @Path("/{id}/threads")
     @Produces(MediaType.APPLICATION_JSON)
@@ -110,7 +110,7 @@ public class UsersResource {
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
-    
+
     @GET
     @Path("/{id}/posts")
     @Produces(MediaType.APPLICATION_JSON)

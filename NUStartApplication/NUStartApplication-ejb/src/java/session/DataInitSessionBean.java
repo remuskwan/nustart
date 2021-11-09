@@ -5,10 +5,12 @@
  */
 package session;
 
+import entity.Category;
 import entity.Person;
 import enumeration.AccountStatus;
 import enumeration.AccountType;
 import error.NoResultException;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -49,7 +51,13 @@ public class DataInitSessionBean {
             a.setPassword("1234567aA@");
             a.setCreated(new Date());
             a.setUsername("Admin01");
+            a.setFaculty(" ");
+            a.setCourse(" ");
+            a.setYr(0);
+            a.setProfilePicture("   ");
             personSessionBeanLocal.createUser(a);
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
