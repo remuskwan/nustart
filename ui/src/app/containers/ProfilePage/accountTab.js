@@ -83,11 +83,10 @@ export default function AccountTab() {
                 setCourse(u.data.course)
                 const y = years.filter((y) => y.name === u.data.yr.toString())[0]
                 setYear(y)
-                // console.log(year)
+                //console.log(year)
                 const f = faculties.filter((f) => f.name === u.data.faculty)[0]
-                //console.log(faculties.filter((f) => f.name === u.faculty)[0])
                 setFaculty(f)
-
+                //console.log(faculty)
             } else if (u.data.accountType === "STAFF") {
                 const f = faculties.filter((f) => f.name === u.data.faculty)[0]
                 setFaculty(f)
@@ -95,7 +94,7 @@ export default function AccountTab() {
             setUser(u.data)
         }
         getLogged()
-    }, [year])
+    }, [])
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
@@ -109,7 +108,6 @@ export default function AccountTab() {
         } else {
             handleUpload(selectedFile)
         }
-
     }
 
     const handleUpload = async (file) => {
@@ -125,7 +123,7 @@ export default function AccountTab() {
         // setFiles([(prev) => prev].push(e.target.files[0]))
     }
 
-    function updateProfile(picLocation = '') {
+    function updateProfile(picLocation = user.profilePicture) {
         if (user.accountType === 'STAFF') {
             user.faculty = faculty.name
         } else if (user.accountType === 'STUDENT') {
@@ -231,21 +229,21 @@ export default function AccountTab() {
 
                                     <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
                                         <Listbox.Options className="absolute z-10 mt-1 max-w-lg block w-full bg-white shadow-sm max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:max-w-xs sm:text-sm">
-                                            {years.map((y) => (
+                                            {years.map((year) => (
                                                 <Listbox.Option
-                                                    key={y.id}
+                                                    key={year.id}
                                                     className={({ active }) =>
                                                         classNames(
                                                             active ? 'text-white bg-rose-600' : 'text-gray-900',
                                                             'cursor-default select-none relative py-2 pl-8 pr-4'
                                                         )
                                                     }
-                                                    value={y}
+                                                    value={year}
                                                 >
                                                     {({ selected, active }) => (
                                                         <>
                                                             <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                                {y.name}
+                                                                {year.name}
                                                             </span>
 
                                                             {selected ? (
