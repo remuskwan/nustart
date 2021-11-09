@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import enumeration.AccountType;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,6 +29,7 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique=true)
     private String email;
     private String password;
     private String username;
