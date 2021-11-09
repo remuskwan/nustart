@@ -174,7 +174,7 @@ export default function RegisterPage() {
                     <div>
                         <img
                             className="mx-auto h-12 w-auto"
-                            src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
+                            src="https://nustart.s3.ap-southeast-1.amazonaws.com/logo.png"
                             alt="Workflow"
                         />
                         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Register a new account</h2>

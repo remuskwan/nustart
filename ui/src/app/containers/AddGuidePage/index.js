@@ -31,8 +31,19 @@ export default function AddGuidePage() {
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null)
+  const [linkTitle, setLinkTitle] = useState("")
+  const [linkURL, setLinkURL] = useState("")
+  const [links, setLinks] = useState([])
   // const [picLocation, setPicLocation] = useState('')
   // const [files, setFiles] = useState([]);
+
+  const addLink = (e) => {
+    e.preventDefault()
+    const link = [{ name: linkTitle, URL: linkURL }]
+    setLinks((prev) => prev.concat(link))
+    setLinkTitle('')
+    setLinkURL('')
+  }
 
   const handleFileInput = (e) => {
     setSelectedFile(e.target.files[0])
@@ -49,18 +60,24 @@ export default function AddGuidePage() {
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    handleUpload(selectedFile)
+    if (selectedFile === null) createGuide()
+    else handleUpload(selectedFile)
     alert("Successfully created guide.")
   }
 
-  function createGuide(picLocation) {
+  function createGuide(picLocation = "") {
     api.createGuide(category.id, {
       title: title,
       content: content,
       creator: user,
-      pictureUrl: picLocation
+      pictureUrl: picLocation,
+      links: links
     })
-      .then(() => history.goBack())
+      .then(() => { 
+        // if (links.length) {
+        //   api.get
+        // }
+        history.goBack()})
       .catch(error => setError(error))
   }
 
@@ -80,7 +97,7 @@ export default function AddGuidePage() {
   }, [])
 
 
-
+  console.log(links)
   if (error) return `Error: ${error.message}`
 
   return (
@@ -144,6 +161,53 @@ export default function AddGuidePage() {
                           </div>
                         }
                       </div>
+                      <div className="col-span-3">
+                        <p className="block text-sm font-medium text-gray-700">
+                          Links
+                        </p>
+                        {(links && links.length) ?
+                          links.map((link) => (
+                            <p className="text-sm font-medium text-rose-600">
+                              <a href={"https://" + link.URL} className="hover:underline">
+                                {link.name}
+                              </a>
+                            </p>
+
+                          ))
+                          : <div></div>
+                        }
+                      </div>
+                      <form onSubmit={addLink}>
+                        <div className="col-span-1">
+                          <InputText
+                            type="text"
+                            name="link"
+                            id="link"
+                            // label="Links (optional)"
+                            placeholder="Name"
+                            value={linkTitle}
+                            onChange={(e) => setLinkTitle(e.target.value)}
+                          />
+
+                        </div>
+                        <div className="col-span-2">
+                          <InputText
+                            type="url"
+                            name="link"
+                            id="link"
+                            placeholder="URL"
+                            value={linkURL}
+                            onChange={(e) => setLinkURL(e.target.value)}
+                          />
+                          <button
+                            // type="submit"
+                            className="bg-rose-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                            onClick={addLink}
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">

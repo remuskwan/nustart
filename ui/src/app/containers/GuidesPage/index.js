@@ -16,6 +16,7 @@ const tabs = [//need to change to category
 export default function GuidesPage() {
     const [user, setUser] = useState(null)
     const [categories, setCategories] = useState([])
+    const [guides, setGuides] = useState([])
     const [error, setError] = useState(null)
     const [selected, setSelected] = useState(null)
 
@@ -29,9 +30,19 @@ export default function GuidesPage() {
 
     useEffect(() => {
         api.getCategories()
-            .then((response) =>{
+            .then((response) => {
                 setCategories(response.data)
                 setSelected(response.data[0])
+            })
+            .catch((error) => (
+                setError(error)
+            ))
+    }, [])
+
+    useEffect(() => {
+        api.getGuides()
+            .then((response) => {
+                setGuides(response.data)
             })
             .catch((error) => (
                 setError(error)
@@ -45,7 +56,7 @@ export default function GuidesPage() {
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
                 buttonContent="guide"
-                disableButton={user.accountType === "STUDENT"}
+                disableButton={user.accountType === "STUDENT" || !categories.length}
                 component={<NewButton content='guide' path='/createGuide' />}
                 user={user}
             />
@@ -56,7 +67,7 @@ export default function GuidesPage() {
                     </div>
                     <main className="lg:col-span-9 xl:col-span-10">
                         {categories.length && selected ?
-                            <GuideCategories categories={categories} selected={selected} setSelected={setSelected}/>
+                            <GuideCategories categories={categories} selected={selected} setSelected={setSelected} />
                             : <div className="text-center">
                                 <svg
                                     className="mx-auto h-12 w-12 text-gray-400"
@@ -76,6 +87,11 @@ export default function GuidesPage() {
                                 <h3 className="mt-2 text-sm font-medium text-gray-900">No categories</h3>
                             </div>
                         }
+                        {/* {guides.length && <GuideList
+                            items={guides}
+                            setGuides={setGuides}
+                            user={user}
+                        />} */}
                     </main>
                 </div>
             </div>

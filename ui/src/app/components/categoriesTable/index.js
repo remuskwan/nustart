@@ -3,12 +3,10 @@ import { Fragment, useState, useEffect } from "react"
 import { Link } from "react-router-dom";
 import api from "../../util/api";
 import DeleteConfirm from "../deleteConfirm";
-import DataTable from 'react-data-table-component'
 
 export default function CategoriesTable({ user, items, setSearchString, dataLimit }) {
   const [open, setOpen] = useState(false)
   const [deleteCat, setDeleteCat] = useState(null)
-  const [editCat, setEditCat] = useState(null)
   const [error, setError] = useState(null);
   const [pages, setPages] = useState(Math.ceil(items.length / dataLimit))
   const [currentPage, setCurrentPage] = useState(1)
@@ -148,13 +146,6 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
                       </tr>
                     </tfoot>
                   </table>
-                  {/* <DataTable
-                    columns={4}
-                    data={items}
-                    highlightOnHover
-                    pagination
-                    paginationPerPage={5} paginationRowsPerPageOptions={[5, 10, 50]} sortable
-                  /> */}
                 </div>
               )}
           </div>

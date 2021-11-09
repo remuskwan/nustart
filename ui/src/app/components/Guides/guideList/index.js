@@ -4,7 +4,7 @@ import {
 } from '@heroicons/react/solid'
 import Guide from '../guide'
 
-export default function GuideList({ user, items, categoryId, setCategory, setGuides }) {
+export default function GuideList({ user, items, setGuides }) {
   return (
     !items || !items.length
       ? (
@@ -52,8 +52,6 @@ export default function GuideList({ user, items, categoryId, setCategory, setGui
                   content={guide.content}
                   creator={guide.creator}
                   created={guide.dateCreated}
-                  categoryId={categoryId}
-                  setCategory={setCategory}
                   setGuides={setGuides}
                   guide={guide}
                 />

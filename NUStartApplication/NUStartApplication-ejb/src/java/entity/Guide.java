@@ -35,6 +35,8 @@ public class Guide implements Serializable {
     private String content;
     private String pictureUrl;
     private List<String> files;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Link> links;
 //    private Boolean published;
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
@@ -140,6 +142,14 @@ public class Guide implements Serializable {
 
     public void setFiles(List<String> files) {
         this.files = files;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 
     @Override
