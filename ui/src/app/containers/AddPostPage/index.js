@@ -6,16 +6,6 @@ import SideBar from '../../components/sideBar';
 import { getUser } from '../../util/Common';
 import TextArea from '../../components/textArea';
 import api from '../../util/api';
-// import { Editable, withReact, useSlate, Slate } from 'slate-react';
-
-// const HOTKEYS = {
-//   'mod+b': 'bold',
-//   'mod+i': 'italic',
-//   'mod+u': 'underline',
-//   'mod+`': 'code',
-// }
-
-// const LIST_TYPES = ['numbered-list', 'bulleted-list']
 
 export default function AddPostPage() {
   const history = useHistory()
@@ -23,7 +13,6 @@ export default function AddPostPage() {
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
-  // const editor = useMemo(() => withHistory, input)
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
@@ -80,36 +69,6 @@ export default function AddPostPage() {
                           value={content}
                           onChange={(e) => setContent(e.target.value)}
                         />
-                        {/* <Slate editor={editor} value={content} onChange={(e) => setContent(e.target.value)}>
-                            <Toolbar>
-                              <MarkButton format="bold" icon="format_bold" />
-                              <MarkButton format="italic" icon="format_italic" />
-                              <MarkButton format="underline" icon="format_underlined" />
-                              <MarkButton format="code" icon="code" />
-                              <BlockButton format="heading-one" icon="looks_one" />
-                              <BlockButton format="heading-two" icon="looks_two" />
-                              <BlockButton format="block-quote" icon="format_quote" />
-                              <BlockButton format="numbered-list" icon="format_list_numbered" />
-                              <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-                            </Toolbar>
-                            <Editable
-                              renderElement={renderElement}
-                              renderLeaf={renderLeaf}
-                              placeholder="Enter some rich text…"
-                              spellCheck
-                              autoFocus
-                              onKeyDown={event => {
-                                for (const hotkey in HOTKEYS) {
-                                  if (isHotkey(hotkey, event)) {
-                                    event.preventDefault()
-                                    const mark = HOTKEYS[hotkey]
-                                    toggleMark(editor, mark)
-                                  }
-                                }
-                              }}
-                            />
-
-                          </Slate> */}
                       </div>
                     </div>
                   </div>
