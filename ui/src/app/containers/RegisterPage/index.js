@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
+import { CheckIcon, ExclamationCircleIcon, SelectorIcon, XCircleIcon } from '@heroicons/react/solid'
 import ContactForm from '../../components/contacts/ContactForm'
 import ContactList from '../../components/contacts/ContactList'
 import api from '../../util/api'
@@ -59,7 +59,8 @@ export default function RegisterPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null)
+    const [submitError, setSubmitError] = useState(null)
 
     useEffect(async () => {
         const size = await api.getContactSize()
@@ -160,11 +161,12 @@ export default function RegisterPage() {
             })
             .then(() => history.push("/"))
             .catch(error => {
-                if (error.response.status === 404) setError(error.response.data.message)
-                else setError("Something went wrong. Please try again later.")
+                if (!error.response) setSubmitError(new Error("Failed to connect to server"))
+                if (error.response.status === 404) setSubmitError(new Error("Account already exists"))
+                else setSubmitError(new Error("Something went wrong. Please try again later."))
             })
     }
-
+    console.log(error)
     const { contacts } = contactList;
 
     return (
@@ -185,8 +187,24 @@ export default function RegisterPage() {
                             </Link>
                         </p>
                     </div>
+                    {submitError &&
+                        <div className="py-4">
+                            <div className="rounded-md bg-red-50 p-4">
+                                <div className="flex">
+                                    <div className="flex-shrink-0">
+                                        <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+                                    </div>
+                                    <div className="ml-3">
+                                        <h3 className="text-sm font-medium text-red-800">There were errors when attempting to create account</h3>
+                                        <div className="mt-2 text-sm text-red-700">
+                                            {submitError.message}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-
                         <Listbox value={position} onChange={setPosition}>
                             <div className="mt-1 relative">
                                 <Listbox.Label className="m-1 block text-sm font-medium text-gray-700">Position</Listbox.Label>
@@ -340,7 +358,7 @@ export default function RegisterPage() {
                                     id="course"
                                     name="course"
                                     required
-                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
+                                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                                     placeholder="Course"
                                     value={course}
                                     onChange={(e) => setCourse(e.target.value)}
@@ -395,38 +413,65 @@ export default function RegisterPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="rounded-md shadow-sm -space-y-px">
+                        <div className="rounded-md -space-y-px">
                             <div>
                                 <label htmlFor="password" className="sr-only">
                                     Password
                                 </label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="current-password"
-                                    required
-                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        autoComplete="current-password"
+                                        required
+                                        className={classNames(
+                                            !error
+                                                ? "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+                                                : "block w-full pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"
+                                        )}
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    {error &&
+                                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                        </div>
+                                    }
+                                </div>
                             </div>
                             <div>
                                 <label htmlFor="confirm-password" className="sr-only">
                                     Confirm password
                                 </label>
-                                <input
-                                    id="confirm-password"
-                                    name="confirm-password"
-                                    type="password"
-                                    autoComplete="password"
-                                    required
-                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
-                                    placeholder="Confirm password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                />
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <input
+                                        id="confirm-password"
+                                        name="confirm-password"
+                                        type="password"
+                                        autoComplete="password"
+                                        required
+                                        className={classNames(
+                                            !error
+                                                ? "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+                                                : "block w-full pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"
+                                        )}
+                                        placeholder="Confirm password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                    />
+                                    {error &&
+                                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                        </div>
+                                    }
+                                </div>
+                                {error &&
+                                    <p className="mt-2 text-sm text-red-600" id="input-error">
+                                        {error.message}
+                                    </p>
+                                }
                             </div>
                         </div>
 

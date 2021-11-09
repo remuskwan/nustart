@@ -11,8 +11,11 @@ import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
+import error.UserUnapprovedException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -200,12 +203,17 @@ public class UsersResource {
                     .add("error", "User blocked").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
-        } catch (NoResultException ex) {
+        } catch (UserUnapprovedException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Please wait to be approved").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "User not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
-        }
+        } 
     }
 
     @GET

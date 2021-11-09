@@ -67,11 +67,11 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
                         >
                           Created
                         </th>
-                        <th scope="col" className="relative px-6 py-3">
+                        {/* <th scope="col" className="relative px-6 py-3">
                           <span className="sr-only">Edit</span>
-                        </th>
+                        </th> */}
                         <th scope="col" className="relative px-6 py-3">
-                          <span className="sr-only">Delete</span>
+                          <span className="sr-only">Options</span>
                         </th>
                       </tr>
                     </thead>
@@ -87,6 +87,8 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {moment(item.created.slice(0, -5)).format("DD/MM/YY")}
                           </td>
+                          {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
                               className="text-rose-600 hover:text-rose-900"
@@ -96,10 +98,8 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
                               }}>
                               Edit
                             </button>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
-                              className="text-rose-600 hover:text-rose-900"
+                              className="ml-5 text-rose-600 hover:text-rose-900"
                               onClick={() => {
                                 setDeleteCat(item)
                                 setOpen(true)
