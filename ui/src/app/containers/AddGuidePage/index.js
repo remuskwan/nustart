@@ -75,7 +75,6 @@ export default function AddGuidePage() {
   }
 
   function createGuide(picLocation = "") {
-    console.log(editorState.getCurrentContent());
     api.createGuide(category.id, {
       title: title,
       content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
