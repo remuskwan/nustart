@@ -17,6 +17,7 @@ import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
 import error.UserUnapprovedException;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
@@ -78,6 +79,9 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
         try {
+            p.setCreated(new Date());
+            p.setCoverImage("default");
+            p.setProfilePicture("default");
             em.persist(p);
         } catch (PersistenceException ex) {
             if (ex.getCause().getCause() != null
@@ -99,6 +103,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         user.setFaculty(s.getFaculty().trim());
         user.setCourse(s.getCourse().trim());
         user.setProfilePicture(s.getProfilePicture());
+        user.setCoverImage(s.getCoverImage());
         user.setLikedGuides(s.getLikedGuides());
         user.setLikedPosts(s.getLikedPosts());
         user.setEmail(s.getEmail().trim());

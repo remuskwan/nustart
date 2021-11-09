@@ -172,57 +172,22 @@ export default function ProfilePage() {
     const [user, setUser] = useState(defaultUser)
     const [tab, setTab] = useState(tabs[0])
 
-    //account tab
-    // const [name, setName] = useState('')
-    // const [email, setEmail] = useState('')
-    // const [course, setCourse] = useState("")
-    // const [year, setYear] = useState(years[0])
-    // const [faculty, setFaculty] = useState(faculties[0])
-    // const [message, setMessage] = useState('')
-    // const [profilePic, setProfilePic] = useState('')
-
+    const [profilePic, setProfilePic] = useState('')
     const [selected, setSelected] = useState(likedFilter[0])
 
     const [guides, setGuides] = useState([])
 
     useEffect(() => {
         async function getLogged() {
-            await api.getUser().then(response => setUser(response.data))
-            //console.log(u.data)
-            //getLoggedInUser(u.data)
+            await api.getUser()
+                .then(response => {
+                    setUser(response.data)
+                    setProfilePic(response.data.profilePicture)
+                    //console.log(response.data.profilePic)
+                })
         }
         getLogged()
     }, [])
-
-    // function getLoggedInUser(u) {
-    //     console.log(u)
-    //     if (u.accountType === "STUDENT") {
-    //         //setCourse(u.course)
-    //         const y = years.filter((y) => y.name === u.yr.toString())[0]
-    //         setYear(y)
-    //         //console.log(year)
-    //         const f = faculties.filter((f) => f.name === u.faculty)[0]
-    //         //console.log(faculties.filter((f) => f.name === u.faculty)[0])
-    //         setFaculty(f)
-    //         // setEmail(u.email)
-    //         // setName(u.username)
-    //         setProfilePic(u.profilePicture)
-    //     } else if (u.accountType === "STAFF") {
-    //         //console.log(year)
-    //         const f = faculties.filter((f) => f.name === u.faculty)[0]
-    //         //console.log(faculties.filter((f) => f.name === u.faculty)[0])
-    //         setFaculty(f)
-    //         setEmail(u.email)
-    //         setName(u.username)
-    //         setProfilePic(u.profilePicture)
-    //     } else {
-    //         setEmail(u.email)
-    //         setName(u.username)
-    //         setProfilePic(u.profilePicture)
-    //     }
-    //     setUser(u)
-
-    // }
 
     function resetTabState(tabName) {
         tabs.filter((t) => t.current === true).map((t) => t.current = false)
@@ -563,16 +528,25 @@ export default function ProfilePage() {
                         <article>
                             <div>
                                 <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
-                                    {/* <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src="" alt="" /> */}
+                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src="https://images.pexels.com/photos/1835712/pexels-photo-1835712.jpeg?cs=srgb&dl=pexels-daniel-jurin-1835712.jpg&fm=jpg" alt="" />
                                 </div>
                                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                         <div className="flex">
-                                            <img
-                                                className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-                                                src={user.profilePicture}
-                                                alt=""
-                                            />
+                                            {profilePic === "default"
+                                                ?
+                                                <div class="max-w-md mx-auto my-3">
+                                                    <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md hover:shadow-lg h-24 w-24 rounded-full fill-current text-white">
+                                                        <h2 style={{ fontSize: 24 }}>{user.username.substring(0, 1)}</h2>
+                                                    </div>
+                                                </div>
+                                                :
+                                                <img
+                                                    className="h-24 w-24 rounded-full sm:h-32 sm:w-32"
+                                                    src={profilePic}
+                                                    alt={user.username.substring(0, 1)}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                     <div className="flex-1 min-w-0">
