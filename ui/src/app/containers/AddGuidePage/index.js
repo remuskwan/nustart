@@ -1,11 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import { uploadFile } from 'react-s3';
+// import { X } from '@heroicons/react/solid'
 import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
 import api from '../../util/api';
 import CatSelectMenu from '../../components/catSelectMenu';
+import UploadImage from '../../components/uploadImage';
+
+const S3_BUCKET = 'nustart';
+const REGION = 'ap-southeast-1';
+const ACCESS_KEY = 'AKIARTYBCSQYJNUGQWLJ';
+const SECRET_ACCESS_KEY = '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';
+
+const config = {
+  bucketName: S3_BUCKET,
+  region: REGION,
+  accessKeyId: ACCESS_KEY,
+  secretAccessKey: SECRET_ACCESS_KEY,
+}
 
 export default function AddGuidePage() {
   const history = useHistory()
@@ -15,18 +30,35 @@ export default function AddGuidePage() {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null)
+  // const [picLocation, setPicLocation] = useState('')
+  // const [files, setFiles] = useState([]);
+
+  const handleFileInput = (e) => {
+    setSelectedFile(e.target.files[0])
+    // setFiles([(prev) => prev].push(e.target.files[0]))
+  }
+
+  const handleUpload = async (file) => {
+    uploadFile(file, config)
+      .then(data => {
+        createGuide(data.location)
+      })
+      .catch(error => setError(error))
+  }
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    createGuide()
+    handleUpload(selectedFile)
     alert("Successfully created guide.")
   }
 
-  function createGuide() {
+  function createGuide(picLocation) {
     api.createGuide(category.id, {
       title: title,
       content: content,
       creator: user,
+      pictureUrl: picLocation
     })
       .then(() => history.goBack())
       .catch(error => setError(error))
@@ -47,6 +79,10 @@ export default function AddGuidePage() {
       .catch((error) => setError(error))
   }, [])
 
+
+
+  if (error) return `Error: ${error.message}`
+
   return (
     user &&
     <div className="relative min-h-screen bg-gray-100">
@@ -66,7 +102,6 @@ export default function AddGuidePage() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-6">
-                    
                       <div className="col-span-3 sm:col-span-2">
                         <InputText
                           type="text"
@@ -81,8 +116,8 @@ export default function AddGuidePage() {
                         />
                       </div>
                       <div className="col-span-3 sm:col-span-1">
-                    <CatSelectMenu options={categories} category={category} setCategory={setCategory} />
-                    </div>
+                        <CatSelectMenu options={categories} category={category} setCategory={setCategory} />
+                      </div>
                       <div className="col-span-3">
                         <TextArea
                           name="content"
@@ -92,6 +127,22 @@ export default function AddGuidePage() {
                           value={content}
                           onChange={(e) => setContent(e.target.value)}
                         />
+                      </div>
+                      <div className="col-span-3">
+                        <label className="block text-sm font-medium text-gray-700">Cover photo</label>
+                        {!selectedFile ?
+                          <div >
+                            <UploadImage handleFileInput={handleFileInput} accept=".jpg, .png, .gif" />
+                          </div>
+                          : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
+                            {selectedFile.name}
+                            <button className="text-gray-700" onClick={() => setSelectedFile(null)}>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        }
                       </div>
                     </div>
                   </div>
@@ -109,6 +160,7 @@ export default function AddGuidePage() {
           </main>
         </div>
       </div>
+
     </div>
   )
 }

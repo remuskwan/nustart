@@ -48,7 +48,7 @@ const api = {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/threads/${id}`)
   },
   editComment(guideId, comment) {
-    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments`, comment)
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments`, comment)
   }, 
   editUser(id, user) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/users/${id}`, user)

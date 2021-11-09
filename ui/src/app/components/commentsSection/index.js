@@ -6,8 +6,10 @@ export default function CommentsSection({ user, comments, guideId, setGuide, set
   const [comment, setComment] = useState("")
   const [error, setError] = useState(null)
 
-  const handleSubmit = () => {
+  const handleSubmit = (evt) => {
+    evt.preventDefault()
     addComment()
+    setComment("")
   }
 
   function addComment() {
@@ -15,7 +17,10 @@ export default function CommentsSection({ user, comments, guideId, setGuide, set
       content: comment,
       creator: user,
     })
-      .then((response) => setGuide(response.data))
+      .then((response) => {
+        setGuide(response.data)
+        setComments(response.data.comments)
+      })
       .catch((error) => setError(error))
   }
 

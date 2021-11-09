@@ -18,7 +18,7 @@ function classNames(...classes) {
 
 export default function ForumsPage() {
     const [user, setUser] = useState(null)
-    const [forums, setForums] = useState(null)
+    const [forums, setForums] = useState([])
     const [error, setError] = useState(null)
 
     useEffect(() => {

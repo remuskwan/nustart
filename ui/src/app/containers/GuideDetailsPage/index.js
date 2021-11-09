@@ -49,10 +49,12 @@ export default function GuideDetailsPage() {
       .catch((error) => setError(error))
   }, [categoryId])
 
+  // console.log(guide)
+
   return (
     (user && guide && category) &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar disableButton={true} user={user} />
+      <NavBar disableButton={true} disableSearch={true} user={user} />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
@@ -68,9 +70,10 @@ export default function GuideDetailsPage() {
                         <div>
                           <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
                           <p className="mt-2 text-sm text-gray-500">
-                            <a href="#" className="font-medium text-gray-900">
-                              By {guide.creator.username}
-                            </a>
+                            By
+                            <Link to={`/profile/${guide.creator.id}`} className="font-medium text-gray-900" >
+                              {' ' + guide.creator.username}
+                            </Link>
                           </p>
                         </div>
                         <div className="mt-4 flex space-x-3 md:mt-0">
@@ -100,7 +103,7 @@ export default function GuideDetailsPage() {
                         <div className="mt-6 border-t border-b border-gray-200 py-6 space-y-8">
                           <div>
                             <h2 className="text-sm font-medium text-gray-500">Tags</h2>
-                            <ul role="list" className="mt-2 leading-8">
+                            <ul className="mt-2 leading-8">
                               <li className="inline">
                                 <a
                                   href="#"
@@ -127,6 +130,11 @@ export default function GuideDetailsPage() {
                           </div>
                         </div>
                       </aside>
+                      <img
+                        src={guide.pictureUrl}
+                        alt=""
+
+                      />
                       <div className="py-3 xl:pt-6 xl:pb-0">
                         <h2 className="sr-only">Content</h2>
                         <div className="prose max-w-none">
@@ -135,6 +143,7 @@ export default function GuideDetailsPage() {
                           </p>
                         </div>
                       </div>
+
                       <CommentsSection
                         user={user}
                         comments={comments}
@@ -165,7 +174,7 @@ export default function GuideDetailsPage() {
                   <div className="mt-6 border-t border-gray-200 py-6 space-y-8">
                     <div>
                       <h2 className="text-sm font-medium text-gray-500">Category</h2>
-                      <ul role="list" className="mt-2 leading-8">
+                      <ul className="mt-2 leading-8">
                         <li className="inline">
                           <Link
                             to={`/categories/${categoryId}/guides`}

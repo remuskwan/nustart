@@ -4,21 +4,24 @@ import moment from "moment"
 import CommentOptions from "../commentOptions"
 import api from "../../util/api"
 
-export default function Comment({ user, comment, guideId, setGuide, setComments }) {
+export default function Comment({ user, comment, guideId, setGuide, setComments}) {
   const [edit, setEdit] = useState(false)
   const [editComment, setEditComment] = useState(comment.content)
   const [error, setError] = useState(null)
 
-  const handleSubmit = () => {
+  const handleSubmit = (evt) => {
+    evt.preventDefault()
     updateComment()
+    setEdit(false)
   }
 
   function updateComment() {
     comment.content = editComment
-    console.log(comment)
+    // console.log(comment)
     api.editComment(guideId, comment)
       .then((response) => {
         setGuide(response.data)
+        // console.log(response.data)
         setComments(response.data.comments)
       })
       .catch(error => setError(error))
