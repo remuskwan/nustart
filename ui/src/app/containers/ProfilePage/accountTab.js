@@ -4,19 +4,10 @@ import InputText from '../../components/inputText'
 import { uploadFile } from 'react-s3'
 import UploadImage from '../../components/uploadImage'
 import {
-    ChevronRightIcon,
     CheckIcon,
     SelectorIcon,
-    StarIcon,
-    UserCircleIcon,
 } from '@heroicons/react/solid'
 import {
-    CalendarIcon,
-    HomeIcon,
-    BriefcaseIcon,
-    AcademicCapIcon,
-    AnnotationIcon,
-    LibraryIcon,
     CheckCircleIcon,
 } from '@heroicons/react/outline'
 import api from '../../util/api'
@@ -62,7 +53,9 @@ export default function AccountTab() {
     const [faculty, setFaculty] = useState(faculties[0])
     const [message, setMessage] = useState('')
     const [profilePic, setProfilePic] = useState('')
+    const [coverImage, setCoverImage] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
+    const [selectedCover, setSelectedCover] = useState(null)
     const [error, setError] = useState(null)
 
     const history = useHistory()
@@ -85,6 +78,7 @@ export default function AccountTab() {
             setEmail(u.data.email)
             setName(u.data.username)
             setProfilePic(u.data.profilePicture)
+            setCoverImage(u.data.coverImage)
             if (u.data.accountType === "STUDENT") {
                 setCourse(u.data.course)
                 const y = years.filter((y) => y.name === u.data.yr.toString())[0]
@@ -142,6 +136,7 @@ export default function AccountTab() {
         user.email = email
         user.username = name
         user.profilePicture = picLocation
+        user.coverImage = coverImage
         api.editUser(user.id, user)
             .then(response => setUser(response.data))
             .then(() => window.location.reload())
@@ -203,7 +198,7 @@ export default function AccountTab() {
                     </div>
 
                     <div className="col-span-3">
-                        <label className="block sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Profile picture</label>
+                        <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Profile picture</label>
                         {!selectedFile ?
                             <div >
                                 <UploadImage handleFileInput={handleFileInput} accept=".jpg, .png, .gif" />

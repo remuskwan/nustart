@@ -34,6 +34,7 @@ public class Person implements Serializable {
     private String password;
     private String username;
     private String profilePicture; 
+    private String coverImage;
     @Enumerated
     private AccountType accountType;
     @Enumerated
@@ -91,6 +92,14 @@ public class Person implements Serializable {
         this.profilePicture = profilePicture;
     }
 
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
     public AccountType getAccountType() {
         return accountType;
     }
@@ -98,14 +107,6 @@ public class Person implements Serializable {
     public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
     }
-
-//    public boolean isActive() {
-//        return active;
-//    }
-//
-//    public void setActive(boolean active) {
-//        this.active = active;
-//    }
 
     public String getFaculty() {
         return faculty;
@@ -138,7 +139,6 @@ public class Person implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public List<Contact> getContacts() {
         return contacts;
