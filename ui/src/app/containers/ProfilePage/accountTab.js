@@ -22,21 +22,6 @@ import {
 import api from '../../util/api'
 import { useHistory } from 'react-router'
 
-const defaultUser = {
-    "accountStatus": "ACTIVE",
-    "accountType": "ADMIN",
-    "contacts": [],
-    "created": "2021-11-03T16:00:00Z[UTC]",
-    "deleted": false,
-    "email": "admin01@mail.com",
-    "favoriteGuides": [],
-    "favoritePosts": [],
-    "id": 1,
-    "password": "asdf",
-    "username": "Admin01",
-    "yr": 0
-}
-
 const years = [
     { id: 1, name: '1' },
     { id: 2, name: '2' },
@@ -69,8 +54,7 @@ const faculties = [
 ]
 
 export default function AccountTab() {
-
-    const [user, setUser] = useState(defaultUser)
+    const [user, setUser] = useState(null)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [course, setCourse] = useState("")
@@ -98,41 +82,26 @@ export default function AccountTab() {
     useEffect(() => {
         async function getLogged() {
             const u = await api.getUser()
-            //console.log(u.data)
-            getLoggedInUser(u.data)
+            setEmail(u.data.email)
+            setName(u.data.username)
+            setProfilePic(u.data.profilePicture)
+            if (u.data.accountType === "STUDENT") {
+                setCourse(u.data.course)
+                const y = years.filter((y) => y.name === u.data.yr.toString())[0]
+                setYear(y)
+                // console.log(year)
+                const f = faculties.filter((f) => f.name === u.data.faculty)[0]
+                //console.log(faculties.filter((f) => f.name === u.faculty)[0])
+                setFaculty(f)
+
+            } else if (u.data.accountType === "STAFF") {
+                const f = faculties.filter((f) => f.name === u.data.faculty)[0]
+                setFaculty(f)
+            }
+            setUser(u.data)
         }
         getLogged()
-    }, [])
-
-    function getLoggedInUser(u) {
-        console.log(u)
-        if (u.accountType === "STUDENT") {
-            setCourse(u.course)
-            const y = years.filter((y) => y.name === u.yr.toString())[0]
-            setYear(y)
-            console.log(year)
-            const f = faculties.filter((f) => f.name === u.faculty)[0]
-            //console.log(faculties.filter((f) => f.name === u.faculty)[0])
-            setFaculty(f)
-            setEmail(u.email)
-            setName(u.username)
-            setProfilePic(u.profilePicture)
-        } else if (u.accountType === "STAFF") {
-            //console.log(year)
-            const f = faculties.filter((f) => f.name === u.faculty)[0]
-            //console.log(faculties.filter((f) => f.name === u.faculty)[0])
-            setFaculty(f)
-            setEmail(u.email)
-            setName(u.username)
-            setProfilePic(u.profilePicture)
-        } else {
-            setEmail(u.email)
-            setName(u.username)
-            setProfilePic(u.profilePicture)
-        }
-        setUser(u)
-
-    }
+    }, [year])
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
@@ -142,7 +111,7 @@ export default function AccountTab() {
         evt.preventDefault()
         console.log(selectedFile)
         if (selectedFile === null) {
-            updateProfile(profilePic)
+            updateProfile()
         } else {
             handleUpload(selectedFile)
         }
@@ -162,75 +131,24 @@ export default function AccountTab() {
         // setFiles([(prev) => prev].push(e.target.files[0]))
     }
 
-    function updateProfile(picLocation) {
-        //console.log(user.accountType)
-        if (user.accountType === 'ADMIN') {
-            api.editUser(user.id,
-                {
-                    email: email,
-                    username: name,
-                    profilePicture: picLocation,
-                    course: user.course,
-                    yr: user.yr,
-                    faculty: user.faculty,
-                    accountStatus: user.accountStatus,
-                    accountType: user.accountType,
-                    contacts: user.contacts,
-                    created: user.created,
-                    deleted: user.deleted,
-                    likedGuides: user.likedGuides,
-                    likedPosts: user.likedPosts,
-                    password: user.password
-                }
-            ).then(response => setUser(response.data))
-                .then(() => window.location.reload())
-            // .then(() => setMessage('Profile updated successfully.'))
-        } else if (user.accountType === 'STAFF') {
-            api.editUser(user.id,
-                {
-                    email: email,
-                    username: name,
-                    profilePicture: picLocation,
-                    course: user.course,
-                    yr: user.yr,
-                    faculty: faculty.name,
-                    accountStatus: user.accountStatus,
-                    accountType: user.accountType,
-                    contacts: user.contacts,
-                    created: user.created,
-                    deleted: user.deleted,
-                    likedGuides: user.likedGuides,
-                    likedPosts: user.likedPosts,
-                    password: user.password
-                }
-            ).then(response => setUser(response.data))
-                .then(() => window.location.reload())
-            // .then(() => setMessage('Profile updated successfully.'))
-        } else {
-            api.editUser(user.id,
-                {
-                    email: email,
-                    username: name,
-                    profilePicture: picLocation,
-                    course: course,
-                    yr: year.name,
-                    faculty: faculty.name,
-                    accountStatus: user.accountStatus,
-                    accountType: user.accountType,
-                    contacts: user.contacts,
-                    created: user.created,
-                    deleted: user.deleted,
-                    likedGuides: user.likedGuides,
-                    likedPosts: user.likedPosts,
-                    password: user.password
-                }
-            ).then(response => setUser(response.data))
-                .then(() => window.location.reload())
-            // .then(() => setMessage('Profile updated successfully.'))
+    function updateProfile(picLocation = '') {
+        if (user.accountType === 'STAFF') {
+            user.faculty = faculty.name
+        } else if (user.accountType === 'STUDENT') {
+            user.course = course
+            user.yr = year.name
+            user.faculty = faculty.name
         }
+        user.email = email
+        user.username = name
+        user.profilePicture = picLocation
+        api.editUser(user.id, user)
+            .then(response => setUser(response.data))
+            .then(() => window.location.reload())
     }
 
     return (
+        user &&
         <div className="pt-3 space-y-6 sm:pt-5 sm:space-y-5">
             <form onSubmit={handleSubmit}>
                 <div className="p-5 space-y-3 sm:space-y-5">

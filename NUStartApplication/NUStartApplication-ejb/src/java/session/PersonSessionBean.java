@@ -96,21 +96,21 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         
         user.setAccountStatus(s.getAccountStatus());
         user.setAccountType(s.getAccountType());
-        user.setFaculty(s.getFaculty());
-        user.setCourse(s.getCourse());
-//        user.setProfilePicture(s.getProfilePicture());
+        user.setFaculty(s.getFaculty().trim());
+        user.setCourse(s.getCourse().trim());
+        user.setProfilePicture(s.getProfilePicture());
         user.setLikedGuides(s.getLikedGuides());
         user.setLikedPosts(s.getLikedPosts());
-        user.setEmail(s.getEmail());
+        user.setEmail(s.getEmail().trim());
         user.setPassword(s.getPassword());
-        user.setYr(s.getYr());
-
+        user.setUsername(s.getUsername().trim());
+        user.setYr(s.getYr().trim());
     }
 
     @Override
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setDeleted(true);
+        em.remove(p);
     }
 
     @Override
