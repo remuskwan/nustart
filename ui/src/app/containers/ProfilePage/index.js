@@ -528,7 +528,7 @@ export default function ProfilePage() {
                         <article>
                             <div>
                                 <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
-                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src="https://images.pexels.com/photos/1835712/pexels-photo-1835712.jpeg?cs=srgb&dl=pexels-daniel-jurin-1835712.jpg&fm=jpg" alt="" />
+                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImage} alt="" />
                                 </div>
                                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
