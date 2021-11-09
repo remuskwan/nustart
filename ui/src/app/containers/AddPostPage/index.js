@@ -5,7 +5,13 @@ import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import { getUser } from '../../util/Common';
 import TextArea from '../../components/textArea';
+import RichTextArea from '../../components/richTextArea';
 import api from '../../util/api';
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
+import draftToHtml from 'draftjs-to-html';
 
 export default function AddPostPage() {
   const history = useHistory()
@@ -13,7 +19,9 @@ export default function AddPostPage() {
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
-
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
   const handleSubmit = (evt) => {
     evt.preventDefault()
     createPost()
@@ -21,8 +29,9 @@ export default function AddPostPage() {
   }
 
   function createPost() {
+    console.log(editorState.getCurrentContent());
     api.createPost(forumId, threadId, {
-      content: content,
+      content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       creator: user
     })
       .then(() => history.goBack())
@@ -35,7 +44,9 @@ export default function AddPostPage() {
       .catch((error) => (
         setError(error)
       ))
+    // setEditorState(() => EditorState.createEmpty())
   }, [])
+
 
   return (
     user &&
@@ -60,15 +71,28 @@ export default function AddPostPage() {
 
                     <div className="grid grid-cols-3 gap-6">
                       <div className="col-span-3">
-                        <TextArea
-                          name="content"
-                          id="content"
+                        {/* <RichTextArea
                           label="Post"
-                          required={true}
-                          autoFocus={true}
-                          value={content}
-                          onChange={(e) => setContent(e.target.value)}
-                        />
+                          editorState={editorState}
+                          onEditorStateChange={setEditorState}
+                        /> */}
+                        <div>
+                          <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                            Post
+                          </label>
+
+                          <div>
+                            <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                              <Editor
+                                editorState={editorState}
+                                onEditorStateChange={setEditorState}
+                              //   id="post"
+                              />
+
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
                   </div>

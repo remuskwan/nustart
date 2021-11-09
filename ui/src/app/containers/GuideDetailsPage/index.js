@@ -126,9 +126,7 @@ export default function GuideDetailsPage() {
                       <div className="py-3 xl:pt-6 xl:pb-0">
                         <h2 className="sr-only">Content</h2>
                         <div className="prose max-w-none">
-                          <p>
-                            {content}
-                          </p>
+                        <div className="text-sm text-gray-500 truncate" dangerouslySetInnerHTML={{__html: content}} />
                         </div>
                       </div>
 

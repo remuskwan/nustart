@@ -3,9 +3,12 @@ import axios from 'axios'
 import { Dialog, Transition } from '@headlessui/react'
 import TextArea from '../../components/textArea'
 import api from '../../util/api'
+import htmlToDraft from 'html-to-draftjs'
+import { Editor } from 'draft-js'
 
 export default function EditPostModal({ forumId, threadId, setThread, post, open, setOpen }) {
   const [content, setContent] = useState(post.content)
+  const [editor, setEditor] = useState(() => htmlToDraft(((post.content))))
   const [error, setError] = useState(null);
 
   const handleSubmit = (evt) => {
