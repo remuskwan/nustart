@@ -17,7 +17,7 @@ export default function ProfileDropDown({ user }) {
   return (
     <Menu as="div" className="flex-shrink-0 relative ml-5">
       <div>
-        <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+        <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-rose-500">
           <span className="sr-only">Open user menu</span>
           {user.profilePicture === "default"
             ?
@@ -28,7 +28,7 @@ export default function ProfileDropDown({ user }) {
             </div>
             :
             <img
-              className="h-24 w-24 rounded-full sm:h-32 sm:w-32"
+              className="h-24 w-24 rounded-full sm:h-10 sm:w-10"
               src={user.profilePicture}
               alt={user.username.substring(0, 1)}
             />
