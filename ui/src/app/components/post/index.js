@@ -60,7 +60,8 @@ export default function Post({ user, setUser, post, forumId, threadId, setThread
             </div>
           </div>
           <h2 id={'post-title-' + post.id} className="mt-4 text-base font-medium text-gray-900">
-            {post.content}
+            {/* {post.content} */}
+            <div className="text-sm text-gray-500 truncate" dangerouslySetInnerHTML={{__html: post.content}} />
           </h2>
         </div>
         <div

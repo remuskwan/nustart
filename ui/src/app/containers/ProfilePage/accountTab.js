@@ -12,6 +12,7 @@ import {
 } from '@heroicons/react/outline'
 import api from '../../util/api'
 import { useHistory } from 'react-router'
+import UploadProfileImage from '../../components/uploadProfileImage'
 
 const years = [
     { id: 1, name: '1' },
@@ -102,20 +103,43 @@ export default function AccountTab() {
 
     const handleSubmit = (evt) => {
         evt.preventDefault()
-        console.log(selectedFile)
-        if (selectedFile === null) {
+        //console.log(selectedFile)
+        
+        if (selectedFile === null && selectedCover === null) {
             updateProfile()
+        } else if (selectedFile !== null && selectedCover !== null) {
+            console.log('multiple')
+            const file = [selectedFile, selectedCover]
+            handleMultipleUploads(file)
         } else {
-            handleUpload(selectedFile)
+            console.log('single')
+            const file = selectedCover === null ? selectedFile : selectedCover
+            handleUpload(file)
         }
     }
 
     const handleUpload = async (file) => {
         uploadFile(file, config)
             .then(data => {
-                updateProfile(data.location)
+                updateProfile([data.location])
             })
             .catch(error => setError(error))
+    }
+
+    const handleMultipleUploads = async (file) => {
+        const locations = []
+        uploadFile(file[0], config)
+            .then(data => 
+                locations.push(data.location)
+            ).then(() => uploadFile(file[1], config)
+            .then(data => locations.push(data.location))
+            .then(() => updateProfile(locations)))
+            .catch(error => setError(error))
+    }
+
+    const handleCoverInput = (e) => {
+        setSelectedCover(e.target.files[0])
+        // setFiles([(prev) => prev].push(e.target.files[0]))
     }
 
     const handleFileInput = (e) => {
@@ -123,7 +147,8 @@ export default function AccountTab() {
         // setFiles([(prev) => prev].push(e.target.files[0]))
     }
 
-    function updateProfile(picLocation = user.profilePicture) {
+    function updateProfile(locations = []) {
+        console.log(locations)
         if (user.accountType === 'STAFF') {
             user.faculty = faculty.name
         } else if (user.accountType === 'STUDENT') {
@@ -133,8 +158,16 @@ export default function AccountTab() {
         }
         user.email = email
         user.username = name
-        user.profilePicture = picLocation
-        user.coverImage = coverImage
+        user.profilePicture = selectedFile !== null ? locations[0] : profilePic
+
+        if (selectedFile !== null && selectedCover !== null) {
+            user.coverImage = locations[1]
+        } else if (selectedFile === null && selectedCover !== null) {
+            user.coverImage = locations[0]
+        } else {
+            user.coverImage = coverImage
+        }
+
         api.editUser(user.id, user)
             .then(response => setUser(response.data))
             .then(() => window.location.reload())
@@ -198,12 +231,30 @@ export default function AccountTab() {
                     <div className="col-span-3">
                         <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Profile picture</label>
                         {!selectedFile ?
-                            <div >
-                                <UploadImage handleFileInput={handleFileInput} accept=".jpg, .png, .gif" />
+                            <div>
+                                <UploadProfileImage handleProfileInput={handleFileInput} accept=".jpg, .png, .gif" />
                             </div>
                             : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
                                 {selectedFile.name}
                                 <button className="text-gray-700" onClick={() => setSelectedFile(null)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        }
+                    </div>
+
+                    <div className="col-span-3">
+                        <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Cover Image</label>
+                        {!selectedCover ?
+                            <div >
+                                <UploadImage handleFileInput={handleCoverInput} accept=".jpg, .png, .gif" />
+                                {/* <input type="file" onChange={(e) => setCoverImage(e.target.files[0])}></input> */}
+                            </div>
+                            : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
+                                {selectedCover.name}
+                                <button className="text-gray-700" onClick={() => setSelectedCover(null)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>

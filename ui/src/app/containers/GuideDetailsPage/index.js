@@ -126,9 +126,7 @@ export default function GuideDetailsPage() {
                       <div className="py-3 xl:pt-6 xl:pb-0">
                         <h2 className="sr-only">Content</h2>
                         <div className="prose max-w-none">
-                          <p>
-                            {content}
-                          </p>
+                        <div className="text-sm text-gray-500 truncate" dangerouslySetInnerHTML={{__html: content}} />
                         </div>
                       </div>
 
@@ -185,7 +183,7 @@ export default function GuideDetailsPage() {
                             className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5"
                           >
                             <div className="absolute flex-shrink-0 flex items-center justify-center">
-                              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" aria-hidden="true" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" aria-hidden="true" />
                             </div>
                             <div className="ml-3.5 text-sm font-medium text-gray-900">Accessibility</div>
                           </a>{' '}

@@ -1,16 +1,31 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import axios from 'axios'
 import { Dialog, Transition } from '@headlessui/react'
 import TextArea from '../../components/textArea'
 import api from '../../util/api'
+import htmlToDraft from 'html-to-draftjs'
+import draftToHtml from 'draftjs-to-html';
+import { convertToRaw, Editor } from 'draft-js'
+import { EditorState, ContentState } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
+const htmlToDraftBlocks = (html) => {
+  const blocksFromHtml = htmlToDraft(html);
+  const { contentBlocks, entityMap } = blocksFromHtml;
+  const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+  const editorState = EditorState.createWithContent(contentState)
+  return editorState
+}
 
 export default function EditPostModal({ forumId, threadId, setThread, post, open, setOpen }) {
-  const [content, setContent] = useState(post.content)
+  // const [content, setContent] = useState(post.content)
+  
+  const [editorState, setEditorState] = useState()
   const [error, setError] = useState(null);
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    if (content !== '') {
+    if (editorState !== '') {
       editPost()
       setOpen(false)
       alert("Successfully edited thread.")
@@ -18,13 +33,19 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
   }
 
   function editPost() {
-    post.content = content
+    post.content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     api.editPost(forumId, threadId, post)
       .then((response) => {
         setThread(response.data)
       })
       .catch(error => setError(error))
   }
+  console.log(editorState)
+
+  useEffect(() => {
+    const editorState = htmlToDraftBlocks(post.content)
+    setEditorState(() => editorState)
+  }, [post.content])
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -62,7 +83,7 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
                     Edit post
                   </Dialog.Title>
                   <div className="mt-2 gap-6 text-left">
-                    <TextArea
+                    {/* <TextArea
                       name="content"
                       id="content"
                       label="Post"
@@ -70,7 +91,20 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
                       autoFocus={true}
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
-                    />
+                    /> */}
+                    <div>
+                      <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                        Post
+                      </label>
+                      <div>
+                        <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                          <Editor
+                            editorState={editorState}
+                            onChange={setEditorState}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-6">

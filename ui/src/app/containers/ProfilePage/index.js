@@ -27,9 +27,11 @@ import GuidesTab from './guidesTab'
 import ContactsTab from './contactsTab'
 
 import AccountTab from './accountTab';
+import ThreadsTab from './threadsTab'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
+    { name: 'Password', href: '#', current: false },
     { name: 'Contacts', href: '#', current: false },
     { name: 'Guides', href: '#', current: false },
     { name: 'Threads', href: '#', current: false },
@@ -51,10 +53,6 @@ const defaultUser = {
     "username": "Admin01",
     "yr": 0
 }
-
-const guides = [
-    { id: '1', title: 'Guide Title', creator: defaultUser, datePublished: 'December 9 at 11:43 AM', dateEdited: 'December 12 at 11:43 AM' }
-]
 
 const posts = [
     {
@@ -176,6 +174,9 @@ export default function ProfilePage() {
     const [selected, setSelected] = useState(likedFilter[0])
 
     const [guides, setGuides] = useState([])
+    const [threads, setThreads] = useState([])
+
+    const { uid } = useParams()
 
     useEffect(() => {
         async function getLogged() {
@@ -187,6 +188,27 @@ export default function ProfilePage() {
                 })
         }
         getLogged()
+    }, [])
+
+    useEffect(() => {
+        async function getGuides() {
+            await api.getUserGuide(uid)
+                .then(response => {
+                    setGuides(response.data)
+                })
+                .then(() => console.log(guides))
+        }
+        getGuides()
+    }, [])
+
+    useEffect(() => {
+        async function getThreads() {
+            await api.getUserThread(uid)
+            .then(response => {
+                setThreads(response.data)
+            })
+        }
+        getThreads()
     }, [])
 
     function resetTabState(tabName) {
@@ -206,62 +228,10 @@ export default function ProfilePage() {
         } else if (activeTab[0].name === 'Posts') {
             return <PostsTab />;
         } else if (activeTab[0].name === 'Threads') {
-            return <ThreadsTab />;
+            return <ThreadsTab threads={threads} />
         } else {
             return <LikedTab />;
         }
-    }
-
-    function ThreadsTab() {
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {threads.map((thread) => (
-                        <li key={thread.id}>
-                            <div className="px-4 py-4 flex items-center sm:px-6">
-                                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                    <div className="truncate">
-                                        <div className="flex text-sm items-center">
-                                            <p className="text-xl font-medium text-rose-500 truncate">{thread.title}</p>
-                                            <a href="#" className="block hover:bg-gray-50">
-                                                <p className="ml-3 text-l font-medium hover:text-rose-700 text-gray-500 truncate">{thread.forum.forumTitle}</p>
-                                            </a>
-                                        </div>
-                                        <div className="mt-2 flex">
-                                            <div className="flex items-center text-sm text-gray-500">
-                                                <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    Created on <time dateTime={thread.date}>{thread.date}</time>
-                                                </p>
-                                            </div>
-                                            <div className="ml-5 flex items-center text-sm text-gray-500">
-                                                <AnnotationIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    {thread.posts} posts
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                        <div className="flex overflow-hidden -space-x-1">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                                    >
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
     }
 
     function PostsTab() {
@@ -528,7 +498,7 @@ export default function ProfilePage() {
                         <article>
                             <div>
                                 <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
-                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src="https://images.pexels.com/photos/1835712/pexels-photo-1835712.jpeg?cs=srgb&dl=pexels-daniel-jurin-1835712.jpg&fm=jpg" alt="" />
+                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImage} alt="" />
                                 </div>
                                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">

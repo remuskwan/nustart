@@ -14,8 +14,6 @@ import error.UserEmailExistException;
 import error.UserUnapprovedException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -89,18 +87,15 @@ public class UsersResource {
         }
     }
 
-//    @GET
-//    @Path("/{id}/guides")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public void getUserGuides(@PathParam("id") Long id) {
-//        //List<Guide> g = 
-//        personSessionBeanLocal.getGuidesCreated(id);
-        //System.out.println(g);
-//        return Response.status(200)
-//                .entity(g)
-//                .type(MediaType.APPLICATION_JSON)
-//                .build();
-//    }
+    @GET
+    @Path("/{id}/guides")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserGuides(@PathParam("id") Long id) {
+        return Response.status(200)
+                .entity(personSessionBeanLocal.getGuidesCreated(id))
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
 
     @GET
     @Path("/{id}/threads")
@@ -213,7 +208,7 @@ public class UsersResource {
                     .add("error", "User not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
-        } 
+        }
     }
 
     @GET

@@ -82,6 +82,10 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
             p.setCreated(new Date());
             p.setCoverImage("default");
             p.setProfilePicture("default");
+            if (p.getAccountType() == AccountType.STAFF) {
+                p.setCourse("default");
+                p.setYr("0");
+            }
             em.persist(p);
         } catch (PersistenceException ex) {
             if (ex.getCause().getCause() != null
@@ -97,7 +101,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
-        
+
         user.setAccountStatus(s.getAccountStatus());
         user.setAccountType(s.getAccountType());
         user.setFaculty(s.getFaculty().trim());
@@ -184,7 +188,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
     @Override
     public void deleteCategory(Long cId) throws NoResultException {
-        //if there are guides and forum using category, i cannot delete right?
+        //if there are guides and forum using category, i cannot delete right? yes
         Category c = guideSessionBeanLocal.getCategory(cId);
         em.remove(c);
     }
@@ -339,20 +343,22 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Guide> getGuidesCreated(Long pId) {
         Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator.id = :id");
         q.setParameter("id", pId);
+
         return q.getResultList();
     }
-    
+
     @Override
     public List<Thread> getThreadsCreated(Long pId) {
         Query q = em.createQuery("SELECT t FROM Thread t WHERE t.creator.id = :id");
         q.setParameter("id", pId);
         return q.getResultList();
     }
-    
+
     @Override
     public List<Post> getPostsCreated(Long pId) {
         Query q = em.createQuery("SELECT p FROM Post p WHERE p.creator.id = :id");

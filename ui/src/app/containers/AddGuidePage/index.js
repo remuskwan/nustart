@@ -6,9 +6,15 @@ import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
+import RichTextArea from '../../components/richTextArea';
 import api from '../../util/api';
 import CatSelectMenu from '../../components/catSelectMenu';
 import UploadImage from '../../components/uploadImage';
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
+import draftToHtml from 'draftjs-to-html';
 
 const S3_BUCKET = 'nustart';
 const REGION = 'ap-southeast-1';
@@ -36,6 +42,9 @@ export default function AddGuidePage() {
   const [links, setLinks] = useState([])
   // const [picLocation, setPicLocation] = useState('')
   // const [files, setFiles] = useState([]);
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
 
   const addLink = (e) => {
     e.preventDefault()
@@ -68,16 +77,17 @@ export default function AddGuidePage() {
   function createGuide(picLocation = "") {
     api.createGuide(category.id, {
       title: title,
-      content: content,
+      content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       creator: user,
       pictureUrl: picLocation,
       links: links
     })
-      .then(() => { 
+      .then(() => {
         // if (links.length) {
         //   api.get
         // }
-        history.goBack()})
+        history.goBack()
+      })
       .catch(error => setError(error))
   }
 
@@ -95,6 +105,8 @@ export default function AddGuidePage() {
       })
       .catch((error) => setError(error))
   }, [])
+
+
 
 
   console.log(links)
@@ -136,14 +148,19 @@ export default function AddGuidePage() {
                         <CatSelectMenu options={categories} category={category} setCategory={setCategory} />
                       </div>
                       <div className="col-span-3">
-                        <TextArea
-                          name="content"
-                          id="content"
-                          label="Content"
-                          required={true}
-                          value={content}
-                          onChange={(e) => setContent(e.target.value)}
-                        />
+                        <div>
+                          <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                            Post
+                          </label>
+                          <div>
+                            <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                              <Editor
+                                editorState={editorState}
+                                onEditorStateChange={setEditorState}
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div className="col-span-3">
                         <label className="block text-sm font-medium text-gray-700">Cover photo</label>

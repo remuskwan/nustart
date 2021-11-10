@@ -43,7 +43,7 @@ export default function ThreadOptions({ forumId, thread, setThread }) {
     <Fragment>
       <Menu as="div" className="ml-3 relative inline-block text-left z-50">
         <div>
-          <Menu.Button className="-my-2 p-2 rounded-full bg-white flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <Menu.Button className="-my-2 p-2 rounded-full bg-white flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-rose-500">
             <span className="sr-only">Open options</span>
             <DotsVerticalIcon className="h-5 w-5" aria-hidden="true" />
           </Menu.Button>
