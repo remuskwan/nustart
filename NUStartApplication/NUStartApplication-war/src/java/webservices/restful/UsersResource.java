@@ -7,6 +7,7 @@ package webservices.restful;
 
 import entity.Person;
 import entity.Post;
+import enumeration.AccountType;
 import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
@@ -127,7 +128,12 @@ public class UsersResource {
     public Response createUser(Person p) {
         try {
             p.setCreated(new Date());
-            System.out.println(p.getContacts());
+            p.setCoverImage("default");
+            p.setProfilePicture("default");
+            if (p.getAccountType() == AccountType.STAFF) {
+                p.setCourse("default");
+                p.setYr("default");
+            }
             personSessionBeanLocal.createUser(p);
             return Response.status(200)
                     .entity(p.getId())
@@ -138,7 +144,7 @@ public class UsersResource {
                     .add("error", "Account already exists").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
-        } catch (UnknownPersistenceException ex) {
+        } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)

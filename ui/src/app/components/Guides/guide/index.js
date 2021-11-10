@@ -2,7 +2,6 @@ import { Link, useRouteMatch } from 'react-router-dom'
 import moment from 'moment'
 import {
   ChatAltIcon,
-  EyeIcon,
   ThumbUpIcon,
 } from '@heroicons/react/solid'
 
@@ -29,6 +28,20 @@ export default function Guide({ id, title, creator, created, guide }) {
             </div>}
           <div className="flex-1">
             <div className="flex space-x-3">
+              <div className="flex-shrink-0">
+                {guide.creator.profilePicture === "default"
+                  ?
+                  <div className="flex justify-center items-center content-center bg-gradient-to-br from-rose-300 to-rose-600 shadow-md hover:shadow-lg h-10 w-10 rounded-full fill-current text-white">
+                    <h2 className="text-xs">{guide.creator.username.substring(0, 1)}</h2>
+                  </div>
+                  :
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={guide.creator.profilePicture}
+                    alt={guide.creator.username.substring(0, 1)}
+                  />
+                }
+              </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-gray-900">
                   <Link to={`/profile/${creator.id}`} className="hover:underline">

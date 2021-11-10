@@ -156,7 +156,6 @@ export default function RegisterPage() {
             contacts: contactList.contacts
         })
             .then((response) => {
-                console.log(response.data)
                 setUserSession({ userId: response.data })
             })
             .then(() => history.push("/"))
@@ -166,7 +165,6 @@ export default function RegisterPage() {
                 else setSubmitError(new Error("Something went wrong. Please try again later."))
             })
     }
-    console.log(error)
     const { contacts } = contactList;
 
     return (
@@ -176,7 +174,7 @@ export default function RegisterPage() {
                     <div>
                         <img
                             className="mx-auto h-12 w-auto"
-                            src="https://nustart.s3.ap-southeast-1.amazonaws.com/logo.png"
+                            src="https://nustart.s3.ap-southeast-1.amazonaws.com/nustartlogo.png"
                             alt="Workflow"
                         />
                         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Register a new account</h2>

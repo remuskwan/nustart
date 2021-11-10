@@ -27,10 +27,12 @@ export default function NavBar({
   const { url } = useRouteMatch()
 
   const navigation = !editProfile ? [
-    { name: 'Guides', path: '/guides', icon: HomeIcon },
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Campus', path: '/campus', icon: UserGroupIcon },
-    ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
+    { name: 'Guides', path: '/guides', icon: HomeIcon },
+    ...user.accountType === "ADMIN" ? [
+      { name: 'Categories', path: '/admin/categories', icon: UserGroupIcon },
+      { name: 'Users', path: '/users', icon: UserGroupIcon }
+    ] : []
   ] : [
     { name: 'Account', path: '/account/edit', icon: UserCircleIcon },
     { name: 'Password', path: '/account/edit/password', icon: KeyIcon }
@@ -55,7 +57,7 @@ export default function NavBar({
                   <Link to="/">
                     <img
                       className="block h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
+                      src="https://nustart.s3.ap-southeast-1.amazonaws.com/nustartlogo.png"
                       alt="Workflow"
                     />
                   </Link>
@@ -127,7 +129,7 @@ export default function NavBar({
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div className="ml-1">
-                  <div className="text-base font-medium text-gray-800">{user && user.displayName}</div>
+                  <div className="text-base font-medium text-gray-800">{user && user.username}</div>
                   <div className="text-sm font-medium text-gray-500">{user && user.email}</div>
                 </div>
               </div>

@@ -81,12 +81,13 @@ export default function AddPostPage() {
                             Post
                           </label>
 
-                          <div>
-                            <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                          <div className='mt-1'>
+                            <div className="shadow block w-full sm:text-sm rounded-md"
+                              style={{ padding: '10px', minHeight: '400px' }}
+                            >
                               <Editor
                                 editorState={editorState}
                                 onEditorStateChange={setEditorState}
-                              //   id="post"
                               />
 
                             </div>
