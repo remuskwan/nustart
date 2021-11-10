@@ -101,7 +101,7 @@ export default function ThreadItem({ thread }) {
             <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                 <div className="truncate">
                     <div className="flex text-sm sm:items-center">
-                        <a href={`/forums/${forum.id}/threads`} className="block hover:bg-gray-50">
+                        <a href={`/${forum.id}/threads`} className="block hover:bg-gray-50">
                             <p className="mr-3 text-xl font-medium hover:text-rose-600 text-gray-500 truncate">{forum.title}</p>
                         </a>
                         <p> <ChevronRightIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" /> </p>

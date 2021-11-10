@@ -2,7 +2,7 @@ import { useState } from "react";
 import ContactForm from '../../components/contacts/ContactForm'
 import ContactList from '../../components/contacts/ContactList'
 
-export default function ContactsTab({ user }) {
+export default function ContactsTab({ editMode = false, user }) {
 
     const [contactStore, setContactStore] = useState({ contacts: user.contacts, currentId: 0 })
 
@@ -70,7 +70,10 @@ export default function ContactsTab({ user }) {
                     </span>
                     <br />
                     <div className="note-container">
-                        <ContactForm onDone={handleAddEdit} />
+                        {editMode 
+                        ? <ContactForm onDone={handleAddEdit} />
+                        : null
+                        }
                         <br />
                         <ContactList
                             contacts={contacts}
