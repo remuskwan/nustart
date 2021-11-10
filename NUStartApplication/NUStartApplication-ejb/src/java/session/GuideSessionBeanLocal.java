@@ -24,6 +24,7 @@ public interface GuideSessionBeanLocal {
     public List<Guide> searchGuidesByTitle(String title);    
     public List<Guide> searchGuidesByCreator(String email) throws NoResultException;    
     public void createGuide(Long cId, Guide g) throws NoResultException;     
+    public Category getCategoryFromGuide(Long gId) throws NoResultException;
     public void updateGuide(Guide g) throws NoResultException;    
     public void deleteGuide(Long cId, Long gId) throws NoResultException;
     public List<Category> getCategories();

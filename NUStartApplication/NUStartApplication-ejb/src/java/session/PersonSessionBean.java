@@ -188,7 +188,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
     @Override
     public void deleteCategory(Long cId) throws NoResultException {
-        //if there are guides and forum using category, i cannot delete right?
+        //if there are guides and forum using category, i cannot delete right? yes
         Category c = guideSessionBeanLocal.getCategory(cId);
         em.remove(c);
     }
@@ -348,6 +348,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public List<Guide> getGuidesCreated(Long pId) {
         Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator.id = :id");
         q.setParameter("id", pId);
+
         return q.getResultList();
     }
 
