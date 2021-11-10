@@ -1,10 +1,12 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+
 import {
     ChevronRightIcon,
     CheckIcon,
     SelectorIcon,
     StarIcon,
+    UserCircleIcon,
 } from '@heroicons/react/solid'
 import {
     CalendarIcon,
@@ -13,16 +15,18 @@ import {
     AcademicCapIcon,
     AnnotationIcon,
     LibraryIcon,
+    CheckCircleIcon,
 } from '@heroicons/react/outline'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
-import ContactForm from '../../components/contacts/ContactForm'
-import ContactList from '../../components/contacts/ContactList'
+
 import NewButton from '../../components/newButton'
 import api from '../../util/api'
-import { getUser } from '../../util/Common'
-import ProfileTab from './profileTab'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
+import GuidesTab from './guidesTab'
+import ContactsTab from './contactsTab'
+
+import AccountTab from './accountTab';
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
@@ -30,7 +34,7 @@ const tabs = [
     { name: 'Guides', href: '#', current: false },
     { name: 'Threads', href: '#', current: false },
     { name: 'Posts', href: '#', current: false },
-    { name: 'Favourites', href: '#', current: false },
+    { name: 'Liked', href: '#', current: false },
 ]
 
 const defaultUser = {
@@ -96,12 +100,12 @@ const threads = [
     },
 ]
 
-const favouriteFilter = [
+const likedFilter = [
     { id: 1, name: 'Guides' },
     { id: 2, name: 'Posts' },
 ]
 
-const favourites = [
+const likes = [
     {
         id: 1, type: 'Guide',
         value: {
@@ -164,46 +168,26 @@ function classNames(...classes) {
 }
 
 export default function ProfilePage() {
-    //const [sidebarOpen, setSidebarOpen] = useState(false)
+
     const [user, setUser] = useState(defaultUser)
     const [tab, setTab] = useState(tabs[0])
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [year, setYear] = useState(years[0])
-    const [faculty, setFaculty] = useState(faculties[0])
-    const [course, setCourse] = useState("")
-    const [contactStore, setContactStore] = useState({ contacts: user.contacts, currentId: 0 })
-    const [selected, setSelected] = useState(favouriteFilter[0])
-    const [error, setError] = useState(null)
-    const [selectedFile, setSelectedFile] = useState();
-    const [isFilePicked, setIsFilePicked] = useState(false);
-    const { uid } = useParams()
-    
+
+    const [profilePic, setProfilePic] = useState('')
+    const [selected, setSelected] = useState(likedFilter[0])
+
+    const [guides, setGuides] = useState([])
+
     useEffect(() => {
-        async function setLogged() {
-            const u = await api.getUser(uid)
-            console.log(u.data)
-            getLoggedInUser(u.data)
+        async function getLogged() {
+            await api.getUser()
+                .then(response => {
+                    setUser(response.data)
+                    setProfilePic(response.data.profilePicture)
+                    //console.log(response.data.profilePic)
+                })
         }
-        setLogged()
+        getLogged()
     }, [])
-
-    function getLoggedInUser(u) {
-        setUser(u)
-        setEmail(u.email)
-        setName(u.username)
-        setCourse(u.course)
-        setYear(years[0])
-        const f = faculties.filter((f) => f.name === u.faculty)[0]
-        setFaculty(f)
-        setContactStore({ contacts: u.contacts, currentId: 0 })
-        //console.log(year)
-    }
-
-    const changeHandler = (event) => {
-        setSelectedFile(event.target.files[0]);
-        setIsFilePicked(true);
-    };
 
     function resetTabState(tabName) {
         tabs.filter((t) => t.current === true).map((t) => t.current = false)
@@ -214,138 +198,18 @@ export default function ProfilePage() {
     function CurrentTab() {
         const activeTab = tabs.filter((t) => t.current === true)
         if (activeTab[0].name === 'Profile') {
-            return <ProfileTab />;
+            return <AccountTab />;
         } else if (activeTab[0].name === 'Contacts') {
-            return <ContactsTab />;
+            return <ContactsTab user={user} />;
         } else if (activeTab[0].name === 'Guides') {
-            return <GuidesTab />;
+            return <GuidesTab guides={guides} />;
         } else if (activeTab[0].name === 'Posts') {
             return <PostsTab />;
         } else if (activeTab[0].name === 'Threads') {
             return <ThreadsTab />;
         } else {
-            return <FavouriteTab />;
+            return <LikedTab />;
         }
-    }
-
-    function handleDelete(id) {
-        const { contacts } = contactStore;
-        const updatedNotes = contacts.filter((n) => {
-            return n.id !== id;
-        });
-
-        setContactStore((oldNotesStore) => ({
-            currentId: oldNotesStore.currentId,
-            contacts: updatedNotes,
-        }));
-
-        //console.log("###updatedNotes: ", updatedNotes);
-    } //end handleDelete
-
-    function handleAddEdit(note) {
-        //console.log("###in handleAddEdit ", note);
-        const { currentId, contacts } = contactStore;
-        if (note.id === 0) {
-            //add action
-            if (note.value.trim() === "") return;
-
-            note.id = currentId + 1;
-
-            setContactStore({
-                currentId: note.id,
-                contacts: [...contacts, note],
-            });
-        } else {
-            //edit action
-            if (note.value.trim() === "") {
-                //cancel edit
-                return;
-            } else {
-                //find the note
-                const updatedNotes = contacts.map((n) => {
-                    if (n.id === note.id) {
-                        note.editMode = false;
-                        return note;
-                    } else {
-                        return n;
-                    }
-                });
-
-                setContactStore((oldContactsStore) => ({
-                    currentId: oldContactsStore.currentId,
-                    contacts: updatedNotes,
-                }));
-            }
-        }
-    }
-
-    const { contacts } = contactStore
-
-    function ContactsTab() {
-        return (
-            <div className="rounded-md shadow-sm -space-y-px">
-                <div className="bg-white sm:rounded-lg">
-                    <div className="px-4 py-5 sm:p-3">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">Contacts</h3>
-                        <span className="text-sm text-gray-500" id="email-optional">
-                            Optional
-                        </span>
-                        <br />
-                        <div className="note-container">
-                            <ContactForm onDone={handleAddEdit} />
-                            <br />
-                            <ContactList
-                                contacts={contacts}
-                                onDelete={handleDelete}
-                                onDone={handleAddEdit}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <br />
-            </div>
-        )
-    }
-
-    function GuidesTab() {
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {guides.map((guide) => (
-                        <li key={guide.id}>
-                            <a href="#" className="block hover:bg-gray-50">
-                                <div className="px-4 py-4 flex items-center sm:px-6">
-                                    <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                        <div className="truncate">
-                                            <div className="flex text-sm items-center">
-                                                <p className="text-xl font-medium text-rose-500 truncate">{guide.title}</p>
-                                                <p className="ml-3 flex-shrink-0 font-normal text-gray-500">Edited <time dateTime={guide.dateEdited}>{guide.dateEdited}</time></p>
-                                            </div>
-                                            <div className="mt-2 flex">
-                                                <div className="flex items-center text-sm text-gray-500">
-                                                    <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    <p>
-                                                        Created on <time dateTime={guide.datePublished}>{guide.datePublished}</time>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                            <div className="flex overflow-hidden -space-x-1">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="ml-5 flex-shrink-0">
-                                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
     }
 
     function ThreadsTab() {
@@ -451,7 +315,7 @@ export default function ProfilePage() {
         )
     }
 
-    function FavouriteTab() {
+    function LikedTab() {
         return (
             <div>
                 <Listbox value={selected} onChange={setSelected}>
@@ -465,7 +329,7 @@ export default function ProfilePage() {
 
                         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
                             <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                                {favouriteFilter.map((filter) => (
+                                {likedFilter.map((filter) => (
                                     <Listbox.Option
                                         key={filter.id}
                                         className={({ active }) =>
@@ -507,9 +371,9 @@ export default function ProfilePage() {
     function FilterFavourites() {
         let filtered = [];
         if (selected.name === 'Guides') {
-            filtered = favourites.filter((f) => f.type === 'Guide')
+            filtered = likes.filter((f) => f.type === 'Guide')
         } else {
-            filtered = favourites.filter((f) => f.type === 'Post')
+            filtered = likes.filter((f) => f.type === 'Post')
         }
         return (
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -550,8 +414,54 @@ export default function ProfilePage() {
         )
     }
 
+    function RenderPosition() {
+        if (user.accountType === 'STAFF') {
+            return (
+                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        Staff
+                    </div>
+
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        {user.faculty}
+                    </div>
+                </div>
+            )
+        } else if (user.accountType === 'ADMIN') {
+            return (
+                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <UserCircleIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        Administrator
+                    </div>
+
+                </div>
+            )
+
+        } else {
+            return (
+                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <AcademicCapIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        Student
+                    </div>
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        {user.faculty}
+                    </div>
+                </div>
+            )
+        }
+
+
+    }
+
     function RenderTabs() {
-        if (user.accountType === 'Student') {
+        if (user.accountType === 'STUDENT') {
             const newTabs = tabs.filter((t) => t.name !== 'Guides')
             return (
                 <nav className="-mb-px flex space-x-8" aria-label="Tabs">
@@ -575,29 +485,30 @@ export default function ProfilePage() {
                     ))}
                 </nav>
             )
+        } else {
+            return (
+                <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                    {tabs.map((tab) => (
+                        <a
+                            key={tab.name}
+                            href={tab.href}
+                            className={classNames(
+                                tab.current
+                                    ? 'border-pink-500 text-gray-900'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                                'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+                            )}
+                            aria-current={tab.current ? 'page' : undefined}
+                            onClick={() => {
+                                resetTabState(tab.name)
+                            }}
+                        >
+                            {tab.name}
+                        </a>
+                    ))}
+                </nav>
+            )
         }
-        return (
-            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                {tabs.map((tab) => (
-                    <a
-                        key={tab.name}
-                        href={tab.href}
-                        className={classNames(
-                            tab.current
-                                ? 'border-pink-500 text-gray-900'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
-                        )}
-                        aria-current={tab.current ? 'page' : undefined}
-                        onClick={() => {
-                            resetTabState(tab.name)
-                        }}
-                    >
-                        {tab.name}
-                    </a>
-                ))}
-            </nav>
-        )
     }
 
     return (
@@ -613,43 +524,34 @@ export default function ProfilePage() {
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
                         <SideBar user={user} />
                     </div>
-                    <main className="lg:col-span-9 xl:col-span-9 bg-white">
+                    <main className="lg:col-span-9 xl:col-span-9 bg-white rounded-md">
                         <article>
-                            {/* Profile header */}
                             <div>
-                                <div>
-                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src="" alt="" />
+                                <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
+                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImage} alt="" />
                                 </div>
                                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                         <div className="flex">
-                                            <img
-                                                className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-                                                src={user.profilePicture}
-                                                alt=""
-                                            />
+                                            {profilePic === "default"
+                                                ?
+                                                <div class="max-w-md mx-auto my-3">
+                                                    <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md hover:shadow-lg h-24 w-24 rounded-full fill-current text-white">
+                                                        <h2 style={{ fontSize: 24 }}>{user.username.substring(0, 1)}</h2>
+                                                    </div>
+                                                </div>
+                                                :
+                                                <img
+                                                    className="h-24 w-24 rounded-full sm:h-32 sm:w-32"
+                                                    src={profilePic}
+                                                    alt={user.username.substring(0, 1)}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{user.name}</h2>
-                                        <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                                            {user.accountType === 'Staff' ? (
-                                                <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                    <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    Staff
-                                                </div>
-                                            ) : (
-                                                <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                    <AcademicCapIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    Student
-                                                </div>
-                                            )
-                                            }
-                                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                {user.faculty}
-                                            </div>
-                                        </div>
+                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{user.username}</h2>
+                                        <RenderPosition />
                                     </div>
                                 </div>
                             </div>

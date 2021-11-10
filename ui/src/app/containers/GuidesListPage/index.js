@@ -75,11 +75,11 @@ export default function GuidesListPage() {
             <SideBar user={user} />
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
+            <div className="px-4 sm:px-0">
             {(categories.length && selected) &&
               <GuideCategories categories={categories} selected={selected} setSelected={setSelected} />
             }
-            <div className="px-4 sm:px-0">
-              <div className="sm:hidden">
+              {/* <div className="sm:hidden">
                 <label htmlFor="question-tabs" className="sr-only">
                   Select a tab
                 </label>
@@ -118,7 +118,7 @@ export default function GuidesListPage() {
                     </a>
                   ))}
                 </nav>
-              </div>
+              </div> */}
             </div>
             <div className="mt-4">
               <h1 className="sr-only">Guides</h1>

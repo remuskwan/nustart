@@ -49,6 +49,11 @@ public class DataInitSessionBean {
             a.setPassword("1234567aA@");
             a.setCreated(new Date());
             a.setUsername("Admin01");
+            a.setFaculty("default");
+            a.setCourse("default");
+            a.setYr("0");
+            a.setProfilePicture("default");
+            a.setCoverImage("default");
             personSessionBeanLocal.createUser(a);
         } catch (Exception e) {
             e.printStackTrace();

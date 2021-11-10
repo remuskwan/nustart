@@ -16,6 +16,8 @@ import enumeration.AccountType;
 import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
+import error.UserUnapprovedException;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
@@ -56,9 +58,8 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         }
     }
 
-    //might be front end idk
     @Override
-    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, NoResultException {
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, NoResultException {
         try {
             Person p = getPersonByEmail(email);
             if (!p.getPassword().equals(password)) {
@@ -66,7 +67,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
             } else if (p.getAccountStatus().equals(AccountStatus.BLOCKED)) {
                 throw new UserBlockedException("User blocked");
             } else if (p.getAccountStatus().equals(AccountStatus.UNAPPROVED)) {
-                throw new UserBlockedException("Please wait to be approved");
+                throw new UserUnapprovedException("Please wait to be approved");
             } else {
                 return p.getId();
             }
@@ -78,6 +79,13 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
         try {
+            p.setCreated(new Date());
+            p.setCoverImage("default");
+            p.setProfilePicture("default");
+            if (p.getAccountType() == AccountType.STAFF) {
+                p.setCourse("default");
+                p.setYr("0");
+            }
             em.persist(p);
         } catch (PersistenceException ex) {
             if (ex.getCause().getCause() != null
@@ -93,24 +101,25 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
-        
+
         user.setAccountStatus(s.getAccountStatus());
         user.setAccountType(s.getAccountType());
-        user.setFaculty(s.getFaculty());
-        user.setCourse(s.getCourse());
-//        user.setProfilePicture(s.getProfilePicture());
+        user.setFaculty(s.getFaculty().trim());
+        user.setCourse(s.getCourse().trim());
+        user.setProfilePicture(s.getProfilePicture());
+        user.setCoverImage(s.getCoverImage());
         user.setLikedGuides(s.getLikedGuides());
         user.setLikedPosts(s.getLikedPosts());
-        user.setEmail(s.getEmail());
+        user.setEmail(s.getEmail().trim());
         user.setPassword(s.getPassword());
-        user.setYr(s.getYr());
-
+        user.setUsername(s.getUsername().trim());
+        user.setYr(s.getYr().trim());
     }
 
     @Override
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setDeleted(true);
+        em.remove(p);
     }
 
     @Override
@@ -334,20 +343,21 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
 
         return q.getResultList();
     }
+
     @Override
     public List<Guide> getGuidesCreated(Long pId) {
         Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator.id = :id");
         q.setParameter("id", pId);
         return q.getResultList();
     }
-    
+
     @Override
     public List<Thread> getThreadsCreated(Long pId) {
         Query q = em.createQuery("SELECT t FROM Thread t WHERE t.creator.id = :id");
         q.setParameter("id", pId);
         return q.getResultList();
     }
-    
+
     @Override
     public List<Post> getPostsCreated(Long pId) {
         Query q = em.createQuery("SELECT p FROM Post p WHERE p.creator.id = :id");

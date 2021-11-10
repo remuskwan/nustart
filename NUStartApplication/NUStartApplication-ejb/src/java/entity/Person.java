@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import enumeration.AccountType;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,19 +29,19 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique=true)
     private String email;
     private String password;
     private String username;
     private String profilePicture; 
+    private String coverImage;
     @Enumerated
     private AccountType accountType;
     @Enumerated
     private AccountStatus accountStatus;
-//    private boolean active; //student and staff only
     private String faculty; //student and staff only
     private String course; // student only
-    private int yr; //student only
-    private boolean deleted;
+    private String yr; //student only
     @Temporal(TemporalType.DATE)
     private Date created;
 
@@ -91,6 +92,14 @@ public class Person implements Serializable {
         this.profilePicture = profilePicture;
     }
 
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
     public AccountType getAccountType() {
         return accountType;
     }
@@ -98,14 +107,6 @@ public class Person implements Serializable {
     public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
     }
-
-//    public boolean isActive() {
-//        return active;
-//    }
-//
-//    public void setActive(boolean active) {
-//        this.active = active;
-//    }
 
     public String getFaculty() {
         return faculty;
@@ -123,20 +124,12 @@ public class Person implements Serializable {
         this.course = course;
     }
 
-    public int getYr() {
+    public String getYr() {
         return yr;
     }
 
-    public void setYr(int yr) {
+    public void setYr(String yr) {
         this.yr = yr;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getUsername() {
@@ -146,7 +139,6 @@ public class Person implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public List<Contact> getContacts() {
         return contacts;

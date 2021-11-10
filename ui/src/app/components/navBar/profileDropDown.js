@@ -19,7 +19,7 @@ export default function ProfileDropDown({ user }) {
       <div>
         <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
           <span className="sr-only">Open user menu</span>
-          <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+          <img className="h-8 w-8 rounded-full" src={user.profilePicture} alt="" />
         </Menu.Button>
       </div>
       <Transition

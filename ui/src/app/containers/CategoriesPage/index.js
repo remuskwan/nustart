@@ -4,7 +4,6 @@ import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import api from '../../util/api'
 import CategoriesTable from '../../components/categoriesTable'
-import AddCategoryModal from '../../components/createCatModal'
 import NewButton from '../../components/newButton'
 import { useRouteMatch } from 'react-router'
 

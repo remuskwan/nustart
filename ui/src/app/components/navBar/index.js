@@ -17,7 +17,7 @@ export default function NavBar({
   editProfile = false,
   user,
   userNavigation = [
-    { name: 'Your Profile', path: '/profile' },
+    { name: 'Your Profile', path: `/profile/${user.id}` },
   ],
   searchString = "",
   searchItems,
@@ -55,8 +55,8 @@ export default function NavBar({
                   <Link to="/">
                     <img
                       className="block h-8 w-auto"
-                      src="https://nustart.s3.ap-southeast-1.amazonaws.com/logo.png"
-                      alt="NUStart"
+                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
+                      alt="Workflow"
                     />
                   </Link>
                 </div>

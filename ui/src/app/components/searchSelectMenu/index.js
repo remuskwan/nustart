@@ -14,7 +14,7 @@ export default function SearchSelectMenu({options, searchType, setSearchType}) {
         <>
           {/* <Listbox.Label className="block text-sm font-medium text-gray-700">Assigned to</Listbox.Label> */}
           <div className="relative">
-            <Listbox.Button className="bg-white relative w-full border-t border-r border-b border-gray-300 rounded-r-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <Listbox.Button className="bg-white relative w-full border-t border-r border-b border-gray-300 rounded-r-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
               <span className="block truncate">{searchType.name}</span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -34,7 +34,7 @@ export default function SearchSelectMenu({options, searchType, setSearchType}) {
                     key={person.id}
                     className={({ active }) =>
                       classNames(
-                        active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                        active ? 'text-white bg-rose-600' : 'text-gray-900',
                         'cursor-default select-none relative py-2 pl-3 pr-9'
                       )
                     }
@@ -49,7 +49,7 @@ export default function SearchSelectMenu({options, searchType, setSearchType}) {
                         {selected ? (
                           <span
                             className={classNames(
-                              active ? 'text-white' : 'text-indigo-600',
+                              active ? 'text-white' : 'text-rose-600',
                               'absolute inset-y-0 right-0 flex items-center pr-4'
                             )}
                           >
