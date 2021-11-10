@@ -180,6 +180,7 @@ export default function ProfilePage() {
 
     const [guides, setGuides] = useState([])
     const [threads, setThreads] = useState([])
+    const [posts, setPosts] = useState([])
     const [editMode, setEditMode] = useState(false)
 
     const { uid } = useParams()
@@ -191,7 +192,7 @@ export default function ProfilePage() {
                     setUser(response.data)
                     setProfilePic(response.data.profilePicture)
                     setEditMode(response.data.id.toString() === uid)
-                    console.log(response.data.id === uid)
+                    //console.log(response.data.id === uid)
                 }).then(async () => {
                     if (!editMode) {
                         await api.getUser(uid)
@@ -222,6 +223,14 @@ export default function ProfilePage() {
                 .then(() => console.log(threads))
         }
         getThreads()
+    }, [])
+
+    useEffect(() => {
+        async function getPosts() {
+            await api.getUserPost(uid)
+            .then(response => setPosts(response.data))
+        }
+        getPosts()
     }, [])
 
     function resetTabState(tabName) {

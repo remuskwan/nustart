@@ -3,6 +3,11 @@ import { Link, useHistory } from 'react-router-dom'
 import { Menu, Transition } from '@headlessui/react'
 import { removeUserSession } from '../../util/Common'
 
+const user = {
+  imageUrl:
+    'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+}
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -16,18 +21,19 @@ export default function ProfileDropDown({ user }) {
           <span className="sr-only">Open user menu</span>
           {user.profilePicture === "default"
             ?
-            <div className="max-w-md mx-auto my-3">
-              <div className="flex justify-center items-center content-center bg-gradient-to-br from-rose-300 to-rose-600 shadow-md hover:shadow-lg h-8 w-8 rounded-full fill-current text-white">
-                <h2 className="text-xs">{user.username.substring(0, 1)}</h2>
+            <div class="max-w-md mx-auto my-3">
+              <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 hover:shadow-lg h-10 w-10 rounded-full fill-current text-white">
+                <h2 style={{ fontSize: 18 }}>{user.username.substring(0, 1)}</h2>
               </div>
             </div>
             :
             <img
-              className="h-8 w-8 rounded-full"
+              className="h-24 w-24 rounded-full sm:h-10 sm:w-10"
               src={user.profilePicture}
               alt={user.username.substring(0, 1)}
             />
           }
+          {/* <img className="h-8 w-8 rounded-full" src={user.profilePicture} alt="" /> */}
         </Menu.Button>
       </div>
       <Transition

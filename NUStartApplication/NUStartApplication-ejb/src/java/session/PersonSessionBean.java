@@ -17,6 +17,8 @@ import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
 import error.UserUnapprovedException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
@@ -78,10 +80,17 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
         try {
+            p.setCreated(new Date());
+            p.setCoverImage("default");
+            p.setProfilePicture("default");
+            if (p.getAccountType() == AccountType.STAFF) {
+                p.setCourse("default");
+                p.setYr("0");
+            }
             em.persist(p);
         } catch (PersistenceException ex) {
             if (ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getName().equals("org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException")) {
+                    && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
                 throw new UserEmailExistException("Account already exists");
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
@@ -112,13 +121,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);
         em.remove(p);
-    }
-
-    @Override
-    public void addContact(Contact c, Long pId) throws NoResultException {
-        em.persist(c);
-        Person p = getPerson(pId);
-        p.getContacts().add(c);
     }
 
     @Override
@@ -254,9 +256,19 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public int getContacts() {
-        return em.createQuery("SELECT c FROM Contact c").getResultList().size();
+    public List<Contact> getContacts() {
+        return em.createQuery("SELECT c FROM Contact c").getResultList();
+    }
+
+    public List<Contact> addContact(Long pId, Contact c) {
+        try {
+            Person p = getPerson(pId);
+            em.persist(c);
+            p.getContacts().add(c);
+            return p.getContacts();
+        } catch (NoResultException ex) {
+            return new ArrayList<>();
+        }
     }
 
     @Override
