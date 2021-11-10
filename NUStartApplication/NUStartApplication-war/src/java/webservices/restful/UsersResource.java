@@ -5,6 +5,7 @@
  */
 package webservices.restful;
 
+import error.UserRejectedException;
 import entity.Person;
 import entity.Post;
 import enumeration.AccountType;
@@ -207,6 +208,11 @@ public class UsersResource {
         } catch (UserUnapprovedException ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Please wait to be approved").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (UserRejectedException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "You have been rejected.").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (Exception ex) {
