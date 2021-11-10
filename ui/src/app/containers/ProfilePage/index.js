@@ -40,7 +40,7 @@ const tabs = [
     { name: 'Guides', href: '#', current: false },
     { name: 'Threads', href: '#', current: false },
     { name: 'Posts', href: '#', current: false },
-    { name: 'Liked', href: '#', current: false },
+    //{ name: 'Liked', href: '#', current: false },
 ]
 
 const defaultUser = {

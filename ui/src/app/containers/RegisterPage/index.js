@@ -351,7 +351,7 @@ export default function RegisterPage() {
                                 </Listbox>
 
                                 <input type="hidden" name="remember" defaultValue="true" />
-                                <div className="rounded-md shadow-sm -space-y-px">
+                                <div className="mt-2 rounded-md shadow-sm -space-y-px">
                                     <div>
                                         <label htmlFor="course" className="sr-only">
                                             Course
