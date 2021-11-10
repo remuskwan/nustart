@@ -44,7 +44,7 @@ export default function ContactsTab({ editMode = false, user }) {
             //add action
             if (note.value.trim() === "") return;
 
-            note.id = contactStore.currentId + 1;
+            note.id = currentId + 1;
 
             setContactStore({
                 currentId: note.id,

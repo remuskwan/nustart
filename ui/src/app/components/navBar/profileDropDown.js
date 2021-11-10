@@ -3,11 +3,6 @@ import { Link, useHistory } from 'react-router-dom'
 import { Menu, Transition } from '@headlessui/react'
 import { removeUserSession } from '../../util/Common'
 
-const user = {
-  imageUrl:
-    'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -28,12 +23,11 @@ export default function ProfileDropDown({ user }) {
             </div>
             :
             <img
-              className="h-24 w-24 rounded-full sm:h-10 sm:w-10"
+              className="h-10 w-10 rounded-full sm:h-10 sm:w-10"
               src={user.profilePicture}
               alt={user.username.substring(0, 1)}
             />
           }
-          {/* <img className="h-8 w-8 rounded-full" src={user.profilePicture} alt="" /> */}
         </Menu.Button>
       </div>
       <Transition
@@ -48,14 +42,17 @@ export default function ProfileDropDown({ user }) {
         <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
           <Menu.Item key='Your Profile'>
             {({ active }) => (
-              <Link
-                to={`/profile/${user.id}`}
+              <button
                 className={classNames(
                   active ? 'bg-gray-100' : '',
-                  'block py-2 px-4 text-sm text-gray-700'
-                )}>
+                  'w-full text-left py-2 px-4 text-sm text-gray-700'
+                )}
+                onClick={() => {
+                  history.push(`/profile/${user.id}`)
+                  window.location.reload()
+                }}>
                 Your Profile
-              </Link>
+              </button>
             )}
           </Menu.Item>
           <Menu.Item key='Sign out'>

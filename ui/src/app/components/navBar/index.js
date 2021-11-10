@@ -16,9 +16,9 @@ export default function NavBar({
   disableSearch = false,
   editProfile = false,
   user,
-  userNavigation = [
-    { name: 'Your Profile', path: `/profile/${user.id}` },
-  ],
+  userNavigation = [],
+  //   { name: 'Your Profile', path: `/profile/${user.id}` },
+  // ],
   searchString = "",
   searchItems,
 }) {
@@ -28,7 +28,7 @@ export default function NavBar({
 
   const navigation = !editProfile ? [
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Guides', path: '/guides', icon: HomeIcon },
+    { name: 'Guides', path: '/categories', icon: HomeIcon },
     ...user.accountType === "ADMIN" ? [
       { name: 'Categories', path: '/admin/categories', icon: UserGroupIcon },
       { name: 'Users', path: '/users', icon: UserGroupIcon }
@@ -87,7 +87,7 @@ export default function NavBar({
                         </div>
                       </Fragment>
                       : <div className="h-9" />
-                      }
+                    }
                   </div>
                 </div>
               </div>
@@ -134,15 +134,24 @@ export default function NavBar({
                 </div>
               </div>
               <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
-                {userNavigation.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.path}
-                    className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                  >
-                    {item.name}
-                  </NavLink>
-                ))}
+                <button
+                  className="w-full block rounded-md py-2 px-3 text-base text-left font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                  onClick={() => {
+                    history.push(`/profile/${user.id}`)
+                    window.location.reload()
+                  }}>
+                  Your Profile
+                </button>
+                {/* {userNavigation.map((item) =>
+                (<NavLink
+                  key={item.name}
+                  to={item.path}
+
+                  className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                >
+                  {item.name}
+                </NavLink>
+                ))} */}
                 <button
                   className="w-full block rounded-md py-2 px-3 text-base text-left font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                   onClick={() => {
