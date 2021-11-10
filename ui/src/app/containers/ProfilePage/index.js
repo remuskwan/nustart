@@ -9,6 +9,7 @@ import {
     UserCircleIcon,
     MailIcon,
     PhoneIcon,
+    BanIcon,
 } from '@heroicons/react/solid'
 import {
     CalendarIcon,
@@ -30,6 +31,7 @@ import ContactsTab from './contactsTab'
 
 import AccountTab from './accountTab';
 import ThreadsTab from './threadsTab'
+import PostsTab from './postsTab'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
@@ -237,7 +239,7 @@ export default function ProfilePage() {
         } else if (activeTab[0].name === 'Guides') {
             return <GuidesTab guides={guides} />;
         } else if (activeTab[0].name === 'Posts') {
-            return <PostsTab />;
+            return <PostsTab posts={posts} />;
         } else if (activeTab[0].name === 'Threads') {
             return <ThreadsTab threads={threads} />
         } else {
@@ -245,56 +247,56 @@ export default function ProfilePage() {
         }
     }
 
-    function PostsTab() {
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {posts.map((p) => (
-                        <li key={p.creator.email}>
+    // function PostsTab() {
+    //     return (
+    //         <div className="bg-white shadow overflow-hidden sm:rounded-md">
+    //             <ul role="list" className="divide-y divide-gray-200">
+    //                 {posts.map((p) => (
+    //                     <li key={p.creator.email}>
 
-                            <div className="flex items-center px-4 py-4 sm:px-6">
-                                <div className="min-w-0 flex-1 flex items-center">
+    //                         <div className="flex items-center px-4 py-4 sm:px-6">
+    //                             <div className="min-w-0 flex-1 flex items-center">
 
-                                    <div className="min-w-0 flex-1 px-2 md:gap-2">
-                                        <div>
-                                            <p className="text-sm font-medium text-rose-500 truncate">{p.creator.forumTitle}</p>
-                                            <p className="mt-2 flex items-center text-sm text-gray-900">
-                                                <span className="truncate">Thread {p.creator.threadTitle}</span>
-                                            </p>
-                                        </div>
-                                        <div className="md:block">
-                                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    <time dateTime={p.date}>{p.date}</time>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="md:block">
-                                            <div className="mt-2 flex items-center text-sm text-gray-700">
-                                                <p>
-                                                    {p.postContents}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                                    >
-                                        View
-                                    </a>
-                                </div>
-                            </div>
+    //                                 <div className="min-w-0 flex-1 px-2 md:gap-2">
+    //                                     <div>
+    //                                         <p className="text-sm font-medium text-rose-500 truncate">{p.creator.forumTitle}</p>
+    //                                         <p className="mt-2 flex items-center text-sm text-gray-900">
+    //                                             <span className="truncate">Thread {p.creator.threadTitle}</span>
+    //                                         </p>
+    //                                     </div>
+    //                                     <div className="md:block">
+    //                                         <div className="mt-2 flex items-center text-sm text-gray-500">
+    //                                             <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+    //                                             <p>
+    //                                                 <time dateTime={p.date}>{p.date}</time>
+    //                                             </p>
+    //                                         </div>
+    //                                     </div>
+    //                                     <div className="md:block">
+    //                                         <div className="mt-2 flex items-center text-sm text-gray-700">
+    //                                             <p>
+    //                                                 {p.postContents}
+    //                                             </p>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                             <div>
+    //                                 <a
+    //                                     href="#"
+    //                                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
+    //                                 >
+    //                                     View
+    //                                 </a>
+    //                             </div>
+    //                         </div>
 
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
-    }
+    //                     </li>
+    //                 ))}
+    //             </ul>
+    //         </div>
+    //     )
+    // }
 
     function LikedTab(editMode) {
         return (
@@ -402,7 +404,6 @@ export default function ProfilePage() {
         if (viewUser.accountType === 'STAFF') {
             return (
                 <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-
                     <div className="mt-2 flex items-center text-sm text-gray-500">
                         <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                         Staff
@@ -556,6 +557,7 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <div className="flex-1 min-w-0">
+                                <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{viewUser.username}</h2>
                                 <RenderPosition />
                             </div>
                         </div>
@@ -604,6 +606,17 @@ export default function ProfilePage() {
                                 <div className="flex-1 min-w-0">
                                     <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{viewUser.username}</h2>
                                     <RenderPosition />
+                                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                                        {
+                                            viewUser.accountStatus === 'ACTIVE'
+                                                ? 
+                                                <>
+                                                    <CheckCircleIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" aria-hidden="true" />
+                                                    {viewUser.accountStatus}
+                                                </>
+                                                : null
+                                        }
+                                    </div>
                                 </div>
 
                             </div>

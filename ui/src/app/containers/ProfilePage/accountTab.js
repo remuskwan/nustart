@@ -182,10 +182,9 @@ export default function AccountTab({ editMode = false, uid }) {
                 <div className="hidden lg:flex lg:flex-shrink-0">
                 </div>
                 <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
-                    
+
                     <div className="flex-1 relative z-0 flex overflow-hidden">
                         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
-
                             <article>
                                 <div className="mt-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
@@ -209,9 +208,30 @@ export default function AccountTab({ editMode = false, uid }) {
                                                 {user.username}
                                             </dd>
                                         </div>
+                                        {user.accountType === 'STAFF' && user.course == 'default' && user.yr == '0'
+                                            ? null
+                                            : <>
+                                                <div className="sm:col-span-2">
+                                                    <dt className="text-sm font-medium text-gray-500">Course</dt>
+                                                    <dd
+                                                        className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
+                                                    >
+                                                        {user.course}
+                                                    </dd>
+                                                </div>
+                                                <div className="sm:col-span-2">
+                                                    <dt className="text-sm font-medium text-gray-500">Year</dt>
+                                                    <dd
+                                                        className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
+                                                    >
+                                                        {user.yr}
+                                                    </dd>
+                                                </div>
+                                            </>
+                                        }
                                     </dl>
                                     <div className="mt-8 max-w-5xl mx-auto px-1 pb-12 sm:px-1 lg:px-1">
-                                        
+
                                     </div>
                                 </div>
                             </article>
