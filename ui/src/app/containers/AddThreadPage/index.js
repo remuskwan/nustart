@@ -4,7 +4,11 @@ import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
 import TextArea from '../../components/textArea';
+import draftToHtml from 'draftjs-to-html';
 import api from '../../util/api';
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function AddThreadPage() {
   const history = useHistory()
@@ -14,6 +18,9 @@ export default function AddThreadPage() {
   const [content, setContent] = useState("")
   const [error, setError] = useState(null);
   // const editor = useMemo(() => withHistory, input)
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
@@ -27,7 +34,7 @@ export default function AddThreadPage() {
       creator: user,
       posts: [
         {
-          content: content,
+          content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
           creator: user
         }
       ]
@@ -47,11 +54,11 @@ export default function AddThreadPage() {
   return (
     user &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar disableButton={true} user={user}/>
+      <NavBar disableButton={true} user={user} />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-            <SideBar user={user}/>
+            <SideBar user={user} />
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
             <div className="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
@@ -81,20 +88,27 @@ export default function AddThreadPage() {
                       </div>
 
                       <div className="col-span-3">
-                        <TextArea
-                          name="content"
-                          id="content"
-                          label="Post"
-                          required={true}
-                          helpText="Create your first post."
-                          value={content}
-                          onChange={(e) => setContent(e.target.value)}
-                        />
+                        <div>
+                          <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                            Post
+                          </label>
+
+                          <div>
+                            <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                              <Editor
+                                editorState={editorState}
+                                onEditorStateChange={setEditorState}
+                              //   id="post"
+                              />
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                  <button
+                    <button
                       type="button"
                       className="bg-white border border-gray-300 rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
                       onClick={() => history.goBack()}
