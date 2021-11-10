@@ -11,6 +11,7 @@ import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
+import error.UserRejectedException;
 import error.UserUnapprovedException;
 import java.util.List;
 import javax.ejb.Local;
@@ -22,7 +23,7 @@ import javax.ejb.Local;
 @Local
 public interface PersonSessionBeanLocal {
 
-    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, NoResultException;
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserRejectedException, UserUnapprovedException, NoResultException;
 
     public Person getPerson(Long pId) throws NoResultException;
 

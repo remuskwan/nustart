@@ -16,6 +16,7 @@ import enumeration.AccountType;
 import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
+import error.UserRejectedException;
 import error.UserUnapprovedException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -58,7 +59,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, NoResultException {
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, UserRejectedException, NoResultException {
         try {
             Person p = getPersonByEmail(email);
             if (!p.getPassword().equals(password)) {
@@ -67,6 +68,8 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
                 throw new UserBlockedException("User blocked");
             } else if (p.getAccountStatus().equals(AccountStatus.UNAPPROVED)) {
                 throw new UserUnapprovedException("Please wait to be approved");
+            } else if (p.getAccountStatus().equals(AccountStatus.REJECTED)) {
+                throw new UserRejectedException("You have been rejected.");
             } else {
                 return p.getId();
             }
