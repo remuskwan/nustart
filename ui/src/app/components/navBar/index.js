@@ -55,7 +55,7 @@ export default function NavBar({
                   <Link to="/">
                     <img
                       className="block h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
+                      src="https://nustart.s3.ap-southeast-1.amazonaws.com/nustartlogo.png"
                       alt="Workflow"
                     />
                   </Link>
