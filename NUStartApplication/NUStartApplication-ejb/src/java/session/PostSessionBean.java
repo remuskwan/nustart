@@ -6,9 +6,11 @@
 package session;
 
 import entity.Post;
+import error.NoResultException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 /**
@@ -17,6 +19,8 @@ import javax.persistence.Query;
  */
 @Stateless
 public class PostSessionBean implements PostSessionBeanLocal {
+    
+    @PersistenceContext
     private EntityManager em;
 
     @Override
@@ -38,5 +42,30 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public List<Post> searchPostsByCreator(String displayName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+     public Post getPost(Long pId) throws NoResultException {
+        //System.out.println("get post " + pId);
+        Post p = em.find(Post.class, pId);
+        
+        if (p != null) {
+            return p;
+        } else {
+            throw new NoResultException("Post not found");
+        }
+    }
+
+    @Override
+    public entity.Thread getThreadFromPost(Long pId) {
+        try {
+            Post p = getPost(pId);
+            System.out.println(p);
+            Query q = em.createQuery("SELECT t FROM Thread t WHERE :post MEMBER OF t.posts");
+            q.setParameter("post", p);
+
+            return (entity.Thread) q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 }

@@ -16,14 +16,14 @@ export default function ProfileDropDown({ user }) {
           <span className="sr-only">Open user menu</span>
           {user.profilePicture === "default"
             ?
-            <div className="max-w-md mx-auto my-3">
-              <div className="flex justify-center items-center content-center bg-gradient-to-br from-rose-300 to-rose-600 shadow-md hover:shadow-lg h-8 w-8 rounded-full fill-current text-white">
-                <h2 className="text-xs">{user.username.substring(0, 1)}</h2>
+            <div class="max-w-md mx-auto my-3">
+              <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 hover:shadow-lg h-10 w-10 rounded-full fill-current text-white">
+                <h2 style={{ fontSize: 18 }}>{user.username.substring(0, 1)}</h2>
               </div>
             </div>
             :
             <img
-              className="h-8 w-8 rounded-full"
+              className="h-10 w-10 rounded-full sm:h-10 sm:w-10"
               src={user.profilePicture}
               alt={user.username.substring(0, 1)}
             />
@@ -42,14 +42,17 @@ export default function ProfileDropDown({ user }) {
         <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
           <Menu.Item key='Your Profile'>
             {({ active }) => (
-              <Link
-                to={`/profile/${user.id}`}
+              <button
                 className={classNames(
                   active ? 'bg-gray-100' : '',
-                  'block py-2 px-4 text-sm text-gray-700'
-                )}>
+                  'w-full text-left py-2 px-4 text-sm text-gray-700'
+                )}
+                onClick={() => {
+                  history.push(`/profile/${user.id}`)
+                  window.location.reload()
+                }}>
                 Your Profile
-              </Link>
+              </button>
             )}
           </Menu.Item>
           <Menu.Item key='Sign out'>

@@ -208,9 +208,9 @@ export default function AccountTab({ editMode = false, uid }) {
                                                 {user.username}
                                             </dd>
                                         </div>
-                                        {user.accountType === 'STAFF' && user.course == 'default' && user.yr == '0'
-                                            ? null
-                                            : <>
+                                        {user.accountType === 'STUDENT' && user.course == 'default' && user.yr == '0'
+                                            ?
+                                            <>
                                                 <div className="sm:col-span-2">
                                                     <dt className="text-sm font-medium text-gray-500">Course</dt>
                                                     <dd
@@ -228,6 +228,7 @@ export default function AccountTab({ editMode = false, uid }) {
                                                     </dd>
                                                 </div>
                                             </>
+                                            : null
                                         }
                                     </dl>
                                     <div className="mt-8 max-w-5xl mx-auto px-1 pb-12 sm:px-1 lg:px-1">

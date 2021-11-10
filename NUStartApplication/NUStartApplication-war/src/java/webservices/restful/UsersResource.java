@@ -75,7 +75,7 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getContactId() {
         try {
-            int latestId = personSessionBeanLocal.getContacts();
+            int latestId = personSessionBeanLocal.getContacts().size();
             System.out.println(latestId);
             return Response.status(200)
                     .entity(latestId)
