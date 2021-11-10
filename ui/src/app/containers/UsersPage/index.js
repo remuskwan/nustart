@@ -1,18 +1,6 @@
 import { Fragment, useState, useEffect } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
-import {
-    CalendarIcon,
-    HomeIcon,
-    BriefcaseIcon,
-    AcademicCapIcon,
-    AnnotationIcon,
-    LibraryIcon,
-    SearchIcon,
-} from '@heroicons/react/outline'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
-import ContactForm from '../../components/contacts/ContactForm'
-import ContactList from '../../components/contacts/ContactList'
 import NewButton from '../../components/newButton'
 import api from '../../util/api'
 import AllUsersTab from './allUsersTab'
@@ -83,7 +71,7 @@ export default function UsersPage() {
             <NavBar
                 buttonContent="users"
                 disableButton={user.accountType !== "ADMIN"}
-                component={<NewButton content='users' path='/create' />}
+                component={<NewButton content='admin' path='/users/create' />}
                 user={user}
             />
             <div className="py-10">

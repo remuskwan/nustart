@@ -53,11 +53,7 @@ public class Person implements Serializable {
     public Person() {
         this.likedPosts = new ArrayList<>();
         this.likedGuides = new ArrayList<>();
-    }
-    public Person(String email, String password) {
-        this();
-        this.email = email;
-        this.password = password;
+        this.contacts = new ArrayList<>();
     }
 
     public Long getId() {

@@ -17,7 +17,6 @@ import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
 import error.UserUnapprovedException;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
@@ -79,17 +78,10 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
         try {
-            p.setCreated(new Date());
-            p.setCoverImage("default");
-            p.setProfilePicture("default");
-            if (p.getAccountType() == AccountType.STAFF) {
-                p.setCourse("default");
-                p.setYr("0");
-            }
             em.persist(p);
         } catch (PersistenceException ex) {
             if (ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
+                    && ex.getCause().getCause().getClass().getName().equals("org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException")) {
                 throw new UserEmailExistException("Account already exists");
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());

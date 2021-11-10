@@ -51,7 +51,7 @@ public class DataInitSessionBean {
             a.setUsername("Admin01");
             a.setFaculty("default");
             a.setCourse("default");
-            a.setYr("0");
+            a.setYr("default");
             a.setProfilePicture("default");
             a.setCoverImage("default");
             personSessionBeanLocal.createUser(a);
