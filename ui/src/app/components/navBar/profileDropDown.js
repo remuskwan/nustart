@@ -3,11 +3,6 @@ import { Link, useHistory } from 'react-router-dom'
 import { Menu, Transition } from '@headlessui/react'
 import { removeUserSession } from '../../util/Common'
 
-const user = {
-  imageUrl:
-    'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -17,9 +12,22 @@ export default function ProfileDropDown({ user }) {
   return (
     <Menu as="div" className="flex-shrink-0 relative ml-5">
       <div>
-        <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+        <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-rose-500">
           <span className="sr-only">Open user menu</span>
-          <img className="h-8 w-8 rounded-full" src={user.profilePicture} alt="" />
+          {user.profilePicture === "default"
+            ?
+            <div className="max-w-md mx-auto my-3">
+              <div className="flex justify-center items-center content-center bg-gradient-to-br from-rose-300 to-rose-600 shadow-md hover:shadow-lg h-8 w-8 rounded-full fill-current text-white">
+                <h2 className="text-xs">{user.username.substring(0, 1)}</h2>
+              </div>
+            </div>
+            :
+            <img
+              className="h-8 w-8 rounded-full"
+              src={user.profilePicture}
+              alt={user.username.substring(0, 1)}
+            />
+          }
         </Menu.Button>
       </div>
       <Transition
@@ -33,17 +41,17 @@ export default function ProfileDropDown({ user }) {
       >
         <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
           <Menu.Item key='Your Profile'>
-              {({ active }) => (
-                <Link
-                  to={`/profile/${user.id}`}
-                  className={classNames(
-                    active ? 'bg-gray-100' : '',
-                    'block py-2 px-4 text-sm text-gray-700'
-                  )}>
-                  Your Profile
-                </Link>
-              )}
-            </Menu.Item>
+            {({ active }) => (
+              <Link
+                to={`/profile/${user.id}`}
+                className={classNames(
+                  active ? 'bg-gray-100' : '',
+                  'block py-2 px-4 text-sm text-gray-700'
+                )}>
+                Your Profile
+              </Link>
+            )}
+          </Menu.Item>
           <Menu.Item key='Sign out'>
             {({ active }) => (
               <button

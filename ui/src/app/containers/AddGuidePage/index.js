@@ -106,10 +106,6 @@ export default function AddGuidePage() {
       .catch((error) => setError(error))
   }, [])
 
-
-
-
-  console.log(links)
   if (error) return `Error: ${error.message}`
 
   return (
@@ -150,10 +146,12 @@ export default function AddGuidePage() {
                       <div className="col-span-3">
                         <div>
                           <label htmlFor="about" className="block text-sm font-medium text-gray-700">
-                            Post
+                            Body
                           </label>
-                          <div>
-                            <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                          <div className="mt-1">
+                          <div className="shadow block w-full sm:text-sm rounded-md"
+                              style={{ padding: '10px', minHeight: '400px' }}
+                            >
                               <Editor
                                 editorState={editorState}
                                 onEditorStateChange={setEditorState}
@@ -178,7 +176,7 @@ export default function AddGuidePage() {
                           </div>
                         }
                       </div>
-                      <div className="col-span-3">
+                      {/* <div className="col-span-3">
                         <p className="block text-sm font-medium text-gray-700">
                           Links
                         </p>
@@ -224,7 +222,7 @@ export default function AddGuidePage() {
                             Add
                           </button>
                         </div>
-                      </form>
+                      </form> */}
                     </div>
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">

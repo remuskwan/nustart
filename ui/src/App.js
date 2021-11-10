@@ -17,6 +17,7 @@ import AddGuidePage from './app/containers/AddGuidePage';
 import CategoriesPage from './app/containers/CategoriesPage';
 import AddCategoryPage from './app/containers/AddCategoryPage';
 import GuidesListPage from './app/containers/GuidesListPage';
+import AddAdminPage from './app/containers/AddAdminPage';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <PrivateRoute path="/:id/threads/create" component={AddThreadPage} />
         <PrivateRoute exact path="/profile/:uid" component={ProfilePage}/>
         <PrivateRoute exact path="/users" component={UsersPage}/>
+        <PrivateRoute path="/users/create" component={AddAdminPage} />
         <PrivateRoute path="/:forumId/threads/:threadId/posts/create" component={AddPostPage} />
         <PrivateRoute exact path="/categories" component={GuidesPage} />
         <PrivateRoute exact path="/categories/:id/guides" component={GuidesListPage} />

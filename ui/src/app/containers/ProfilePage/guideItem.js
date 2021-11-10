@@ -66,7 +66,7 @@ export default function GuideItem({ guide }) {
         async function getCategory() {
             await api.getGuideCategory(guide.id)
                 .then(response => setCategory(response.data))
-                .then(() => console.log(category))
+                //.then(() => console.log(category))
         }
         getCategory()
     }, [])
