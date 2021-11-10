@@ -4,7 +4,9 @@ import InputText from '../../components/inputText'
 import { uploadFile } from 'react-s3'
 import UploadImage from '../../components/uploadImage'
 import {
+    AnnotationIcon,
     CheckIcon,
+    NewspaperIcon,
     SelectorIcon,
 } from '@heroicons/react/solid'
 import {
@@ -13,6 +15,7 @@ import {
 import api from '../../util/api'
 import { useHistory } from 'react-router'
 import UploadProfileImage from '../../components/uploadProfileImage'
+import moment from 'moment'
 
 const years = [
     { id: 1, name: '1' },
@@ -45,7 +48,7 @@ const faculties = [
     { id: 17, name: 'Yale-NUS' },
 ]
 
-export default function AccountTab() {
+export default function AccountTab({ editMode = false, uid }) {
     const [user, setUser] = useState(null)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -75,7 +78,7 @@ export default function AccountTab() {
 
     useEffect(() => {
         async function getLogged() {
-            const u = await api.getUser()
+            const u = await api.getUser(uid)
             setEmail(u.data.email)
             setName(u.data.username)
             setProfilePic(u.data.profilePicture)
@@ -104,7 +107,7 @@ export default function AccountTab() {
     const handleSubmit = (evt) => {
         evt.preventDefault()
         //console.log(selectedFile)
-        
+
         if (selectedFile === null && selectedCover === null) {
             updateProfile()
         } else if (selectedFile !== null && selectedCover !== null) {
@@ -129,11 +132,11 @@ export default function AccountTab() {
     const handleMultipleUploads = async (file) => {
         const locations = []
         uploadFile(file[0], config)
-            .then(data => 
+            .then(data =>
                 locations.push(data.location)
             ).then(() => uploadFile(file[1], config)
-            .then(data => locations.push(data.location))
-            .then(() => updateProfile(locations)))
+                .then(data => locations.push(data.location))
+                .then(() => updateProfile(locations)))
             .catch(error => setError(error))
     }
 
@@ -173,246 +176,317 @@ export default function AccountTab() {
             .then(() => window.location.reload())
     }
 
-    return (
-        user &&
-        <div className="pt-3 space-y-6 sm:pt-5 sm:space-y-5">
-            <form onSubmit={handleSubmit}>
-                <div className="p-5 space-y-3 sm:space-y-5">
-                    {message &&
-                        <div className="rounded-md bg-green-50 p-4">
-                            <div className="flex">
-                                <div className="flex-shrink-0">
-                                    <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
-                                </div>
-                                <div className="ml-3">
-                                    <h3 className="text-sm font-medium text-green-800">Your profile was updated successfully</h3>
-                                    <div className="mt-2 text-sm text-green-700">
-                                        {message.message}
+    function ViewMode() {
+        return (
+            <div className="h-full flex">
+                <div className="hidden lg:flex lg:flex-shrink-0">
+                </div>
+                <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
+
+                    <div className="flex-1 relative z-0 flex overflow-hidden">
+                        <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
+                            <article>
+                                <div className="mt-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                                    <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                                        <div key="email" className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-gray-500">Email</dt>
+                                            <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
+                                        </div>
+                                        <div className="sm:col-span-2">
+                                            <dt className="text-sm font-medium text-gray-500">Joined</dt>
+                                            <dd
+                                                className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
+                                            >
+                                                {moment(user.created.slice(0, -5)).format("DD/MM/YY")}
+                                            </dd>
+                                        </div>
+                                        <div className="sm:col-span-2">
+                                            <dt className="text-sm font-medium text-gray-500">Name</dt>
+                                            <dd
+                                                className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
+                                            >
+                                                {user.username}
+                                            </dd>
+                                        </div>
+                                        {user.accountType === 'STAFF' && user.course == 'default' && user.yr == '0'
+                                            ? null
+                                            : <>
+                                                <div className="sm:col-span-2">
+                                                    <dt className="text-sm font-medium text-gray-500">Course</dt>
+                                                    <dd
+                                                        className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
+                                                    >
+                                                        {user.course}
+                                                    </dd>
+                                                </div>
+                                                <div className="sm:col-span-2">
+                                                    <dt className="text-sm font-medium text-gray-500">Year</dt>
+                                                    <dd
+                                                        className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
+                                                    >
+                                                        {user.yr}
+                                                    </dd>
+                                                </div>
+                                            </>
+                                        }
+                                    </dl>
+                                    <div className="mt-8 max-w-5xl mx-auto px-1 pb-12 sm:px-1 lg:px-1">
+
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    }
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                            </article>
+                        </main>
 
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            Name
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2 max-w-lg block w-full shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
-                            <InputText
-                                type="text"
-                                name="username"
-                                id="username"
-                                autoComplete="given-name"
-                                required={true}
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            Email
-                        </label>
-                        <div className="col-span-2 shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
-                            <InputText
-                                type="email"
-                                name="email"
-                                id="email"
-                                autoComplete="email"
-                                required={true}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="col-span-3">
-                        <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Profile picture</label>
-                        {!selectedFile ?
-                            <div>
-                                <UploadProfileImage handleProfileInput={handleFileInput} accept=".jpg, .png, .gif" />
-                            </div>
-                            : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
-                                {selectedFile.name}
-                                <button className="text-gray-700" onClick={() => setSelectedFile(null)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        }
-                    </div>
-
-                    <div className="col-span-3">
-                        <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Cover Image</label>
-                        {!selectedCover ?
-                            <div >
-                                <UploadImage handleFileInput={handleCoverInput} accept=".jpg, .png, .gif" />
-                                {/* <input type="file" onChange={(e) => setCoverImage(e.target.files[0])}></input> */}
-                            </div>
-                            : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
-                                {selectedCover.name}
-                                <button className="text-gray-700" onClick={() => setSelectedCover(null)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        }
-                    </div>
-
-                    {user.accountType === "STUDENT"
-                        ?
-                        <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="country" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                Year
-                            </label>
-                            <Listbox value={year} onChange={setYear}>
-                                <div className="mt-1 relative">
-                                    <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
-                                        <span className="block truncate">{year.name}</span>
-                                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                            <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                        </span>
-                                    </Listbox.Button>
-
-                                    <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                                        <Listbox.Options className="absolute z-10 mt-1 max-w-lg block w-full bg-white shadow-sm max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:max-w-xs sm:text-sm">
-                                            {years.map((year) => (
-                                                <Listbox.Option
-                                                    key={year.id}
-                                                    className={({ active }) =>
-                                                        classNames(
-                                                            active ? 'text-white bg-rose-600' : 'text-gray-900',
-                                                            'cursor-default select-none relative py-2 pl-8 pr-4'
-                                                        )
-                                                    }
-                                                    value={year}
-                                                >
-                                                    {({ selected, active }) => (
-                                                        <>
-                                                            <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                                {year.name}
-                                                            </span>
-
-                                                            {selected ? (
-                                                                <span
-                                                                    className={classNames(
-                                                                        active ? 'text-white' : 'text-rose-600',
-                                                                        'absolute inset-y-0 left-0 flex items-center pl-1.5'
-                                                                    )}
-                                                                >
-                                                                    <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                                </span>
-                                                            ) : null}
-                                                        </>
-                                                    )}
-                                                </Listbox.Option>
-                                            ))}
-                                        </Listbox.Options>
-                                    </Transition>
-                                </div>
-                            </Listbox>
-
-                        </div>
-                        : null
-                    }
-                    {user.accountType !== "ADMIN"
-                        ? <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="street-address" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                Faculty
-                            </label>
-                            <Listbox value={faculty} onChange={setFaculty}>
-                                <div className="mt-3 relative">
-                                    <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
-                                        <span className="block truncate">{faculty.name}</span>
-                                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                            <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                        </span>
-                                    </Listbox.Button>
-
-                                    <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                                            {faculties.map((faculty) => (
-                                                <Listbox.Option
-                                                    key={faculty.id}
-                                                    className={({ active }) =>
-                                                        classNames(
-                                                            active ? 'text-white bg-rose-600' : 'text-gray-900',
-                                                            'cursor-default select-none relative py-2 pl-8 pr-4'
-                                                        )
-                                                    }
-                                                    value={faculty}
-                                                >
-                                                    {({ selected, active }) => (
-                                                        <>
-                                                            <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                                {faculty.name}
-                                                            </span>
-
-                                                            {selected ? (
-                                                                <span
-                                                                    className={classNames(
-                                                                        active ? 'text-white' : 'text-rose-600',
-                                                                        'absolute inset-y-0 left-0 flex items-center pl-1.5'
-                                                                    )}
-                                                                >
-                                                                    <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                                </span>
-                                                            ) : null}
-                                                        </>
-                                                    )}
-                                                </Listbox.Option>
-                                            ))}
-                                        </Listbox.Options>
-                                    </Transition>
-                                </div>
-                            </Listbox>
-                        </div>
-                        : null
-                    }
-
-                    {user.accountType === "STUDENT"
-                        ? <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="course" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                Course
-                            </label>
-                            <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                <input
-                                    type="text"
-                                    name="course"
-                                    id="course"
-                                    autoComplete="course"
-                                    value={course}
-                                    onChange={(e) => setCourse(e.target.value)}
-                                    className="max-w-lg block w-full shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
-                                />
-                            </div>
-                        </div>
-                        : null
-                    }
-
-                    <div className="pt-5">
-                        <div className="flex justify-end">
-                            <button
-                                type="button"
-                                className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                onClick={() => history.goBack()}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                            >
-                                Save
-                            </button>
-                        </div>
                     </div>
                 </div>
-            </form>
+            </div>
+        )
+    }
+    return (
+        user &&
+        <div>
+            {editMode
+                ? <div className="pt-3 space-y-6 sm:pt-5 sm:space-y-5">
+                    <form onSubmit={handleSubmit}>
+                        <div className="p-5 space-y-3 sm:space-y-5">
+                            {message &&
+                                <div className="rounded-md bg-green-50 p-4">
+                                    <div className="flex">
+                                        <div className="flex-shrink-0">
+                                            <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
+                                        </div>
+                                        <div className="ml-3">
+                                            <h3 className="text-sm font-medium text-green-800">Your profile was updated successfully</h3>
+                                            <div className="mt-2 text-sm text-green-700">
+                                                {message.message}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                    Name
+                                </label>
+                                <div className="mt-1 sm:mt-0 sm:col-span-2 max-w-lg block w-full shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                    <InputText
+                                        type="text"
+                                        name="username"
+                                        id="username"
+                                        autoComplete="given-name"
+                                        required={true}
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                    Email
+                                </label>
+                                <div className="col-span-2 shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+                                    <InputText
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        autoComplete="email"
+                                        required={true}
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="col-span-3">
+                                <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Profile picture</label>
+                                {!selectedFile ?
+                                    <div>
+                                        <UploadProfileImage handleProfileInput={handleFileInput} accept=".jpg, .png, .gif" />
+                                    </div>
+                                    : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
+                                        {selectedFile.name}
+                                        <button className="text-gray-700" onClick={() => setSelectedFile(null)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+
+                            <div className="col-span-3">
+                                <label className="block pb-4 sm:border-t sm:border-gray-200 sm:pt-5 text-sm font-medium text-gray-700">Cover Image</label>
+                                {!selectedCover ?
+                                    <div >
+                                        <UploadImage handleFileInput={handleCoverInput} accept=".jpg, .png, .gif" />
+                                        {/* <input type="file" onChange={(e) => setCoverImage(e.target.files[0])}></input> */}
+                                    </div>
+                                    : <div className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 ">
+                                        {selectedCover.name}
+                                        <button className="text-gray-700" onClick={() => setSelectedCover(null)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+
+                            {user.accountType === "STUDENT"
+                                ?
+                                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <label htmlFor="country" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Year
+                                    </label>
+                                    <Listbox value={year} onChange={setYear}>
+                                        <div className="mt-1 relative">
+                                            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
+                                                <span className="block truncate">{year.name}</span>
+                                                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                    <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                </span>
+                                            </Listbox.Button>
+
+                                            <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                                <Listbox.Options className="absolute z-10 mt-1 max-w-lg block w-full bg-white shadow-sm max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:max-w-xs sm:text-sm">
+                                                    {years.map((year) => (
+                                                        <Listbox.Option
+                                                            key={year.id}
+                                                            className={({ active }) =>
+                                                                classNames(
+                                                                    active ? 'text-white bg-rose-600' : 'text-gray-900',
+                                                                    'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                                )
+                                                            }
+                                                            value={year}
+                                                        >
+                                                            {({ selected, active }) => (
+                                                                <>
+                                                                    <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                                        {year.name}
+                                                                    </span>
+
+                                                                    {selected ? (
+                                                                        <span
+                                                                            className={classNames(
+                                                                                active ? 'text-white' : 'text-rose-600',
+                                                                                'absolute inset-y-0 left-0 flex items-center pl-1.5'
+                                                                            )}
+                                                                        >
+                                                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                                        </span>
+                                                                    ) : null}
+                                                                </>
+                                                            )}
+                                                        </Listbox.Option>
+                                                    ))}
+                                                </Listbox.Options>
+                                            </Transition>
+                                        </div>
+                                    </Listbox>
+
+                                </div>
+                                : null
+                            }
+                            {user.accountType !== "ADMIN"
+                                ? <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <label htmlFor="street-address" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Faculty
+                                    </label>
+                                    <Listbox value={faculty} onChange={setFaculty}>
+                                        <div className="mt-3 relative">
+                                            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
+                                                <span className="block truncate">{faculty.name}</span>
+                                                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                    <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                </span>
+                                            </Listbox.Button>
+
+                                            <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                                <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                                    {faculties.map((faculty) => (
+                                                        <Listbox.Option
+                                                            key={faculty.id}
+                                                            className={({ active }) =>
+                                                                classNames(
+                                                                    active ? 'text-white bg-rose-600' : 'text-gray-900',
+                                                                    'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                                )
+                                                            }
+                                                            value={faculty}
+                                                        >
+                                                            {({ selected, active }) => (
+                                                                <>
+                                                                    <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                                        {faculty.name}
+                                                                    </span>
+
+                                                                    {selected ? (
+                                                                        <span
+                                                                            className={classNames(
+                                                                                active ? 'text-white' : 'text-rose-600',
+                                                                                'absolute inset-y-0 left-0 flex items-center pl-1.5'
+                                                                            )}
+                                                                        >
+                                                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                                        </span>
+                                                                    ) : null}
+                                                                </>
+                                                            )}
+                                                        </Listbox.Option>
+                                                    ))}
+                                                </Listbox.Options>
+                                            </Transition>
+                                        </div>
+                                    </Listbox>
+                                </div>
+                                : null
+                            }
+
+                            {user.accountType === "STUDENT"
+                                ? <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <label htmlFor="course" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Course
+                                    </label>
+                                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                                        <input
+                                            type="text"
+                                            name="course"
+                                            id="course"
+                                            autoComplete="course"
+                                            value={course}
+                                            onChange={(e) => setCourse(e.target.value)}
+                                            className="max-w-lg block w-full shadow-sm focus:ring-rose-500 focus:border-rose-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+                                        />
+                                    </div>
+                                </div>
+                                : null
+                            }
+
+                            <div className="pt-5">
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                                        onClick={() => history.goBack()}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                : <ViewMode />
+            }
         </div>
     )
 }

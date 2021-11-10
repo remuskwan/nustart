@@ -5,6 +5,7 @@
  */
 package webservices.restful;
 
+import entity.Category;
 import entity.Comment;
 import entity.Guide;
 import entity.Link;
@@ -55,6 +56,22 @@ public class GuidesResource {
     public Response getGuide(@PathParam("gid") Long gid) {
         try {
             Guide c = guideSessionBeanLocal.getGuide(gid);
+            return Response.status(200).entity(c).build();
+        } catch (NoResultException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @GET
+    @Path("/{gid}/category")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCategoryFromGuide(@PathParam("gid") Long gid) {
+        try {
+            Category c = guideSessionBeanLocal.getCategoryFromGuide(gid);
             return Response.status(200).entity(c).build();
         } catch (NoResultException e) {
             JsonObject exception = Json.createObjectBuilder()

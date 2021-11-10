@@ -51,11 +51,23 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
         em.persist(g);
         c.getGuides().add(g);
     }
-    
+
     @Override
     public List<Category> getCategories() {
         Query q = em.createQuery("SELECT c FROM Category c");
         return q.getResultList();
+    }
+
+    public Category getCategoryFromGuide(Long gId) throws NoResultException {
+        try {
+            Guide g = getGuide(gId);
+            Query q = em.createQuery("SELECT DISTINCT c FROM Category c WHERE :guide MEMBER OF c.guides");
+            q.setParameter("guide", g);
+
+            return (Category) q.getSingleResult();
+        } catch (Exception e) {
+            throw new NoResultException("Guide not found!");
+        }
     }
 
     @Override
@@ -77,7 +89,7 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     public void deleteGuide(Long cId, Long gId) throws NoResultException {
         Category c = getCategory(cId);
         Guide g = getGuide(gId);
-        
+
         if (c != null) {
             c.getGuides().remove(g);
             em.remove(g);
@@ -142,14 +154,14 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     }
 
     @Override
-    public List<Comment> getCommentReplies(Long cId) throws NoResultException{
+    public List<Comment> getCommentReplies(Long cId) throws NoResultException {
         Query q = em.createQuery("SELECT c FROM Comment c WHERE c.parent.id = :cId");
         q.setParameter("cId", cId);
         return q.getResultList();
     }
 
     @Override
-    public List<Comment> getComments(Long gId) throws NoResultException{
+    public List<Comment> getComments(Long gId) throws NoResultException {
         Guide guide = getGuide(gId);
         return guide.getComments();
     }
@@ -157,7 +169,7 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
     @Override
     public Category getCategory(Long cId) throws NoResultException {
         Category f = em.find(Category.class, cId);
-        
+
         if (f != null) {
             return f;
         } else {
