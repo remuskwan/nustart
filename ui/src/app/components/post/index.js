@@ -71,7 +71,7 @@ export default function Post({ user, setUser, post, forumId, threadId, setThread
           </h2>
         </div>
 
-        <div className="mt-6 flex justify-between space-x-8">
+        {/* <div className="mt-6 flex justify-between space-x-8">
           <div className="flex space-x-6">
             <span className="inline-flex items-center text-sm">
               <button
@@ -85,7 +85,7 @@ export default function Post({ user, setUser, post, forumId, threadId, setThread
               </button>
             </span>
           </div>
-        </div>
+        </div> */}
       </article>
     </li>
   )

@@ -8,7 +8,7 @@ import api from '../../util/api'
 import SortSelectMenu from '../../components/SelectMenus/sortSelectMenu'
 
 const sortTypes = [
-    { id: 1, name: 'Recent', sortType: 'createdAt', reverse: false },
+    { id: 1, name: 'Recent', sortType: 'created', reverse: false },
     { id: 2, name: 'Title', sortType: 'title', reverse: true },
 ]
 
