@@ -19,7 +19,7 @@ export default function ThreadItem({ thread }) {
                 .then(response => setForum(response.data))
         }
         getForum()
-    }, [])
+    }, [thread.id])
 
     return (
         forum &&

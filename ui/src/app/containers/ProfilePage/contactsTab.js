@@ -14,7 +14,7 @@ export default function ContactsTab({ editMode = false, user }) {
             console.log(size)
         }
         getSize()
-    }, [])
+    }, [user.id])
 
     async function deleteContact(contactId) {
         await api.deleteContact(user.id, contactId)
