@@ -7,57 +7,6 @@ import {
 import { useEffect, useState } from "react"
 import api from "../../util/api"
 
-// const defaultCategory = {
-//     "created": "2021-11-09T16:00:00Z[UTC]",
-//     "creator": {
-//         "accountStatus": "ACTIVE",
-//         "accountType": "ADMIN",
-//         "contacts": [],
-//         "course": "default",
-//         "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-//         "created": "2021-11-09T16:00:00Z[UTC]",
-//         "email": "admin01@mail.com",
-//         "faculty": "default",
-//         "id": 1,
-//         "likedGuides": [],
-//         "likedPosts": [],
-//         "password": "1234567aA@",
-//         "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-//         "username": "Admin01",
-//         "yr": "0"
-//     },
-//     "guides": [
-//         {
-//             "comments": [],
-//             "content": "aaaa",
-//             "creator": {
-//                 "accountStatus": "ACTIVE",
-//                 "accountType": "ADMIN",
-//                 "contacts": [],
-//                 "course": "default",
-//                 "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-//                 "created": "2021-11-09T16:00:00Z[UTC]",
-//                 "email": "admin01@mail.com",
-//                 "faculty": "default",
-//                 "id": 1,
-//                 "likedGuides": [],
-//                 "likedPosts": [],
-//                 "password": "1234567aA@",
-//                 "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-//                 "username": "Admin01",
-//                 "yr": "0"
-//             },
-//             "dateCreated": "2021-11-09T16:00:00Z[UTC]",
-//             "id": 1,
-//             "links": [],
-//             "pictureUrl": "  ",
-//             "title": "aaaaaaa"
-//         },
-//     ],
-//     "id": 1,
-//     "name": "category1"
-// }
-
 export default function GuideItem({ guide }) {
 
     const [category, setCategory] = useState(null)

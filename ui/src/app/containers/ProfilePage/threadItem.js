@@ -10,83 +10,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../util/api'
 
-const defaultForum = {
-    "created": "2021-11-09T16:00:00Z[UTC]",
-    "creator": {
-        "accountStatus": "ACTIVE",
-        "accountType": "ADMIN",
-        "contacts": [],
-        "course": "default",
-        "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-        "created": "2021-11-09T16:00:00Z[UTC]",
-        "email": "admin01@mail.com",
-        "faculty": "default",
-        "id": 1,
-        "likedGuides": [],
-        "likedPosts": [],
-        "password": "1234567aA@",
-        "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-        "username": "Admin01",
-        "yr": "0"
-    },
-    "description": "aaaaaaaaaaaa",
-    "id": 1,
-    "threads": [
-        {
-            "closed": false,
-            "created": "2021-11-09T16:00:00Z[UTC]",
-            "creator": {
-                "accountStatus": "ACTIVE",
-                "accountType": "ADMIN",
-                "contacts": [],
-                "course": "default",
-                "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-                "created": "2021-11-09T16:00:00Z[UTC]",
-                "email": "admin01@mail.com",
-                "faculty": "default",
-                "id": 1,
-                "likedGuides": [],
-                "likedPosts": [],
-                "password": "1234567aA@",
-                "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-                "username": "Admin01",
-                "yr": "0"
-            },
-            "id": 1,
-            "pinned": false,
-            "posts": [
-                {
-                    "content": "aaaaaaaaaaaaaaaaaaaa",
-                    "createdAt": "2021-11-09T16:00:00Z[UTC]",
-                    "creator": {
-                        "accountStatus": "ACTIVE",
-                        "accountType": "ADMIN",
-                        "contacts": [],
-                        "course": "default",
-                        "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-                        "created": "2021-11-09T16:00:00Z[UTC]",
-                        "email": "admin01@mail.com",
-                        "faculty": "default",
-                        "id": 1,
-                        "likedGuides": [],
-                        "likedPosts": [],
-                        "password": "1234567aA@",
-                        "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-                        "username": "Admin01",
-                        "yr": "0"
-                    },
-                    "id": 1,
-                    "likes": 0
-                }
-            ],
-            "title": "aaaaaaaaa"
-        }
-    ],
-    "title": "saaaaaaaaaa"
-}
-
 export default function ThreadItem({ thread }) {
-    const [forum, setForum] = useState(defaultForum)
+    const [forum, setForum] = useState(null)
 
     useEffect(() => {
         async function getForum() {
@@ -97,6 +22,7 @@ export default function ThreadItem({ thread }) {
     }, [])
 
     return (
+        forum &&
         <div className="px-4 py-4 flex items-center sm:px-6">
             <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                 <div className="truncate">

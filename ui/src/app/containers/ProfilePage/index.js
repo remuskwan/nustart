@@ -44,126 +44,9 @@ const tabs = [
     //{ name: 'Liked', href: '#', current: false },
 ]
 
-const defaultUser = {
-    "accountStatus": "ACTIVE",
-    "accountType": "ADMIN",
-    "contacts": [],
-    "created": "2021-11-03T16:00:00Z[UTC]",
-    "deleted": false,
-    "email": "admin01@mail.com",
-    "favoriteGuides": [],
-    "favoritePosts": [],
-    "id": 1,
-    "password": "asdf",
-    "username": "Admin01",
-    "yr": 0
-}
-
-const posts = [
-    {
-        creator: {
-            forumTitle: 'Forum Title',
-            threadTitle: 'Title',
-            name: 'Ricardo Cooper',
-            email: 'ricardo.cooper@example.com',
-            imageUrl:
-                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        date: 'December 9 at 11:43 AM',
-        postContents: 'POST CONTENTS',
-        stage: 'Completed phone screening',
-        href: '#',
-    },
-    {
-        creator: {
-            forumTitle: 'Forum Title 2',
-            threadTitle: 'Title 2',
-            name: 'Ricardo Cooper',
-            email: 'ricardo.cooper@example.com',
-            imageUrl:
-                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        date: 'December 30 at 11:43 AM',
-        postContents: 'POST CONTENTS 2',
-        stage: 'Completed phone screening',
-        href: '#',
-    },
-]
-
-const threads = [
-    {
-        id: 1,
-        forum: {
-            id: 1,
-            forumTitle: 'forum title',
-        },
-        title: 'thread title',
-        date: 'March 30 at 11:43 AM',
-        posts: 20,
-    },
-]
-
 const likedFilter = [
     { id: 1, name: 'Guides' },
     { id: 2, name: 'Posts' },
-]
-
-const likes = [
-    {
-        id: 1, type: 'Guide',
-        value: {
-            id: 1,
-            title: 'guide title',
-            contents: 'guide contents'
-        },
-    },
-    {
-        id: 2, type: 'Post',
-        value: {
-            id: 1,
-            title: 'post title',
-            contents: 'Whether you are working on a new cutting edge app or simply ramping up on new technology, Java documentation has all the information you need to make your project a smashing success. Use the rich set of code samples, tutorials, developer guides, API documentation, and more to quickly develop your prototype and scale it up to a real world application.',
-        },
-    },
-    {
-        id: 3, type: 'Guide',
-        value: {
-            id: 2,
-            title: 'guide title 2',
-            contents: 'guide contents 2'
-        },
-    },
-]
-
-const years = [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' },
-    { id: 3, name: '3' },
-    { id: 4, name: '4' },
-    { id: 5, name: '5' },
-    { id: 6, name: 'Part-time' },
-    { id: 7, name: 'Graduate' },
-    { id: 8, name: 'PhD' },
-]
-
-const faculties = [
-    { id: 1, name: 'Arts & Social Sciences' },
-    { id: 2, name: 'Business' },
-    { id: 3, name: 'Computing' },
-    { id: 4, name: 'Continuing and Lifelong Education' },
-    { id: 5, name: 'Dentistry' },
-    { id: 6, name: 'Design & Environment' },
-    { id: 7, name: 'Duke-NUS' },
-    { id: 8, name: 'Engineering' },
-    { id: 9, name: 'Integrative Sciences & Engineering' },
-    { id: 10, name: 'Law' },
-    { id: 11, name: 'Medicine' },
-    { id: 12, name: 'Music' },
-    { id: 13, name: 'Public Health' },
-    { id: 14, name: 'Public Policy' },
-    { id: 15, name: 'Science' },
-    { id: 16, name: 'University Scholars Program' },
-    { id: 17, name: 'Yale-NUS' },
 ]
 
 function classNames(...classes) {
@@ -172,12 +55,12 @@ function classNames(...classes) {
 
 export default function ProfilePage() {
 
-    const [user, setUser] = useState(defaultUser) //logged in user
-    const [viewUser, setViewUser] = useState(defaultUser) //viewing other user
+    const [user, setUser] = useState(null) //logged in user
+    const [viewUser, setViewUser] = useState(null) //viewing other user
     const [tab, setTab] = useState(tabs[0])
 
     const [profilePic, setProfilePic] = useState('')
-    const [selected, setSelected] = useState(likedFilter[0])
+    //const [selected, setSelected] = useState(likedFilter[0])
 
     const [guides, setGuides] = useState([])
     const [threads, setThreads] = useState([])
@@ -311,54 +194,54 @@ export default function ProfilePage() {
     //     )
     // }
 
-    function FilterFavourites() {
-        let filtered = [];
-        if (selected.name === 'Guides') {
-            filtered = likes.filter((f) => f.type === 'Guide')
-        } else {
-            filtered = likes.filter((f) => f.type === 'Post')
-        }
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {filtered.map((f) => (
-                        <li key={f.id}>
-                            <div className="px-4 py-4 flex items-center sm:px-6">
-                                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                    <div className="truncate">
-                                        <div className="flex text-sm">
-                                            <p className="font-medium text-rose-600 truncate">{f.value.title}</p>
-                                        </div>
-                                        <div className="mt-2 flex">
-                                            <div className="flex items-center text-sm text-gray-500">
-                                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-6">
-                                                    {f.value.contents}
-                                                </dd>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                        {editMode
-                                            ? <a href="#" className="block hover:bg-gray-50">
-                                                <StarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                            </a>
-                                            : null
-                                        }
-                                    </div>
-                                </div>
-                                <div className="ml-5 flex-shrink-0">
-                                    <a href="#" className="block hover:bg-gray-50">
-                                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                    </a>
-                                </div>
-                            </div>
+    // function FilterFavourites() {
+    //     let filtered = [];
+    //     if (selected.name === 'Guides') {
+    //         filtered = likes.filter((f) => f.type === 'Guide')
+    //     } else {
+    //         filtered = likes.filter((f) => f.type === 'Post')
+    //     }
+    //     return (
+    //         <div className="bg-white shadow overflow-hidden sm:rounded-md">
+    //             <ul role="list" className="divide-y divide-gray-200">
+    //                 {filtered.map((f) => (
+    //                     <li key={f.id}>
+    //                         <div className="px-4 py-4 flex items-center sm:px-6">
+    //                             <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+    //                                 <div className="truncate">
+    //                                     <div className="flex text-sm">
+    //                                         <p className="font-medium text-rose-600 truncate">{f.value.title}</p>
+    //                                     </div>
+    //                                     <div className="mt-2 flex">
+    //                                         <div className="flex items-center text-sm text-gray-500">
+    //                                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-6">
+    //                                                 {f.value.contents}
+    //                                             </dd>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
+    //                                     {editMode
+    //                                         ? <a href="#" className="block hover:bg-gray-50">
+    //                                             <StarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+    //                                         </a>
+    //                                         : null
+    //                                     }
+    //                                 </div>
+    //                             </div>
+    //                             <div className="ml-5 flex-shrink-0">
+    //                                 <a href="#" className="block hover:bg-gray-50">
+    //                                     <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+    //                                 </a>
+    //                             </div>
+    //                         </div>
 
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
-    }
+    //                     </li>
+    //                 ))}
+    //             </ul>
+    //         </div>
+    //     )
+    // }
 
     function RenderPosition() {
         if (viewUser.accountType === 'STAFF') {
@@ -491,6 +374,7 @@ export default function ProfilePage() {
 
     function EditMode() {
         return (
+            user &&
             <main className="lg:col-span-9 xl:col-span-9 bg-white rounded-md">
                 <article>
                     <div>
@@ -517,7 +401,7 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{viewUser.username}</h2>
+                                <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{user.username}</h2>
                                 <RenderPosition />
                             </div>
                         </div>
@@ -597,6 +481,7 @@ export default function ProfilePage() {
     }
 
     return (
+        user && viewUser &&
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
                 disableButton={true}
