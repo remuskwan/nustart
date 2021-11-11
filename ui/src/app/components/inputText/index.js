@@ -3,6 +3,7 @@ export default function InputText(
     placeholder="", 
     required=false, 
     autoFocus=false, 
+    maxLength=255,
     className="shadow-sm focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm border-gray-300 rounded-md",
     ...props
   }) {
@@ -25,6 +26,7 @@ export default function InputText(
           aria-describedby="input-error"
           value={props.value}
           onChange={props.onChange}
+          maxLength={maxLength}
         />
       </div>
     </div>
