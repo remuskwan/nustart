@@ -10,6 +10,7 @@ import Breadcrumb from '../../components/breadcrumb'
 import ThreadOptions from './threadOptions'
 import api from '../../util/api'
 import PostPaginator from '../../components/Paginator/postPaginator'
+import ThreadsPaginator from '../../components/Paginator/postPaginator'
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
@@ -180,7 +181,7 @@ export default function ThreadDetailsPage() {
                 <PostPaginator
                   data={posts}
                   component={PostList}
-                  dataLimit={8}
+                  dataLimit={10}
                 />
               </div>
             </main>
