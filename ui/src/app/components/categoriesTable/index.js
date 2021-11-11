@@ -7,6 +7,7 @@ import DeleteConfirm from "../deleteConfirm";
 
 export default function CategoriesTable({ items, setSearchString, dataLimit }) {
   const [open, setOpen] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
   const [deleteCat, setDeleteCat] = useState(null)
   const [editCat, setEditCat] = useState(null)
 
@@ -95,7 +96,7 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
                               className="text-rose-600 hover:text-rose-900"
                               onClick={() => {
                                 setEditCat(item)
-                                setOpen(true)
+                                setOpenEdit(true)
                               }}>
                               Edit
                             </button>
@@ -164,8 +165,8 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
       {editCat &&
         <EditCategoryModal
           item={editCat}
-          open={open}
-          setOpen={setOpen}
+          open={openEdit}
+          setOpen={setOpenEdit}
         />
       }
     </Fragment>
