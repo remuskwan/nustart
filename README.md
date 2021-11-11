@@ -1,10 +1,10 @@
 ## NUStart
 ### Members
-A0201320J Deng XueQi
-A0194539N Kong Xinyue
-A0202491N Lee Xiu Qi Alison 
-A0214628E Remus Kwan Hao Hui 
-A0194544X Zhou Yurou 
+- A0201320J Deng XueQi
+- A0194539N Kong Xinyue
+- A0202491N Lee Xiu Qi Alison 
+- A0214628E Remus Kwan Hao Hui 
+- A0194544X Zhou Yurou 
 
 ### Introduction
 NUStart is a web application to facilitate the academic and social integration of new NUS students. It provides a university starter pack for incoming students, which include the campus map, the guides published by existing NUS Staff and the forum for new students to ask questions and meet new people.
