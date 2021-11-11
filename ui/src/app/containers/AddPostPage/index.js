@@ -71,11 +71,6 @@ export default function AddPostPage() {
 
                     <div className="grid grid-cols-3 gap-6">
                       <div className="col-span-3">
-                        {/* <RichTextArea
-                          label="Post"
-                          editorState={editorState}
-                          onEditorStateChange={setEditorState}
-                        /> */}
                         <div>
                           <label htmlFor="about" className="block text-sm font-medium text-gray-700">
                             Post
