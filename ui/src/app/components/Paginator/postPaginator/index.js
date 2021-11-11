@@ -21,7 +21,7 @@ export default function PostsPaginator({ data, component: Component, dataLimit, 
     <Fragment>
       <Component items={getPaginatedData()} {...rest} />
       {pages > 1 &&
-        <nav className="border-t border-gray-200 px-4 flex items-center justify-between sm:px-0">
+        <nav className="mt-5 border-t border-gray-200 px-4 flex items-center justify-between sm:px-0">
           <div className="-mt-px w-0 flex-1 flex">
             {currentPage !== 1 &&
               <button

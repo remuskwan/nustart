@@ -51,7 +51,7 @@ export default function AddPostPage() {
   return (
     user &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar disableButton={true} user={user} />
+      <NavBar disableButton={true} disableSearch={true} user={user} />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
@@ -71,11 +71,6 @@ export default function AddPostPage() {
 
                     <div className="grid grid-cols-3 gap-6">
                       <div className="col-span-3">
-                        {/* <RichTextArea
-                          label="Post"
-                          editorState={editorState}
-                          onEditorStateChange={setEditorState}
-                        /> */}
                         <div>
                           <label htmlFor="about" className="block text-sm font-medium text-gray-700">
                             Post

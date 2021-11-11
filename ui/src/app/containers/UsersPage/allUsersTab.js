@@ -12,20 +12,47 @@ import {
     ExclamationIcon
 } from '@heroicons/react/outline'
 import api from '../../util/api'
-import { Link } from 'react-router-dom'
 
-export default function AllUsersTab() {
+export default function AllUsersTab({sortType, searchString, searchType}) {
     const [allUsers, setAllUsers] = useState([])
     const [open, setOpen] = useState(false)
     const cancelButtonRef = useRef(null)
 
     useEffect(() => {
         let isMounted = true;
-        api.getUsers().then(users => {
-            if (isMounted) setAllUsers(users.data);    // add conditional check
+        api.getUsers().then(response => {
+            const searchSortItems = (type, searchString, searchType) => {
+                const types = {
+                    created: 'created',
+                    // role: 'isAdmin',
+                    email: 'email',
+                    username: 'username',
+                }
+                const searchTypes = {
+                    username: 'username',
+                    email: 'email',
+                }
+                const sortProperty = types[type]
+                const searchProperty = searchTypes[searchType]
+                const filtered = [...response.data]
+                    .filter((user) => {
+                        if (searchString === '') {
+                            return user
+                        } else if (user[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                            return user
+                        }
+                    })
+                const sorted = [...filtered]
+                    .sort((x, y) =>
+                        sortProperty === 'isAdmin'
+                            ? y[sortProperty] - x[sortProperty]
+                            : y[sortProperty].localeCompare(x[sortProperty]))
+                if (isMounted) setAllUsers(sorted);    // add conditional check
+            }
+            searchSortItems(sortType, searchString, searchType.searchType)
         })
         return () => { isMounted = false };
-    }, [])
+    }, [sortType, searchString, searchType.searchType])
 
     function ConfirmationDialog() {
         return (

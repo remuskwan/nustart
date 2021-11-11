@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useRouteMatch } from 'react-router'
+import { useParams } from 'react-router'
 
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
@@ -19,10 +19,6 @@ const searchTypes = [
   { id: 2, name: 'Creator', searchType: 'creator' },
 ]
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export default function GuidesListPage() {
   const { id } = useParams()
   const [user, setUser] = useState(null)
@@ -31,9 +27,10 @@ export default function GuidesListPage() {
   const [categories, setCategories] = useState([])
   const [error, setError] = useState(null)
   const [selected, setSelected] = useState(null)
+  const [sortType, setSortType] = useState('dateCreated')
+  const [currentTab, setCurrentTab] = useState(1)
   const [searchString, setSearchString] = useState("")
   const [searchType, setSearchType] = useState(searchTypes[0])
-  const [sortType, setSortType] = useState('dateCreated')
 
   useEffect(() => {
     api.getUser()
@@ -47,52 +44,52 @@ export default function GuidesListPage() {
     api.getCategories()
       .then((response) => {
         setCategories(response.data)
-        // console.log(response.data.forEach((cat) => console.log(cat.id)))
         setSelected(response.data.find((cat) => cat.id == id))
       })
       .catch((error) => (
         setError(error)
       ))
-  }, [id])
+  }, [id, sortType, searchString, searchType.searchType])
 
   useEffect(() => {
     api.getCategory(id)
       .then((response) => {
-        const searchSortItems = (type, searchString, searchType) => {
+        const sortItems = (type, searchString, searchType) => {
           const types = {
             dateCreated: 'dateCreated',
             title: 'title',
-            content: 'content',
           }
           const searchTypes = {
-            content: 'content',
+            title: 'title',
             creator: 'creator',
           }
           const sortProperty = types[type]
           const searchProperty = searchTypes[searchType]
           const filtered = [...response.data.guides]
-            .filter((category) => {
+            .filter((guide) => {
               if (searchString === '') {
-                return category
+                return guide
               } else if (searchProperty === "creator") {
-                if (category[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
-                  return category
+                if (guide[searchProperty]["username"].toLowerCase().includes(searchString.toLowerCase())) {
+                  return guide
                 }
-              } else if (category[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
-                return category
+              } else if (guide[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                return guide
               }
             })
           const sorted = [...filtered]
-            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
+            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty])
+              || y['dateCreated'].localeCompare(x['dateCreated']))
           setGuides(sorted)
         }
+        sortItems(sortType, searchString, searchType.searchType)
         setCategory(response.data)
-        searchSortItems(sortType, searchString, searchType.searchType)
+        // setGuides(response.data.guides)
       })
       .catch((error) => (
         setError(error)
       ))
-  }, [id,sortType, searchString, searchType.searchType])
+  }, [id, sortType, searchString, searchType.searchType])
 
   if (error) return `Error: ${error.message}`
 
@@ -108,7 +105,7 @@ export default function GuidesListPage() {
         setSearchString={setSearchString}
         searchTypes={searchTypes}
         searchType={searchType}
-        setSearchType={setSearchType} 
+        setSearchType={setSearchType}
       />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
@@ -164,17 +161,10 @@ export default function GuidesListPage() {
             <div className="mt-4">
               <h1 className="sr-only">Guides</h1>
               <PostPaginator
-                // items={guides}
-                // contentType="guides"
-                // setGuides={setGuides}
-                // user={user}
                 data={guides}
                 component={GuideList}
-                dataLimit={3}
-                // forumId={forumId}
-                // threadId={threadId}
+                dataLimit={10}
                 setGuides={setGuides}
-                contentType="guides"
                 user={user}
               />
             </div>
