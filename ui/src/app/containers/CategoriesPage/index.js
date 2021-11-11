@@ -6,6 +6,7 @@ import api from '../../util/api'
 import CategoriesTable from '../../components/categoriesTable'
 import NewButton from '../../components/newButton'
 import { useRouteMatch } from 'react-router'
+import EditCategoryModal from './editCategory'
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
@@ -146,6 +147,7 @@ export default function CategoriesPage() {
           </div>
         </div>
       </div>
+
       {/* <AddCategoryModal open={open} setOpen={setOpen} setCategories={setCategories} /> */}
     </Fragment>
   )
