@@ -2,7 +2,6 @@ import { Fragment, useState , useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import InputText from '../../inputText'
 import api from '../../../util/api'
-import TextArea from '../../textArea'
 import htmlToDraft from 'html-to-draftjs'
 import draftToHtml from 'draftjs-to-html';
 import { Editor } from "react-draft-wysiwyg";
@@ -20,7 +19,6 @@ const htmlToDraftBlocks = (html) => {
 export default function EditGuideModal({ categoryId, guide, setGuide, open, setOpen, setNotifTitle, triggerNotification }) {
   const [editorState, setEditorState] = useState()
   const [title, setTitle] = useState(guide.title)
-  const [content, setContent] = useState(guide.content)
   const [error, setError] = useState(null);
 
 
@@ -39,7 +37,8 @@ export default function EditGuideModal({ categoryId, guide, setGuide, open, setO
     guide.content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     api.editGuide(categoryId, guide)
       .then((response) =>
-        setGuide(response.data)
+        {setGuide(response.data)
+        console.log(response.data)}
       )
       .catch(error => setError(error))
   }

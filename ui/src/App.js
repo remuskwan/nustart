@@ -1,4 +1,4 @@
-import { Switch } from 'react-router';
+import { Redirect, Switch } from 'react-router';
 import PublicRoute from './app/util/routes/PublicRoute';
 import PrivateRoute from './app/util/routes/PrivateRoute';
 import AddForumPage from './app/containers/AddForumPage';
@@ -42,11 +42,8 @@ function App() {
         <PrivateRoute path="/createGuide" component={AddGuidePage} />
         <PrivateRoute path="/admin/categories/create" component={AddCategoryPage} />
         <PrivateRoute exact path="/admin/categories" component={CategoriesPage} />
-
-        {/* <PrivateRoute path="/profile/edit" component={EditProfile} />
-        <PrivateRoute path="/users" component={UsersPage} />
         <Redirect exact from="/:id" to="/:id/threads" />
-        <Redirect exact from="/:forumId/threads/:threadId" to="/:forumId/threads/:threadId/posts" /> */}
+        <Redirect exact from="/:forumId/threads/:threadId" to="/:forumId/threads/:threadId/posts" />
       </Switch>
     </div>
   );
