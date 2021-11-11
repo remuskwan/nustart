@@ -31,14 +31,13 @@ export default function ContactsTab({ editMode = false, user }) {
     async function addContact(newContact) {
         await api.createContact(user.id, newContact)
         .then((response) => setContactStore({
-            currentId: response.data.length,
+            currentId: response.data.length + 1,
             contacts: response.data,
         }))
         .then(() => console.log(contactStore))
     }
 
     function handleAddEdit(note) {
-        //console.log("###in handleAddEdit ", note);
         const { currentId, contacts } = contactStore;
         if (note.id === 0) {
             //add action

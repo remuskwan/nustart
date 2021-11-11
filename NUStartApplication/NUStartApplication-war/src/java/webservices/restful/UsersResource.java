@@ -5,6 +5,7 @@
  */
 package webservices.restful;
 
+import entity.Contact;
 import error.UserRejectedException;
 import entity.Person;
 import entity.Post;
@@ -32,7 +33,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.PersonSessionBeanLocal;
-import session.UnknownPersistenceException;
 
 /**
  * REST Web Service
@@ -145,6 +145,26 @@ public class UsersResource {
                     .add("error", "Account already exists").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+    }
+    
+    @POST
+    @Path("/{id}/contacts")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addContact(@PathParam("id") Long pId, Contact c) {
+        try {
+            List<Contact> contacts = personSessionBeanLocal.addContact(pId, c);
+            return Response.status(200)
+                    .entity(contacts)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found").build();
