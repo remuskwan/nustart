@@ -66,4 +66,22 @@ public class ThreadsResource {
                     .build();
         }
     }
+
+    @GET
+    @Path("/{id}/post")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getThreadFromPost(@PathParam("id") Long pId) {
+        try {
+            Thread t = threadSessionBeanLocal.getThreadFromPost(pId);
+            return Response.status(200)
+                    .entity(t)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+    }
 }

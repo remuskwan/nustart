@@ -5,15 +5,44 @@ import {
 } from '@heroicons/react/outline'
 import api from '../../util/api'
 
-export default function BlockTab() {
+export default function BlockTab({sortType, searchString, searchType}) {
     const [allUsers, setAllUsers] = useState([])
 
     useEffect(() => {
         api.getUsers()
-            .then(users => {
-                setAllUsers(users.data.filter((user) => (user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED') && user.accountType !== "ADMIN"));
+            .then(response => {
+                const searchSortItems = (type, searchString, searchType) => {
+                    const types = {
+                        created: 'created',
+                        // role: 'isAdmin',
+                        email: 'email',
+                        username: 'username',
+                    }
+                    const searchTypes = {
+                        username: 'username',
+                        email: 'email',
+                    }
+                    const sortProperty = types[type]
+                    const searchProperty = searchTypes[searchType]
+                    const filtered = [...response.data.filter((user) => (user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED') && user.accountType !== "ADMIN")]
+                        .filter((user) => {
+                            if (searchString === '') {
+                                return user
+                            } else if (user[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                                return user
+                            }
+                        })
+                    const sorted = [...filtered]
+                        .sort((x, y) =>
+                            sortProperty === 'isAdmin'
+                                ? y[sortProperty] - x[sortProperty]
+                                : y[sortProperty].localeCompare(x[sortProperty]))
+                    setAllUsers(sorted);    
+                }
+                searchSortItems(sortType, searchString, searchType.searchType)
+                // setAllUsers(users.data.filter((user) => (user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED') && user.accountType !== "ADMIN"));
             })
-    }, [])
+    }, [sortType, searchString, searchType.searchType])
 
     function toggleBlock(user) {
         user.accountStatus = user.accountStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED'

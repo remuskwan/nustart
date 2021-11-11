@@ -4,6 +4,7 @@ import { Popover } from '@headlessui/react'
 import { ChatAlt2Icon, MenuIcon, HomeIcon, UserGroupIcon, XIcon } from '@heroicons/react/outline'
 import { KeyIcon, SearchIcon, UserCircleIcon } from '@heroicons/react/solid'
 import ProfileDropDown from './profileDropDown'
+import SearchSelectMenu from '../searchSelectMenu'
 import { removeUserSession } from '../../util/Common'
 
 function classNames(...classes) {
@@ -16,11 +17,11 @@ export default function NavBar({
   disableSearch = false,
   editProfile = false,
   user,
-  userNavigation = [],
-  //   { name: 'Your Profile', path: `/profile/${user.id}` },
-  // ],
   searchString = "",
-  searchItems,
+  setSearchString,
+  searchTypes,
+  searchType,
+  setSearchType,
 }) {
 
   const history = useHistory()
@@ -58,37 +59,40 @@ export default function NavBar({
                     <img
                       className="block h-8 w-auto"
                       src="https://nustart.s3.ap-southeast-1.amazonaws.com/nustartlogo.png"
-                      alt="Workflow"
+                      alt="NUStart"
                     />
                   </Link>
                 </div>
               </div>
               <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-8">
-                <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
-                  <div className="w-full">
-                    {!disableSearch ?
+              <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
+                  {!disableSearch ?
+                    <div className="flex w-full">
                       <Fragment>
                         <label htmlFor="search" className="sr-only">
                           Search
                         </label>
-                        <div className="relative">
+                        <div className="relative flex-1">
                           <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
                             <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                           </div>
                           <input
                             id="search"
                             name="search"
-                            className="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+                            className="block w-full bg-white border border-gray-300 rounded-l-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
                             placeholder="Search"
                             type="search"
                             value={searchString}
-                            onChange={(e) => searchItems(e.target.value)}
+                            onChange={(e) => setSearchString(e.target.value)}
                           />
                         </div>
+                        <div className="flex-2">
+                          <SearchSelectMenu options={searchTypes} searchType={searchType} setSearchType={setSearchType} />
+                        </div>
                       </Fragment>
-                      : <div className="h-9" />
-                    }
-                  </div>
+                    </div>
+                    : <div className="h-9" />
+                  }
                 </div>
               </div>
               <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">

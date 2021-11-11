@@ -4,149 +4,31 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../util/api";
 
-const defaultThread = {
-    "closed": false,
-    "created": "2021-11-09T16:00:00Z[UTC]",
-    "creator": {
-        "accountStatus": "ACTIVE",
-        "accountType": "ADMIN",
-        "contacts": [],
-        "course": "default",
-        "coverImage": "default",
-        "created": "2021-11-09T16:00:00Z[UTC]",
-        "email": "admin01@mail.com",
-        "faculty": "default",
-        "id": 1,
-        "likedGuides": [],
-        "likedPosts": [],
-        "password": "1234567aA@",
-        "profilePicture": "default",
-        "username": "Admin01",
-        "yr": "0"
-    },
-    "id": 1,
-    "pinned": false,
-    "posts": [
-        {
-            "content": "sdafasf",
-            "createdAt": "2021-11-09T16:00:00Z[UTC]",
-            "creator": {
-                "accountStatus": "ACTIVE",
-                "accountType": "ADMIN",
-                "contacts": [],
-                "course": "default",
-                "coverImage": "default",
-                "created": "2021-11-09T16:00:00Z[UTC]",
-                "email": "admin01@mail.com",
-                "faculty": "default",
-                "id": 1,
-                "likedGuides": [],
-                "likedPosts": [],
-                "password": "1234567aA@",
-                "profilePicture": "default",
-                "username": "Admin01",
-                "yr": "0"
-            },
-            "id": 1,
-            "likes": 0
-        }
-    ],
-    "title": "dfasf"
-}
-
-const defaultForum = {
-    "created": "2021-11-09T16:00:00Z[UTC]",
-    "creator": {
-        "accountStatus": "ACTIVE",
-        "accountType": "ADMIN",
-        "contacts": [],
-        "course": "default",
-        "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-        "created": "2021-11-09T16:00:00Z[UTC]",
-        "email": "admin01@mail.com",
-        "faculty": "default",
-        "id": 1,
-        "likedGuides": [],
-        "likedPosts": [],
-        "password": "1234567aA@",
-        "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-        "username": "Admin01",
-        "yr": "0"
-    },
-    "description": "aaaaaaaaaaaa",
-    "id": 1,
-    "threads": [
-        {
-            "closed": false,
-            "created": "2021-11-09T16:00:00Z[UTC]",
-            "creator": {
-                "accountStatus": "ACTIVE",
-                "accountType": "ADMIN",
-                "contacts": [],
-                "course": "default",
-                "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-                "created": "2021-11-09T16:00:00Z[UTC]",
-                "email": "admin01@mail.com",
-                "faculty": "default",
-                "id": 1,
-                "likedGuides": [],
-                "likedPosts": [],
-                "password": "1234567aA@",
-                "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-                "username": "Admin01",
-                "yr": "0"
-            },
-            "id": 1,
-            "pinned": false,
-            "posts": [
-                {
-                    "content": "aaaaaaaaaaaaaaaaaaaa",
-                    "createdAt": "2021-11-09T16:00:00Z[UTC]",
-                    "creator": {
-                        "accountStatus": "ACTIVE",
-                        "accountType": "ADMIN",
-                        "contacts": [],
-                        "course": "default",
-                        "coverImage": "https://nustart.s3.amazonaws.com/defaultcoverImage.jpg",
-                        "created": "2021-11-09T16:00:00Z[UTC]",
-                        "email": "admin01@mail.com",
-                        "faculty": "default",
-                        "id": 1,
-                        "likedGuides": [],
-                        "likedPosts": [],
-                        "password": "1234567aA@",
-                        "profilePicture": "https://nustart.s3.amazonaws.com/external-content.duckduckgo.com.jpg",
-                        "username": "Admin01",
-                        "yr": "0"
-                    },
-                    "id": 1,
-                    "likes": 0
-                }
-            ],
-            "title": "aaaaaaaaa"
-        }
-    ],
-    "title": "saaaaaaaaaa"
-}
-
 export default function PostItem({ p }) {
-    const [thread, setThread] = useState(defaultThread)
-    const [forum, setForum] = useState(defaultForum)
+    const [thread, setThread] = useState(null)
+    const [forum, setForum] = useState(null)
 
     useEffect(() => {
         async function getThread() {
             await api.getPostThread(p.id)
-                .then(response => setThread(response.data))
-                .then(() => getForum(thread))
+                .then(response => {
+                    setThread(response.data)
+                    //console.log(response.data.id)
+                    getForum(response.data.id)
+                })
+            //.then(() => getForum(thread))
+            //.then(() => getForum(thread))
+            //console.log(p)
         }
         getThread()
-    }, [])
+    }, [forum])
 
-    async function getForum(t) {
-        await api.getThreadForum(t.id).then(response => setForum(response.data))
+    async function getForum(tid) {
+        await api.getThreadForum(tid).then(response => setForum(response.data))
     }
 
     return (
+        forum &&
         <div className="px-4 py-4 flex items-center sm:px-6">
             <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                 <div className="truncate">
@@ -170,7 +52,7 @@ export default function PostItem({ p }) {
                     <div className="mt-2 flex">
                         <div className="flex items-center text-sm text-gray-500">
                             {/* <p> <ChevronRightIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" /> </p> */}
-                            <p className="text-xl font-medium text-rose-500 truncate">{p.content}</p>
+                            <div className="text-xl font-medium text-rose-500 truncate"dangerouslySetInnerHTML={{ __html: postMessage.content }} />
                         </div>
                     </div>
                 </div>

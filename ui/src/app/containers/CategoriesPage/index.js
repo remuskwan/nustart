@@ -12,17 +12,24 @@ const tabs = [
   { name: 'Most Liked', href: '#', current: false },
   { name: 'Most Answers', href: '#', current: false },
 ]
+const searchTypes = [
+  { id: 1, name: 'Name', searchType: 'name' },
+]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function CategoriesPage() {
-  const {url} = useRouteMatch()
+  const { url } = useRouteMatch()
   const [user, setUser] = useState(null)
   const [categories, setCategories] = useState([])
   const [open, setOpen] = useState(true)
   const [error, setError] = useState(null)
+  const [sortType, setSortType] = useState('created')
+  const [currentTab, setCurrentTab] = useState(1)
+  const [searchString, setSearchString] = useState("")
+  const [searchType, setSearchType] = useState(searchTypes[0])
 
   useEffect(() => {
     api.getUser()
@@ -34,13 +41,35 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     api.getCategories()
-      .then((response) =>
-        setCategories(response.data)
-      )
+      .then((response) => {
+        const searchSortItems = (type, searchString, searchType) => {
+          const types = {
+            created: 'created',
+            name: 'name',
+          }
+          const searchTypes = {
+            name: 'name',
+          }
+          const sortProperty = types[type]
+          const searchProperty = searchTypes[searchType]
+          const filtered = [...response.data]
+            .filter((user) => {
+              if (searchString === '') {
+                return user
+              } else if (user[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                return user
+              }
+            })
+          const sorted = [...filtered]
+            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
+          setCategories(sorted)
+        }
+        searchSortItems(sortType, searchString, searchType.searchType)
+      })
       .catch((error) => (
         setError(error)
       ))
-  }, [])
+  }, [sortType, searchString, searchType.searchType])
 
   if (error) return `Error: ${error.message}`
 
@@ -52,9 +81,14 @@ export default function CategoriesPage() {
           buttonContent="forum"
           disableButton={user.accountType !== "ADMIN"}
           component={
-            <NewButton content='category' path={`${url}/create`}/>
+            <NewButton content='category' path={`${url}/create`} />
           }
           user={user}
+          searchString={searchString}
+          setSearchString={setSearchString}
+          searchTypes={searchTypes}
+          searchType={searchType}
+          setSearchType={setSearchType}
         />
         <div className="py-10">
           <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
@@ -106,7 +140,7 @@ export default function CategoriesPage() {
               </div>
               <div className="mt-4">
                 <h1 className="sr-only">Categories</h1>
-                <CategoriesTable items={categories} dataLimit={10}/>
+                <CategoriesTable items={categories} dataLimit={10} />
               </div>
             </main>
           </div>

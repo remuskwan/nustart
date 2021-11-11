@@ -229,6 +229,7 @@ export default function ProfilePage() {
     useEffect(() => {
         async function getPosts() {
             await api.getUserPost(uid)
+            //.then(response => console.log(response.data))
             .then(response => setPosts(response.data))
         }
         getPosts()
@@ -598,9 +599,8 @@ export default function ProfilePage() {
     return (
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
-                buttonContent="forum"
-                disableButton={user.accountType !== "ADMIN"}
-                component={<NewButton content='forum' path='/create' />}
+                disableButton={true}
+                disableSearch={true}
                 user={user}
             />
             <div className="py-10">

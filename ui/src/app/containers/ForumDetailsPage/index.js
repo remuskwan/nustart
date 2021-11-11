@@ -56,15 +56,15 @@ export default function ForumDetailsPage() {
           const sortProperty = types[type]
           const searchProperty = searchTypes[searchType]
           const filtered = [...response.data.threads]
-            .filter((forum) => {
+            .filter((thread) => {
               if (searchString === '') {
-                return forum
+                return thread
               } else if (searchProperty === "creator") {
-                if (forum[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
-                  return forum
+                if (thread[searchProperty]["username"].toLowerCase().includes(searchString.toLowerCase())) {
+                  return thread
                 }
-              } else if (forum[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
-                return forum
+              } else if (thread[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                return thread
               }
             })
           const sorted = [...filtered]

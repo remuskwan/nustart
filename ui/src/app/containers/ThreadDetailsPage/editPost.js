@@ -5,8 +5,8 @@ import TextArea from '../../components/textArea'
 import api from '../../util/api'
 import htmlToDraft from 'html-to-draftjs'
 import draftToHtml from 'draftjs-to-html';
-import { convertToRaw, Editor } from 'draft-js'
-import { EditorState, ContentState } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, ContentState ,convertToRaw} from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const htmlToDraftBlocks = (html) => {
@@ -40,7 +40,6 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
       })
       .catch(error => setError(error))
   }
-  console.log(editorState)
 
   useEffect(() => {
     const editorState = htmlToDraftBlocks(post.content)
@@ -100,7 +99,7 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
                         <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
                           <Editor
                             editorState={editorState}
-                            onChange={setEditorState}
+                            onEditorStateChange={setEditorState}
                           />
                         </div>
                       </div>

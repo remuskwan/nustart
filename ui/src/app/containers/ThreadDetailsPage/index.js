@@ -17,9 +17,10 @@ const tabs = [
   { name: 'Most Answers', href: '#', current: false },
 ]
 const searchTypes = [
-  { id: 1, name: 'Title', searchType: 'title' },
-  { id: 2, name: 'Creator', searchType: 'creator' },
+  { id: 1, name: 'Content', searchType: 'content' },
+  { id: 2, name: 'Creator', searchType: 'creator'},
 ]
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -29,7 +30,7 @@ export default function ThreadDetailsPage() {
   const [user, setUser] = useState(null)
   const [forum, setForum] = useState(null)
   const [thread, setThread] = useState(null)
-  const [posts, setPosts] = useState(null)
+  const [posts, setPosts] = useState([])
   const [error, setError] = useState(null)
   const [searchString, setSearchString] = useState("")
   const [searchType, setSearchType] = useState(searchTypes[0])
@@ -58,7 +59,7 @@ export default function ThreadDetailsPage() {
       .then((response) => {
         const searchSortItems = (type, searchString, searchType) => {
           const types = {
-            createdAt: 'createdAt',
+            created: 'created',
             content: 'content',
           }
           const searchTypes = {
@@ -68,20 +69,20 @@ export default function ThreadDetailsPage() {
           const sortProperty = types[type]
           const searchProperty = searchTypes[searchType]
           const filtered = [...response.data.posts]
-            .filter((thread) => {
+            .filter((post) => {
               if (searchString === '') {
-                return thread
+                return post
               } else if (searchProperty === "creator") {
-                if (thread[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
-                  return thread
+                if (post[searchProperty]["username"].toLowerCase().includes(searchString.toLowerCase())) {
+                  return post
                 }
-              } else if (thread[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
-                return thread
+              } else if (post[searchProperty].replace( /(<([^>]+)>)/ig, '').toLowerCase().includes(searchString.toLowerCase())) {
+                return post
               }
             })
-          const sorted = [...filtered]
-            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
-          setPosts(sorted)
+          // const sorted = [...filtered]
+          //   .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
+          setPosts(filtered)
         }
         setThread(response.data)
         searchSortItems(sortType, searchString, searchType.searchType)

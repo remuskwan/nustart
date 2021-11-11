@@ -15,9 +15,7 @@ export default function AddThreadPage() {
   const { id } = useParams()
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
   const [error, setError] = useState(null);
-  // const editor = useMemo(() => withHistory, input)
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -54,7 +52,7 @@ export default function AddThreadPage() {
   return (
     user &&
     <div className="relative min-h-screen bg-gray-100">
-      <NavBar disableButton={true} user={user} />
+      <NavBar disableButton={true} disableSearch={true} user={user} />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
@@ -93,8 +91,9 @@ export default function AddThreadPage() {
                             Post
                           </label>
 
-                          <div>
-                            <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                          <div className='mt-1'>
+                            <div className="shadow block w-full sm:text-sm rounded-md" 
+                            style={{ padding: '10px', minHeight: '400px' }}>
                               <Editor
                                 editorState={editorState}
                                 onEditorStateChange={setEditorState}

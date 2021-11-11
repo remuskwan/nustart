@@ -116,9 +116,10 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserPosts(@PathParam("id") Long id) {
         List<Post> p = personSessionBeanLocal.getPostsCreated(id);
-        System.out.println(p);
+        GenericEntity<List<Post>> posts = new GenericEntity<List<Post>>(p) {
+        };
         return Response.status(200)
-                .entity(p)
+                .entity(posts)
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }

@@ -58,6 +58,7 @@ export default function GuidesPage() {
                 buttonContent="guide"
                 disableButton={user.accountType === "STUDENT" || !categories.length}
                 component={<NewButton content='guide' path='/createGuide' />}
+                disableSearch={true}
                 user={user}
             />
             <div className="py-10">
