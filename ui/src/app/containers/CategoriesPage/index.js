@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
@@ -6,7 +6,6 @@ import api from '../../util/api'
 import CategoriesTable from '../../components/categoriesTable'
 import NewButton from '../../components/newButton'
 import { useRouteMatch } from 'react-router'
-import EditCategoryModal from './editCategory'
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
@@ -28,7 +27,6 @@ export default function CategoriesPage() {
   const [open, setOpen] = useState(true)
   const [error, setError] = useState(null)
   const [sortType, setSortType] = useState('created')
-  const [currentTab, setCurrentTab] = useState(1)
   const [searchString, setSearchString] = useState("")
   const [searchType, setSearchType] = useState(searchTypes[0])
 

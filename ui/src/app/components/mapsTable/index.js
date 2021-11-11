@@ -1,15 +1,13 @@
-import moment from "moment";
 import { Fragment, useState, useEffect } from "react"
 import { Link } from "react-router-dom";
 import EditCategoryModal from "../../containers/CategoriesPage/editCategory";
 import api from "../../util/api";
 import DeleteConfirm from "../deleteConfirm";
 
-export default function CategoriesTable({ items, setSearchString, dataLimit }) {
+export default function MapsTable({ items, setSearchString, dataLimit }) {
   const [open, setOpen] = useState(false)
-  const [deleteCat, setDeleteCat] = useState(null)
+  const [deleteM, setDeleteM] = useState(null)
   const [editCat, setEditCat] = useState(null)
-
   const [error, setError] = useState(null);
   const [pages, setPages] = useState(Math.ceil(items.length / dataLimit))
   const [currentPage, setCurrentPage] = useState(1)
@@ -24,11 +22,11 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
     const startIndex = currentPage * dataLimit - dataLimit
     const endIndex = startIndex + dataLimit
     return items.slice(startIndex, endIndex)
-  }
 
-  function deleteCategory(categoryId) {
-    api.deleteCategory(categoryId)
-      .then(() => setSearchString(""))
+  }
+  function deleteMap(mapId) {
+    api.deleteMap(mapId)
+      .then(() => window.location.reload())
       .catch(error => setError(error))
   }
 
@@ -44,7 +42,7 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
             {!items || !items.length
               ? (
                 <div className="text-center">
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No categories</h3>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No maps</h3>
                 </div>
               )
               : (
@@ -62,13 +60,7 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
                           scope="col"
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          Guides
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Created
+                          Image URL
                         </th>
                         {/* <th scope="col" className="relative px-6 py-3">
                           <span className="sr-only">Edit</span>
@@ -83,13 +75,10 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
                         <tr key={item.id} className={itemIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             <Link to={`/profile/${item.id}`} className="hover:underline">
-                              {item.name}
+                              {item.title}
                             </Link>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.guides.length}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {moment(item.created.slice(0, -5)).format("MMMM Do YYYY [at] h:mm a")}
-                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.url}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
                               className="text-rose-600 hover:text-rose-900"
@@ -102,7 +91,7 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
                             <button
                               className="ml-5 text-rose-600 hover:text-rose-900"
                               onClick={() => {
-                                setDeleteCat(item)
+                                setDeleteM(item)
                                 setOpen(true)
                               }}>
                               Delete
@@ -152,13 +141,13 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
           </div>
         </div>
       </div>
-      {deleteCat &&
+      {deleteMap &&
         <DeleteConfirm
-          title="category"
+          title="map"
           open={open}
           setOpen={setOpen}
-          cat={deleteCat}
-          onConfirm={deleteCategory}
+          cat={deleteM}
+          onConfirm={deleteMap}
         />
       }
       {editCat &&
@@ -168,6 +157,7 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
           setOpen={setOpen}
         />
       }
+
     </Fragment>
   )
 }
