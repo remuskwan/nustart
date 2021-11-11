@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react'
 
-export default function ThreadsPaginator({ data, component: Component, dataLimit }) {
+export default function ThreadsPaginator({ data, component: Component, dataLimit, ...rest }) {
   const [pages, setPages] = useState(Math.ceil(data.length / dataLimit))
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -22,7 +22,7 @@ export default function ThreadsPaginator({ data, component: Component, dataLimit
   return (
     <Fragment>
       <div className="dataContainer">
-        <Component items={getPaginatedData()} />
+        <Component items={getPaginatedData()} {...rest}/>
       </div>
       {data.length > 0 && <nav
         className="bg-white shadow overflow-hidden px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:rounded-b-md sm:px-6"
