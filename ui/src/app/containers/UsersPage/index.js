@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import NewButton from '../../components/newButton'
@@ -37,10 +37,11 @@ export default function UsersPage() {
     const [user, setUser] = useState(defaultUser)
     const [error, setError] = useState(null)
 
-
     useEffect(() => {
         api.getUser()
-            .then(response => setUser(response.data))
+            .then(response => {
+                setUser(response.data)
+            })
             .catch((error) => (
                 setError(error)
             ))

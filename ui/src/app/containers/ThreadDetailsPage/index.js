@@ -182,6 +182,12 @@ export default function ThreadDetailsPage() {
                   data={posts}
                   component={PostList}
                   dataLimit={10}
+                  forumId={forumId}
+                  threadId={threadId}
+                  setThread={setThread}
+                  setPosts={setPosts}
+                  contentType="posts"
+                  user={user}
                 />
               </div>
             </main>
