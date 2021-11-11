@@ -23,7 +23,7 @@ export default function MapDetailsPage() {
 
   useEffect(() => {
     api.getMaps()
-      .then(response =>{ 
+      .then(response => {
         setMaps(response.data)
         setSelected(response.data[0])
       })
@@ -45,10 +45,7 @@ export default function MapDetailsPage() {
     <div className="relative min-h-screen bg-gray-100">
       <NavBar
         buttonContent="forum"
-        disableButton={user.accountType !== "ADMIN"}
-        component={
-          <NewButton content='category' path={`${url}/create`} />
-        }
+        disableButton={true}
         user={user}
         disableSearch={true}
       />
@@ -58,14 +55,14 @@ export default function MapDetailsPage() {
             <SideBar user={user} />
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
-          {(maps.length && selected) &&
-          <MapSelectMenu options={maps} map={selected} setMap={setSelected} />}
+            {(maps.length && selected) &&
+              <MapSelectMenu options={maps} map={selected} setMap={setSelected} />}
             <div className="mt-4">
               <h1 className="sr-only">map</h1>
               <img
                 src={map.url}
                 alt=""
-                className='object-cover pointer-events-none'
+                // className='object-cover pointer-events-none'
               />
             </div>
           </main>

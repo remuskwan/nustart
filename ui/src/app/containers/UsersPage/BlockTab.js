@@ -1,8 +1,4 @@
 import { useState, useEffect } from 'react'
-import {
-    BanIcon,
-    CheckCircleIcon,
-} from '@heroicons/react/outline'
 import SortSelectMenu from '../../components/SelectMenus/sortSelectMenu'
 import api from '../../util/api'
 import ThreadPaginator from '../../components/Paginator/threadPaginator'
@@ -60,7 +56,7 @@ export default function BlockTab({ searchString, searchType }) {
         api.editUser(user.id, user)
             .then(() => {
                 api.getUsers()
-                    .then((response) => setAllUsers(response.data))
+                    .then((response) => setAllUsers(response.data.filter((user) => (user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED') && user.accountType !== "ADMIN")))
             })
     }
 

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,6 +33,7 @@ public class Guide implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    @Column(columnDefinition = "varchar(2000)")
     private String content;
     private String pictureUrl;
     private List<String> files;
