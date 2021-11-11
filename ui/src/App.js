@@ -18,7 +18,7 @@ import CategoriesPage from './app/containers/CategoriesPage';
 import AddCategoryPage from './app/containers/AddCategoryPage';
 import GuidesListPage from './app/containers/GuidesListPage';
 import AddAdminPage from './app/containers/AddAdminPage';
-import PendingApproval from './app/containers/RegisterPage/pendingApproval';
+import PendingApprovalPage from './app/containers/PendingApprovalPage/pendingApproval';
 
 function App() {
   return (
@@ -27,6 +27,7 @@ function App() {
         <PrivateRoute exact path="/" component={ForumsPage} /> 
         <PublicRoute path="/login" component={LoginPage} />
         <PublicRoute path="/register" component={RegisterPage} />
+        <PublicRoute path="/pending-approval" component={PendingApprovalPage} />
         <PrivateRoute exact path='/:id/threads' component={ForumDetailsPage} />
         <PrivateRoute exact path="/:forumId/threads/:threadId/posts" component={ThreadDetailsPage} />
         <PrivateRoute path="/create" component={AddForumPage} />
@@ -41,7 +42,6 @@ function App() {
         <PrivateRoute path="/createGuide" component={AddGuidePage} />
         <PrivateRoute path="/admin/categories/create" component={AddCategoryPage} />
         <PrivateRoute exact path="/admin/categories" component={CategoriesPage} />
-        <PrivateRoute path="/pendingApproval" component={PendingApproval}/>
 
         {/* <PrivateRoute path="/profile/edit" component={EditProfile} />
         <PrivateRoute path="/users" component={UsersPage} />

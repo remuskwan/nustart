@@ -3,20 +3,12 @@ import { useEffect, useState } from 'react'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import NewButton from '../../components/newButton'
-import GuideList from './guideList'
 import api from '../../util/api'
 import GuideCategories from '../../components/guideCategories'
-
-const tabs = [//need to change to category
-    { name: 'Recent', href: '#', current: true },
-    { name: 'Most Liked', href: '#', current: false },
-    { name: 'Most Answers', href: '#', current: false },
-]
 
 export default function GuidesPage() {
     const [user, setUser] = useState(null)
     const [categories, setCategories] = useState([])
-    const [guides, setGuides] = useState([])
     const [error, setError] = useState(null)
     const [selected, setSelected] = useState(null)
 
@@ -33,16 +25,6 @@ export default function GuidesPage() {
             .then((response) => {
                 setCategories(response.data)
                 setSelected(response.data[0])
-            })
-            .catch((error) => (
-                setError(error)
-            ))
-    }, [])
-
-    useEffect(() => {
-        api.getGuides()
-            .then((response) => {
-                setGuides(response.data)
             })
             .catch((error) => (
                 setError(error)
@@ -88,11 +70,6 @@ export default function GuidesPage() {
                                 <h3 className="mt-2 text-sm font-medium text-gray-900">No categories</h3>
                             </div>
                         }
-                        {/* {guides.length && <GuideList
-                            items={guides}
-                            setGuides={setGuides}
-                            user={user}
-                        />} */}
                     </main>
                 </div>
             </div>

@@ -1,11 +1,7 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
-import { getUser } from '../../util/Common';
-import TextArea from '../../components/textArea';
-import RichTextArea from '../../components/richTextArea';
 import api from '../../util/api';
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from "draft-js";
@@ -17,7 +13,6 @@ export default function AddPostPage() {
   const history = useHistory()
   const { forumId, threadId } = useParams()
   const [user, setUser] = useState(null)
-  const [content, setContent] = useState("")
   const [error, setError] = useState(null);
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -44,7 +39,6 @@ export default function AddPostPage() {
       .catch((error) => (
         setError(error)
       ))
-    // setEditorState(() => EditorState.createEmpty())
   }, [])
 
 

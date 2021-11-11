@@ -2,20 +2,24 @@ import { Fragment, useState, useEffect, useRef } from 'react'
 import { Transition, Dialog } from '@headlessui/react'
 import moment from 'moment'
 import {
-    ChevronRightIcon,
-} from '@heroicons/react/solid'
-import {
-    BanIcon,
     CalendarIcon,
-    CheckCircleIcon,
-    SearchIcon,
     ExclamationIcon
 } from '@heroicons/react/outline'
 import api from '../../util/api'
+import SortSelectMenu from '../../components/SelectMenus/sortSelectMenu'
 
-export default function AllUsersTab({sortType, searchString, searchType}) {
+const sortTypes = [
+    { id: 1, name: 'Recent', sortType: 'created', reverse: false },
+    { id: 2, name: 'Email', sortType: 'email', reverse: true },
+    { id: 2, name: 'Username', sortType: 'username', reverse: true },
+    { id: 2, name: 'Role', sortType: 'accountType', reverse: true },
+    { id: 2, name: 'Status', sortType: 'accountStatus', reverse: true },
+]
+
+export default function AllUsersTab({ searchString, searchType }) {
     const [allUsers, setAllUsers] = useState([])
     const [open, setOpen] = useState(false)
+    const [sortType, setSortType] = useState(sortTypes[0])
     const cancelButtonRef = useRef(null)
 
     useEffect(() => {
@@ -24,7 +28,8 @@ export default function AllUsersTab({sortType, searchString, searchType}) {
             const searchSortItems = (type, searchString, searchType) => {
                 const types = {
                     created: 'created',
-                    // role: 'isAdmin',
+                    accountType: 'accountType',
+                    accountStatus: 'accountStatus',
                     email: 'email',
                     username: 'username',
                 }
@@ -43,16 +48,14 @@ export default function AllUsersTab({sortType, searchString, searchType}) {
                         }
                     })
                 const sorted = [...filtered]
-                    .sort((x, y) =>
-                        sortProperty === 'isAdmin'
-                            ? y[sortProperty] - x[sortProperty]
-                            : y[sortProperty].localeCompare(x[sortProperty]))
+                    .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty])
+                        || y['created'].localeCompare(x['created']))
                 if (isMounted) setAllUsers(sorted);    // add conditional check
             }
-            searchSortItems(sortType, searchString, searchType.searchType)
+            searchSortItems(sortType.sortType, searchString, searchType.searchType)
         })
         return () => { isMounted = false };
-    }, [sortType, searchString, searchType.searchType])
+    }, [sortType.sortType, searchString, searchType.searchType])
 
     function ConfirmationDialog() {
         return (
@@ -130,91 +133,52 @@ export default function AllUsersTab({sortType, searchString, searchType}) {
 
     return (
         <div>
-            <div className="px-6 pt-6 pb-4">
-                <p className="mt-1 text-sm text-gray-600">Search directory of {allUsers.length} users</p>
-                <form className="mt-6 flex space-x-4" action="#">
-                    <div className="flex-1 min-w-0">
-                        <label htmlFor="search" className="sr-only">
-                            Search
-                        </label>
-                        <div className="relative rounded-md shadow-sm">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                            </div>
-                            <input
-                                type="search"
-                                name="search"
-                                id="search"
-                                className="focus:ring-pink-500 focus:border-pink-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                placeholder="Search"
-                            />
-                        </div>
-                    </div>
-
-                </form>
+            <div className="pt-6 pb-4">
+                <SortSelectMenu options={sortTypes} sortType={sortType} setSortType={setSortType} />
             </div>
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul role="list" className="divide-y divide-gray-200">
-                    {allUsers.map((user) => (
-                        <li key={user.id}>
+                    {(!allUsers || !allUsers.length) ?
+                        <li key='No users'>
                             <div className="px-4 py-4 flex items-center sm:px-6">
                                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                                     <div className="truncate">
                                         <div className="flex text-sm items-center">
-                                            <p className="text-xl font-medium text-rose-500 truncate">{user.email}</p>
-                                            <p className="ml-3 flex-shrink-0 font-normal text-gray-500">{user.accountType}</p>
+                                            <p className="text-xl font-medium text-rose-500 truncate">No users</p>
                                         </div>
-                                        <div className="mt-2 flex">
-                                            <div className="flex items-center text-sm text-gray-500">
-                                                {user.accountStatus}
-                                                <CalendarIcon className="ml-2 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                {moment(user.created.slice(0, -5)).format('MMMM Do YYYY [at] h:mm a')}  
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        : allUsers.map((user) => (
+                            <li key={user.id}>
+                                <div className="px-4 py-4 flex items-center sm:px-6">
+                                    <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+                                        <div className="truncate">
+                                            <div className="flex text-sm items-center">
+                                                <p className="text-xl font-medium text-rose-500 truncate">{user.email}</p>
+                                                <p className="ml-3 flex-shrink-0 font-normal text-gray-500">{user.accountType}</p>
+                                            </div>
+                                            <div className="mt-2 flex">
+                                                <div className="flex items-center text-sm text-gray-500">
+                                                    {user.accountStatus}
+                                                    <CalendarIcon className="ml-2 flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                    {moment(user.created.slice(0, -5)).format('MMMM Do YYYY [at] h:mm a')}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
+                                            <div className="flex overflow-hidden -space-x-1">
+
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                        <div className="flex overflow-hidden -space-x-1">
-
-                                        </div>
+                                    <div className="ml-5 flex items-center">
                                     </div>
                                 </div>
-                                <div className="ml-5 flex items-center">
-                                    {/* {user.accountStatus === "BLOCKED"
-                                        ?
-                                        <button
-                                            type="button"
-                                            className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                        >
-                                            <CheckCircleIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
-                                            Unblock
-                                        </button>
-                                        :
-                                        <button
-                                            type="button"
-                                            className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                            onClick={() => setOpen(true)}
-                                        >
-                                            <BanIcon className="mr-3 h-4 w-4" aria-hidden="true"
-                                            />
-                                            Block
-                                        </button>
-
-                                    } */}
-                                    {/* <div>
-                                        <a
-                                            // href={`/profile/${user.id}`}
-                                            href='#'
-                                            className="ml-3 inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                                            onClick={() => console.log(user.id)}
-                                        >
-                                            View
-                                        </a>
-                                    </div> */}
-                                </div>
-                            </div>
-                            <ConfirmationDialog />
-                        </li>
-                    ))}
+                                <ConfirmationDialog />
+                            </li>
+                        ))}
                 </ul>
             </div>
         </div>

@@ -156,16 +156,19 @@ export default function RegisterPage() {
             contacts: contactList.contacts
         })
             .then((response) => {
-                setUserSession({ userId: response.data })
+                if (position.id === 1) setUserSession({ userId: response.data })
             })
-            .then(() => history.push("/"))
+            .then(() => {
+                if (position.id === 1) history.push("/")
+                else if (position.id === 2) history.push("/pending-approval")
+            })
             .catch(error => {
                 if (!error.response) setSubmitError(new Error("Failed to connect to server"))
                 if (error.response.status === 404) setSubmitError(new Error("Account already exists"))
                 else setSubmitError(new Error("Something went wrong. Please try again later."))
             })
             /** new */
-            .then(() => history.push("/pendingApproval"))
+            .then(() => history.push("/pending-approval"))
             .catch(error => {
                 if (error.response.accountStatus === 'UNAPPROVED') setSubmitError(new Error("Account is yet to be approved, please wait"))
             })
