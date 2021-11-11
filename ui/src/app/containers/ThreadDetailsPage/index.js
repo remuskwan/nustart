@@ -30,7 +30,7 @@ export default function ThreadDetailsPage() {
   const [user, setUser] = useState(null)
   const [forum, setForum] = useState(null)
   const [thread, setThread] = useState(null)
-  const [posts, setPosts] = useState(null)
+  const [posts, setPosts] = useState([])
   const [error, setError] = useState(null)
   const [searchString, setSearchString] = useState("")
   const [searchType, setSearchType] = useState(searchTypes[0])
@@ -59,7 +59,7 @@ export default function ThreadDetailsPage() {
       .then((response) => {
         const searchSortItems = (type, searchString, searchType) => {
           const types = {
-            createdAt: 'createdAt',
+            created: 'created',
             content: 'content',
           }
           const searchTypes = {
@@ -73,7 +73,7 @@ export default function ThreadDetailsPage() {
               if (searchString === '') {
                 return thread
               } else if (searchProperty === "creator") {
-                if (thread[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
+                if (thread[searchProperty]["username"].toLowerCase().includes(searchString.toLowerCase())) {
                   return thread
                 }
               } else if (thread[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {

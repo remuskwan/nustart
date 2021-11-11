@@ -12,6 +12,11 @@ const tabs = [
     { name: 'Most Answers', href: '#', current: false },
 ]
 
+const searchTypes = [
+    { id: 1, name: 'Title', searchType: 'title' },
+    { id: 2, name: 'Creator', searchType: 'creator'},
+]
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
@@ -20,6 +25,10 @@ export default function ForumsPage() {
     const [user, setUser] = useState(null)
     const [forums, setForums] = useState([])
     const [error, setError] = useState(null)
+    const [sortType, setSortType] = useState('created')
+    const [currentTab, setCurrentTab] = useState(1)
+    const [searchString, setSearchString] = useState("")
+    const [searchType, setSearchType] = useState(searchTypes[0])
 
     useEffect(() => {
         api.getUser()
@@ -31,13 +40,42 @@ export default function ForumsPage() {
 
     useEffect(() => {
         api.getForums()
-            .then((response) =>
-                setForums(response.data)
+            .then((response) => {
+                const sortItems = (type, searchString, searchType) => {
+                    const types = {
+                        created: 'created',
+                        title: 'title',
+                    }
+                    const searchTypes = {
+                        title: 'title',
+                        creator: 'creator',
+                    }
+                    const sortProperty = types[type]
+                    const searchProperty = searchTypes[searchType]
+                    const filtered = [...response.data]
+                        .filter((forum) => {
+                            if (searchString === '') {
+                                return forum
+                            } else if (searchProperty === "creator") {
+                                if (forum[searchProperty]["username"].toLowerCase().includes(searchString.toLowerCase())) {
+                                    return forum
+                                }
+                            } else if (forum[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                                return forum
+                            }
+                        })
+                    const sorted = [...filtered]
+                        .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty])
+                            || y['created'].localeCompare(x['created']))
+                    setForums(sorted)
+                }
+                sortItems(sortType, searchString, searchType.searchType)
+            }
             )
             .catch((error) => (
                 setError(error)
             ))
-    }, [])
+    }, [sortType, searchString, searchType.searchType])
 
     if (error) return `Error: ${error.message}`
 
@@ -49,6 +87,11 @@ export default function ForumsPage() {
                 disableButton={user.accountType !== "ADMIN"}
                 component={<NewButton content='forum' path='/create'/>}
                 user={user}
+                searchString={searchString}
+                setSearchString={setSearchString}
+                searchTypes={searchTypes}
+                searchType={searchType}
+                setSearchType={setSearchType}
             />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">

@@ -13,20 +13,10 @@ const tabs = [
     { name: 'Block', href: '#', current: false },
 ]
 
-const defaultUser = {
-    "accountStatus": "ACTIVE",
-    "accountType": "ADMIN",
-    "contacts": [],
-    "created": "2021-11-03T16:00:00Z[UTC]",
-    "deleted": false,
-    "email": "admin01@mail.com",
-    "favoriteGuides": [],
-    "favoritePosts": [],
-    "id": 1,
-    "password": "asdf",
-    "username": "Admin01",
-    "yr": 0
-}
+const searchTypes = [
+    { id: 1, name: 'Name', searchType: 'username' },
+    { id: 2, name: 'Email', searchType: 'email' },
+]
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -34,8 +24,12 @@ function classNames(...classes) {
 
 export default function UsersPage() {
     const [tab, setTab] = useState(tabs[0])
-    const [user, setUser] = useState(defaultUser)
+    const [user, setUser] = useState(null)
     const [error, setError] = useState(null)
+    const [sortType, setSortType] = useState('created')
+    const [currentTab, setCurrentTab] = useState(1)
+    const [searchString, setSearchString] = useState("")
+    const [searchType, setSearchType] = useState(searchTypes[0])
 
     useEffect(() => {
         api.getUser()
@@ -56,25 +50,31 @@ export default function UsersPage() {
     function CurrentTab() {
         const activeTab = tabs.filter((t) => t.current === true)
         if (activeTab[0].name === 'All Users') {
-            return <AllUsersTab />
+            return <AllUsersTab searchString={searchString} searchType={searchType} sortType={sortType}/>
         } else if (activeTab[0].name === 'To Approve') {
             //console.log('guides')
             return <ApproveTab />
         } else if (activeTab[0].name === 'Block') {
             //console.log('posts')
-            return <BlockTab user={user} />
+            return <BlockTab user={user} searchString={searchString} searchType={searchType} sortType={sortType}/>
         } else {
             return null
         }
     }
 
     return (
+        user &&
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
                 buttonContent="users"
                 disableButton={user.accountType !== "ADMIN"}
                 component={<NewButton content='admin' path='/users/create' />}
                 user={user}
+                searchString={searchString}
+                setSearchString={setSearchString}
+                searchTypes={searchTypes}
+                searchType={searchType}
+                setSearchType={setSearchType}
             />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">

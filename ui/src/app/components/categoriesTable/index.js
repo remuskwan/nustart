@@ -85,7 +85,7 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.guides.length}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {moment(item.created.slice(0, -5)).format("DD/MM/YY")}
+                            {moment(item.created.slice(0, -5)).format("MMMM Do YYYY [at] h:mm a")}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
