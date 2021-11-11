@@ -11,10 +11,18 @@ export default function ContactsTab({ editMode = false, user }) {
         async function getSize() {
             const size = await api.getContactSize()
             setContactStore({ contacts: user.contacts, currentId: size.data + 1 })
-            //console.log(size)
+            console.log(size)
         }
         getSize()
     }, [])
+
+    async function deleteContact(contactId) {
+        await api.deleteContact(user.id, contactId)
+        .then(response => setContactStore({
+            currentId: response.data.length + 1,
+            contacts: response.data
+        }))
+    }
 
     function handleDelete(id) {
         const { contacts } = contactStore;
@@ -26,6 +34,7 @@ export default function ContactsTab({ editMode = false, user }) {
             currentId: oldNotesStore.currentId,
             contacts: updatedNotes,
         }));
+        deleteContact(id)
     }
 
     async function addContact(newContact) {
@@ -49,7 +58,7 @@ export default function ContactsTab({ editMode = false, user }) {
                 currentId: note.id,
                 contacts: [...contacts, note],
             });
-            console.log(note)
+            ///console.log(note)
             addContact(note)
 
         } else {

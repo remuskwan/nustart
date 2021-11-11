@@ -38,6 +38,8 @@ public interface PersonSessionBeanLocal {
     public List<Contact> getContacts();
     
     public List<Contact> addContact(Long pId, Contact c);
+    
+    public List<Contact> deleteContact(Long pId, Long contactId) throws NoResultException;
 
     public void blockUser(Long pId) throws NoResultException;
 

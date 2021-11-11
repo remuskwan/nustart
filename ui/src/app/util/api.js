@@ -119,6 +119,9 @@ const api = {
   },
   deleteLink(guideId, linkId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/links/${linkId}`)
+  },
+  deleteContact(userId, contactId) {
+    return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/contact/${contactId}`)
   }
 }
 

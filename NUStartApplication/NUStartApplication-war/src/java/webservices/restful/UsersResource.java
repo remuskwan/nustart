@@ -187,6 +187,25 @@ public class UsersResource {
                     .build();
         }
     }
+    
+    @DELETE
+    @Path("/{id}/contact/{cid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteContact(@PathParam("id") Long pId, @PathParam("cid") Long contactId) {
+        try {
+            List<Contact> c = personSessionBeanLocal.deleteContact(pId, contactId);
+             return Response.status(200)
+                .entity(c)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception)
+                    .build();
+        }
+    }
+
 
     @PUT
     @Path("/{id}")

@@ -275,6 +275,20 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
+    public List<Contact> deleteContact(Long pId, Long contactId) throws NoResultException {
+        Contact c = em.find(Contact.class, contactId);
+        if (c != null) {
+            Query q = em.createQuery("SELECT p FROM Person p WHERE :contact MEMBER OF p.contacts");
+            q.setParameter("contact", c);
+            Person p = (Person) q.getSingleResult();
+            p.getContacts().remove(c);
+            return p.getContacts();
+        } else {
+            throw new NoResultException("Not found!");
+        }
+    }
+    
+    @Override
     public List<Person> searchByEmail(String email) {
         Query q;
         if (email != null) {
