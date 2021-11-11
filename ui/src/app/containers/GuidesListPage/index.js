@@ -7,13 +7,13 @@ import NewButton from '../../components/newButton'
 import GuideList from '../../components/Guides/guideList'
 import api from '../../util/api'
 import GuideCategories from '../../components/guideCategories'
+import PostPaginator from '../../components/Paginator/postPaginator'
 
 const tabs = [//need to change to category
   { name: 'Recent', href: '#', current: true },
   { name: 'Most Liked', href: '#', current: false },
   { name: 'Most Answers', href: '#', current: false },
 ]
-
 const searchTypes = [
   { id: 1, name: 'Title', searchType: 'title' },
   { id: 2, name: 'Creator', searchType: 'creator' },
@@ -160,8 +160,10 @@ export default function GuidesListPage() {
             </div>
             <div className="mt-4">
               <h1 className="sr-only">Guides</h1>
-              <GuideList
-                items={guides}
+              <PostPaginator
+                data={guides}
+                component={GuideList}
+                dataLimit={10}
                 setGuides={setGuides}
                 user={user}
               />

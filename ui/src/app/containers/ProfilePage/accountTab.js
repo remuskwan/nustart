@@ -83,7 +83,7 @@ export default function AccountTab({ editMode = false, uid }) {
             setName(u.data.username)
             setProfilePic(u.data.profilePicture)
             setCoverImage(u.data.coverImage)
-            if (u.data.accountType === "STUDENT") {
+            if (u.data.accountType === "STUDENT" || (u.data.course !== "default" && u.data.yr !== "default")) {
                 setCourse(u.data.course)
                 const y = years.filter((y) => y.name === u.data.yr.toString())[0]
                 setYear(y)
@@ -151,7 +151,7 @@ export default function AccountTab({ editMode = false, uid }) {
     }
 
     function updateProfile(locations = []) {
-        console.log(locations)
+        //console.log(locations)
         if (user.accountType === 'STAFF') {
             user.faculty = faculty.name
         } else if (user.accountType === 'STUDENT') {
@@ -465,7 +465,6 @@ export default function AccountTab({ editMode = false, uid }) {
                                 </div>
                                 : null
                             }
-
                             <div className="pt-5">
                                 <div className="flex justify-end">
                                     <button
