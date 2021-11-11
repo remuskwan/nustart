@@ -49,8 +49,6 @@ export default function GuideDetailsPage() {
       .catch((error) => setError(error))
   }, [categoryId])
 
-  // console.log(guide)
-
   return (
     (user && guide && category) &&
     <div className="relative min-h-screen bg-gray-100">
@@ -121,7 +119,6 @@ export default function GuideDetailsPage() {
                       <img
                         src={guide.pictureUrl}
                         alt=""
-
                       />
                       <div className="py-3 xl:pt-6 xl:pb-0">
                         <h2 className="sr-only">Content</h2>
@@ -142,10 +139,6 @@ export default function GuideDetailsPage() {
                 <aside className="hidden xl:block xl:pl-8">
                   <h2 className="sr-only">Details</h2>
                   <div className="space-y-5">
-                    {/* <div className="flex items-center space-x-2">
-                      <LockOpenIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
-                      <span className="text-green-700 text-sm font-medium">Open Issue</span>
-                    </div> */}
                     <div className="flex items-center space-x-2">
                       <ChatAltIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                       <span className="text-gray-900 text-sm font-medium">{guide.comments.length} comments</span>
@@ -170,24 +163,7 @@ export default function GuideDetailsPage() {
                             </div>
                             <div className="ml-3.5 text-sm font-medium text-gray-900">{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</div>
                           </Link>
-                          {/* <a
-                            href="#"
-                            className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5"
-                          >
-                            
-                          </a>{' '} */}
                         </li>
-                        {/* <li className="inline">
-                          <a
-                            href="#"
-                            className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5"
-                          >
-                            <div className="absolute flex-shrink-0 flex items-center justify-center">
-                              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" aria-hidden="true" />
-                            </div>
-                            <div className="ml-3.5 text-sm font-medium text-gray-900">Accessibility</div>
-                          </a>{' '}
-                        </li> */}
                       </ul>
                     </div>
                   </div>

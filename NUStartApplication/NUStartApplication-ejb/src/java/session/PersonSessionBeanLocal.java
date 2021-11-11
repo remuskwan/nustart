@@ -41,10 +41,6 @@ public interface PersonSessionBeanLocal {
     
     public List<Contact> deleteContact(Long pId, Long contactId) throws NoResultException;
 
-    public void blockUser(Long pId) throws NoResultException;
-
-    public void unblockUser(Long pId) throws NoResultException;
-
     public List<Person> searchUsers(String username);
 
     public List<Person> getAllStaff();
@@ -68,16 +64,14 @@ public interface PersonSessionBeanLocal {
     public void deleteFacility(Long fId);
 
     public List<Map> getMaps();
+    
+    public Map getMap(Long mId) throws NoResultException;
 
     public void addMap(Map m);
 
     public void updateMap(Map m);
 
     public void deleteMap(Long mId) throws NoResultException;
-
-    public void approveStaff(Person staff);
-
-    public void rejectStaff(Person staff);
 
     public List<Person> searchByEmail(String email);
 

@@ -8,7 +8,6 @@ package session;
 import entity.Category;
 import entity.Comment;
 import entity.Guide;
-import entity.Link;
 import error.NoResultException;
 import java.util.List;
 import javax.ejb.Local;
@@ -34,7 +33,7 @@ public interface GuideSessionBeanLocal {
     public List<Comment> getCommentReplies(Long cId)throws NoResultException;
     public List<Comment> getComments(Long gId)throws NoResultException;
     public Category getCategory(Long cId) throws NoResultException;
-    public void addLink(Long gId, Link l) throws NoResultException;
-    public void editLink(Link l) throws NoResultException;
-    public void deleteLink(Long gId, Long lId) throws NoResultException;
+//    public void addLink(Long gId, Link l) throws NoResultException;
+//    public void editLink(Link l) throws NoResultException;
+//    public void deleteLink(Long gId, Long lId) throws NoResultException;
 }

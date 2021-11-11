@@ -1,4 +1,4 @@
-export default function UploadImage({ accept, title, handleFileInput }) {
+export default function UploadImage({ accept, required = false, handleFileInput }) {
   return (
     <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
       <div className="space-y-1 text-center">
@@ -22,7 +22,7 @@ export default function UploadImage({ accept, title, handleFileInput }) {
             className="relative cursor-pointer bg-white rounded-md font-medium text-rose-600 hover:text-rose-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-rose-500"
           >
             <span>Upload a file</span>
-            <input id="file-upload" name="file-upload" type="file" accept={accept} className="sr-only" onChange={handleFileInput} />
+            <input id="file-upload" name="file-upload" type="file" accept={accept} className="sr-only" onChange={handleFileInput} required={required}/>
           </label>
           <p className="pl-1">or drag and drop</p>
         </div>
