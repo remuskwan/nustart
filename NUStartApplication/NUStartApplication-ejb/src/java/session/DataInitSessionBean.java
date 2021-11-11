@@ -6,6 +6,7 @@
 package session;
 
 import entity.Person;
+import enumeration.AccountStatus;
 import enumeration.AccountType;
 import error.NoResultException;
 import java.util.Date;
@@ -33,7 +34,7 @@ public class DataInitSessionBean {
     @PostConstruct
     public void postConstruct() {
         try {
-            personSessionBeanLocal.getPersonByEmail("admin01@gmail.com");
+            personSessionBeanLocal.getPersonByEmail("admin01@mail.com");
         } catch (NoResultException ex) {
             initializeData();
         }
@@ -43,10 +44,16 @@ public class DataInitSessionBean {
         try {
             Person a = new Person();
             a.setAccountType(AccountType.ADMIN);
+            a.setAccountStatus(AccountStatus.ACTIVE);
             a.setEmail("admin01@mail.com");
             a.setPassword("1234567aA@");
             a.setCreated(new Date());
             a.setUsername("Admin01");
+            a.setFaculty("default");
+            a.setCourse("default");
+            a.setYr("default");
+            a.setProfilePicture("default");
+            a.setCoverImage("default");
             personSessionBeanLocal.createUser(a);
         } catch (Exception e) {
             e.printStackTrace();

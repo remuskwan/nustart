@@ -3,8 +3,10 @@ package session;
 import entity.Category;
 import entity.Contact;
 import entity.Facility;
+import entity.Guide;
 import entity.Map;
 import entity.Person;
+import entity.Post;
 import enumeration.AccountStatus;
 import error.NoResultException;
 import javax.ejb.Stateless;
@@ -13,7 +15,14 @@ import javax.persistence.PersistenceContext;
 import enumeration.AccountType;
 import error.InvalidLoginException;
 import error.UserBlockedException;
+import error.UserEmailExistException;
+import error.UserRejectedException;
+import error.UserUnapprovedException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 /**
@@ -24,7 +33,10 @@ import javax.persistence.Query;
 public class PersonSessionBean implements PersonSessionBeanLocal {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
+
+    @EJB
+    private GuideSessionBeanLocal guideSessionBeanLocal;
 
     @Override
     public Person getPerson(Long pId) throws NoResultException {
@@ -48,15 +60,18 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         }
     }
 
-    //might be front end idk
     @Override
-    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, NoResultException {
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, UserRejectedException, NoResultException {
         try {
             Person p = getPersonByEmail(email);
             if (!p.getPassword().equals(password)) {
                 throw new InvalidLoginException("Invalid email address or password");
             } else if (p.getAccountStatus().equals(AccountStatus.BLOCKED)) {
                 throw new UserBlockedException("User blocked");
+            } else if (p.getAccountStatus().equals(AccountStatus.UNAPPROVED)) {
+                throw new UserUnapprovedException("Please wait to be approved");
+            } else if (p.getAccountStatus().equals(AccountStatus.REJECTED)) {
+                throw new UserRejectedException("You have been rejected.");
             } else {
                 return p.getId();
             }
@@ -64,83 +79,51 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
             throw new NoResultException("User not found");
         }
     }
-    
-    @Override
-    public void createUser(Person p) {
-        em.persist(p);
-    }
-   
 
-//    @Override
-//    public void createStaff(Person p) {
-//        p.setAccountType(AccountType.STAFF);
-//        em.persist(p);
-//    }
-//
-//    @Override
-//    public void createStudent(Person p) {
-//        p.setAccountType(AccountType.STUDENT);
-//        em.persist(p);
-//    }
-//    
     @Override
-    public void updateUser(Person s) throws NoResultException{
+    public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
+        try {
+            p.setCreated(new Date());
+            p.setCoverImage("default");
+            p.setProfilePicture("default");
+            if (p.getAccountType() == AccountType.STAFF) {
+                p.setCourse("default");
+                p.setYr("0");
+            }
+            em.persist(p);
+        } catch (PersistenceException ex) {
+            if (ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
+                throw new UserEmailExistException("Account already exists");
+            } else {
+                throw new UnknownPersistenceException(ex.getMessage());
+            }
+        }
+
+    }
+
+    @Override
+    public void updateUser(Person s) throws NoResultException {
         Person user = getPerson(s.getId());
 
-        user.setFaculty(s.getFaculty());
-        user.setCourse(s.getCourse());
-        user.setFavoriteGuides(s.getFavoriteGuides());
-        user.setFavoriteGuides(s.getFavoriteGuides());
-        user.setFavoritePosts(s.getFavoritePosts());
-        user.setContacts(s.getContacts());
-        user.setProfilePicture(s.getProfilePicture());
-        user.setEmail(s.getEmail());
         user.setAccountStatus(s.getAccountStatus());
+        user.setAccountType(s.getAccountType());
+        user.setFaculty(s.getFaculty().trim());
+        user.setCourse(s.getCourse().trim());
+        user.setProfilePicture(s.getProfilePicture());
+        user.setCoverImage(s.getCoverImage());
+        user.setLikedGuides(s.getLikedGuides());
+        user.setLikedPosts(s.getLikedPosts());
+        user.setEmail(s.getEmail().trim());
         user.setPassword(s.getPassword());
-        user.setYr(s.getYr());
+        user.setUsername(s.getUsername().trim());
+        user.setYr(s.getYr().trim());
     }
-
-//    @Override
-//    public void updateStaff(Person s) throws NoResultException {
-//        Person staff = getPerson(s.getId());
-//        staff.setActive(s.isActive());
-//        staff.setContacts(s.getContacts());
-//        staff.setEmail(s.getEmail());
-//        staff.setFavoriteGuides(s.getFavoriteGuides());
-//        staff.setFavoritePosts(s.getFavoritePosts());
-//        staff.setProfilePicture(s.getProfilePicture());
-//        staff.setPassword(s.getPassword());
-//        staff.setFaculty(s.getFaculty());
-//    }
-//
-//    @Override
-//    public void updateStudent(Person s) throws NoResultException {
-//        Person student = getPerson(s.getId());
-//
-//        student.setFaculty(s.getFaculty());
-//        student.setCourse(s.getCourse());
-//        student.setFavoriteGuides(s.getFavoriteGuides());
-//        student.setFavoriteGuides(s.getFavoriteGuides());
-//        student.setFavoritePosts(s.getFavoritePosts());
-//        student.setContacts(s.getContacts());
-//        student.setProfilePicture(s.getProfilePicture());
-//        student.setEmail(s.getEmail());
-//        student.setActive(s.isActive());
-//        student.setPassword(s.getPassword());
-//        student.setYr(s.getYr());
-//    }
 
     @Override
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);
-        p.setDeleted(true);
-    }
-
-    @Override
-    public void addContact(Contact c, Long pId) throws NoResultException {
-        em.persist(c);
-        Person p = getPerson(pId);
-        p.getContacts().add(c);
+        em.remove(p);
     }
 
     @Override
@@ -165,7 +148,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         } else {
             q = em.createQuery("SELECT p FROM Person p");
         }
-        
+
         return q.getResultList();
     }
 
@@ -201,20 +184,10 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public void deleteCategory(String name) throws NoResultException {
-        //if there are guides and forum using category, i cannot delete right?
-        Query q = em.createQuery("SELECT DISTINCT c from Category c WHERE c.name = :name");
-        q.setParameter("name", name);
-        try {
-            Category c = (Category) q.getResultList();
-            if (c != null) {
-                em.remove(c);
-            } else {
-                throw new NoResultException("Category not found");
-            }
-        } catch (NoResultException ex) {
-            throw new NoResultException("Category not found");
-        }
+    public void deleteCategory(Long cId) throws NoResultException {
+        //if there are guides and forum using category, i cannot delete right? yes
+        Category c = guideSessionBeanLocal.getCategory(cId);
+        em.remove(c);
     }
 
     @Override
@@ -276,15 +249,142 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void approveStaff(Person staff) {
         //check
-        createUser(staff);
+//        createUser(staff);
     }
 
     @Override
     public void rejectStaff(Person staff) {
         //show on front end rejection?
-       //or send email?
+        //or send email?
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public List<Contact> getContacts() {
+        return em.createQuery("SELECT c FROM Contact c").getResultList();
+    }
+
+    public List<Contact> addContact(Long pId, Contact c) {
+        try {
+            Person p = getPerson(pId);
+            em.persist(c);
+            p.getContacts().add(c);
+            return p.getContacts();
+        } catch (NoResultException ex) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<Contact> deleteContact(Long pId, Long contactId) throws NoResultException {
+        Contact c = em.find(Contact.class, contactId);
+        if (c != null) {
+            Query q = em.createQuery("SELECT p FROM Person p WHERE :contact MEMBER OF p.contacts");
+            q.setParameter("contact", c);
+            Person p = (Person) q.getSingleResult();
+            p.getContacts().remove(c);
+            return p.getContacts();
+        } else {
+            throw new NoResultException("Not found!");
+        }
+    }
     
+    @Override
+    public List<Person> searchByEmail(String email) {
+        Query q;
+        if (email != null) {
+            q = em.createQuery("SELECT u FROM Person u WHERE "
+                    + "LOWER(u.email) LIKE :email");
+            q.setParameter("email", "%" + email.toLowerCase() + "%");
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Person> searchByFaculty(String faculty) {
+        Query q;
+        if (faculty != null) {
+            q = em.createQuery("SELECT u FROM Person u WHERE "
+                    + "LOWER(u.faculty) LIKE :faculty");
+            q.setParameter("faculty", "%" + faculty.toLowerCase() + "%");
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Person> searchByCourse(String course) {
+        Query q;
+        if (course != null) {
+            q = em.createQuery("SELECT u FROM Person u WHERE "
+                    + "LOWER(u.course) LIKE :course");
+            q.setParameter("course", "%" + course.toLowerCase() + "%");
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Person> searchByStaff() {
+        Query q;
+        q = em.createQuery("SELECT u FROM Person u");
+
+        if (q != null) {
+            q = em.createQuery("SELECT u FROM Person u where u.accountType LIKE 1");
+
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Person> searchByStudent() {
+        Query q;
+        q = em.createQuery("SELECT u FROM Person u");
+
+        if (q != null) {
+            q = em.createQuery("SELECT u FROM Person u where u.accountType LIKE 0");
+
+        } else {
+            //show everyone or show nothing?
+            q = em.createQuery("SELECT p FROM Person p");
+        }
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Guide> getGuidesCreated(Long pId) {
+        Query q = em.createQuery("SELECT g FROM Guide g WHERE g.creator.id = :id");
+        q.setParameter("id", pId);
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Thread> getThreadsCreated(Long pId) {
+        Query q = em.createQuery("SELECT t FROM Thread t WHERE t.creator.id = :id");
+        q.setParameter("id", pId);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Post> getPostsCreated(Long pId) {
+        Query q = em.createQuery("SELECT p FROM Post p WHERE p.creator.id = :id");
+        q.setParameter("id", pId);
+        return q.getResultList();
+    }
+
 }

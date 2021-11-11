@@ -5,6 +5,7 @@
  */
 package webservices.restful;
 
+import entity.Forum;
 import entity.Thread;
 import error.NoResultException;
 import javax.ejb.EJB;
@@ -25,9 +26,10 @@ import session.ThreadSessionBeanLocal;
  */
 @Path("threads")
 public class ThreadsResource {
+
     @EJB
     private ThreadSessionBeanLocal threadSessionBeanLocal;
-    
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -37,6 +39,24 @@ public class ThreadsResource {
 //            t.getCreator().setThreads(null);
             return Response.status(200)
                     .entity(t)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/{id}/forum")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getForumFromThread(@PathParam("id") Long tId) {
+        try {
+            Forum f = threadSessionBeanLocal.getForumFromThread(tId);
+            return Response.status(200)
+                    .entity(f)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (NoResultException ex) {

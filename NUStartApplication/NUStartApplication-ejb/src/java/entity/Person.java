@@ -11,7 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import enumeration.AccountType;
+import java.util.ArrayList;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,36 +29,31 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique=true)
     private String email;
     private String password;
     private String username;
     private String profilePicture; 
+    private String coverImage;
     @Enumerated
     private AccountType accountType;
     @Enumerated
     private AccountStatus accountStatus;
-//    private boolean active; //student and staff only
     private String faculty; //student and staff only
     private String course; // student only
-    private int yr; //student only
-    private boolean deleted;
+    private String yr; //student only
     @Temporal(TemporalType.DATE)
     private Date created;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Guide> favoriteGuides;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private List<Post> favoritePosts;
+    private List<Integer> likedPosts;
+    private List<Integer> likedGuides;
 
     public Person() {
-        
-    }
-    public Person(String email, String password) {
-        this();
-        this.email = email;
-        this.password = password;
+        this.likedPosts = new ArrayList<>();
+        this.likedGuides = new ArrayList<>();
+        this.contacts = new ArrayList<>();
     }
 
     public Long getId() {
@@ -91,6 +88,14 @@ public class Person implements Serializable {
         this.profilePicture = profilePicture;
     }
 
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
     public AccountType getAccountType() {
         return accountType;
     }
@@ -98,14 +103,6 @@ public class Person implements Serializable {
     public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
     }
-
-//    public boolean isActive() {
-//        return active;
-//    }
-//
-//    public void setActive(boolean active) {
-//        this.active = active;
-//    }
 
     public String getFaculty() {
         return faculty;
@@ -123,20 +120,12 @@ public class Person implements Serializable {
         this.course = course;
     }
 
-    public int getYr() {
+    public String getYr() {
         return yr;
     }
 
-    public void setYr(int yr) {
+    public void setYr(String yr) {
         this.yr = yr;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getUsername() {
@@ -147,29 +136,12 @@ public class Person implements Serializable {
         this.username = username;
     }
 
-
     public List<Contact> getContacts() {
         return contacts;
     }
 
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
-    }
-
-    public List<Guide> getFavoriteGuides() {
-        return favoriteGuides;
-    }
-
-    public void setFavoriteGuides(List<Guide> favoriteGuides) {
-        this.favoriteGuides = favoriteGuides;
-    }
-
-    public List<Post> getFavoritePosts() {
-        return favoritePosts;
-    }
-
-    public void setFavoritePosts(List<Post> favoritePosts) {
-        this.favoritePosts = favoritePosts;
     }
 
     public Date getCreated() {
@@ -186,6 +158,22 @@ public class Person implements Serializable {
 
     public void setAccountStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
+    }
+
+    public List<Integer> getLikedPosts() {
+        return likedPosts;
+    }
+
+    public void setLikedPosts(List<Integer> likedPosts) {
+        this.likedPosts = likedPosts;
+    }
+
+    public List<Integer> getLikedGuides() {
+        return likedGuides;
+    }
+
+    public void setLikedGuides(List<Integer> likedGuides) {
+        this.likedGuides = likedGuides;
     }
 
     @Override

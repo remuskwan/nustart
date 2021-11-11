@@ -16,9 +16,9 @@ export default function NavBar({
   disableSearch = false,
   editProfile = false,
   user,
-  userNavigation = [
-    { name: 'Your Profile', path: '/profile' },
-  ],
+  userNavigation = [],
+  //   { name: 'Your Profile', path: `/profile/${user.id}` },
+  // ],
   searchString = "",
   searchItems,
 }) {
@@ -27,10 +27,12 @@ export default function NavBar({
   const { url } = useRouteMatch()
 
   const navigation = !editProfile ? [
-    { name: 'Guides', path: '/guides', icon: HomeIcon },
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Campus', href: '/campus', icon: UserGroupIcon },
-    ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
+    { name: 'Guides', path: '/categories', icon: HomeIcon },
+    ...user.accountType === "ADMIN" ? [
+      { name: 'Categories', path: '/admin/categories', icon: UserGroupIcon },
+      { name: 'Users', path: '/users', icon: UserGroupIcon }
+    ] : []
   ] : [
     { name: 'Account', path: '/account/edit', icon: UserCircleIcon },
     { name: 'Password', path: '/account/edit/password', icon: KeyIcon }
@@ -55,7 +57,7 @@ export default function NavBar({
                   <Link to="/">
                     <img
                       className="block h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=500"
+                      src="https://nustart.s3.ap-southeast-1.amazonaws.com/nustartlogo.png"
                       alt="Workflow"
                     />
                   </Link>
@@ -64,7 +66,7 @@ export default function NavBar({
               <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-8">
                 <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                   <div className="w-full">
-                    {!disableSearch &&
+                    {!disableSearch ?
                       <Fragment>
                         <label htmlFor="search" className="sr-only">
                           Search
@@ -83,7 +85,9 @@ export default function NavBar({
                             onChange={(e) => searchItems(e.target.value)}
                           />
                         </div>
-                      </Fragment>}
+                      </Fragment>
+                      : <div className="h-9" />
+                    }
                   </div>
                 </div>
               </div>
@@ -125,20 +129,29 @@ export default function NavBar({
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div className="ml-1">
-                  <div className="text-base font-medium text-gray-800">{user && user.displayName}</div>
+                  <div className="text-base font-medium text-gray-800">{user && user.username}</div>
                   <div className="text-sm font-medium text-gray-500">{user && user.email}</div>
                 </div>
               </div>
               <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
-                {userNavigation.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.path}
-                    className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                  >
-                    {item.name}
-                  </NavLink>
-                ))}
+                <button
+                  className="w-full block rounded-md py-2 px-3 text-base text-left font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                  onClick={() => {
+                    history.push(`/profile/${user.id}`)
+                    window.location.reload()
+                  }}>
+                  Your Profile
+                </button>
+                {/* {userNavigation.map((item) =>
+                (<NavLink
+                  key={item.name}
+                  to={item.path}
+
+                  className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                >
+                  {item.name}
+                </NavLink>
+                ))} */}
                 <button
                   className="w-full block rounded-md py-2 px-3 text-base text-left font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                   onClick={() => {

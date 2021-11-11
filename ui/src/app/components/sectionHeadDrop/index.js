@@ -7,12 +7,16 @@ export default function SectionHeadDrop({ title, creator, date, open, menu }) {
           <h1 id="message-heading" className="text-lg font-medium text-gray-900">
             {title}
           </h1>
-          <p className="mt-2 flex items-center text-sm text-gray-500 overflow-hidden overflow-ellipsis">
-            <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-            {creator}
-            <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-            {date}
-          </p>
+          <div className="sm:flex">
+            <p className="flex items-center text-sm text-gray-500">
+              <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+              {creator}
+            </p>
+            <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
+              <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+              {date}
+            </p>
+          </div>
         </div>
 
         <div className="mt-4 flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">

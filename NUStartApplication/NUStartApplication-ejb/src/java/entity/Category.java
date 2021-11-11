@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,6 +34,8 @@ public class Category implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date created;
     
+    @ManyToOne
+    private Person creator;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> guides;
 
@@ -66,6 +69,14 @@ public class Category implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public Person getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Person creator) {
+        this.creator = creator;
     }
 
     @Override

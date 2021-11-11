@@ -33,6 +33,10 @@ public class Guide implements Serializable {
     private Long id;
     private String title;
     private String content;
+    private String pictureUrl;
+    private List<String> files;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Link> links;
 //    private Boolean published;
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
@@ -122,6 +126,30 @@ public class Guide implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public List<String> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<String> files) {
+        this.files = files;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 
     @Override

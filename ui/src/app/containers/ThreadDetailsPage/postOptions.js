@@ -1,26 +1,28 @@
-import axios from 'axios'
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import {
   PencilIcon,
   DotsVerticalIcon,
   TrashIcon,
-  StarIcon,
 } from '@heroicons/react/solid'
 import ConfirmDialog from '../../components/confirmDialog'
 import EditPostModal from './editPost'
+import api from '../../util/api'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function PostOptions({ forum, thread, setThread, post }) {
+export default function PostOptions({ forumId, threadId, setThread, post, setPosts }) {
   const [open, setOpen] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
 
   function deletePost() {
-    axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forum.id}/threads/${thread.id}/posts/${post.id}`)
-      .then((response) => setThread(response.data))
+    api.deletePost(forumId, threadId, post.id)
+      .then((response) => {
+        setThread(response.data)
+        setPosts(response.data.posts)
+      })
   }
 
   return (
@@ -82,14 +84,13 @@ export default function PostOptions({ forum, thread, setThread, post }) {
       </Menu>
       <ConfirmDialog
         title="post"
-        item={thread}
         open={open}
         setOpen={setOpen}
         onConfirm={deletePost}
       />
       <EditPostModal
-        forum={forum}
-        thread={thread}
+        forumId={forumId}
+        threadId={threadId}
         setThread={setThread}
         post={post}
         open={openEdit}

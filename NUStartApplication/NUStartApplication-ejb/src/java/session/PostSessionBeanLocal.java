@@ -6,6 +6,7 @@
 package session;
 
 import entity.Post;
+import error.NoResultException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -15,7 +16,12 @@ import javax.ejb.Local;
  */
 @Local
 public interface PostSessionBeanLocal {
+
     public List<Post> searchPosts(Long tId, String content);
-    
+
     public List<Post> searchPostsByCreator(String displayName);
+
+    public Post getPost(Long pId) throws NoResultException;
+
+    public entity.Thread getThreadFromPost(Long pId);
 }

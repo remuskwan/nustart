@@ -17,7 +17,7 @@ public class Contact implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String content;
+    private String value;
 
     public Long getId() {
         return id;
@@ -27,12 +27,12 @@ public class Contact implements Serializable {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public String getValue() {
+        return value;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

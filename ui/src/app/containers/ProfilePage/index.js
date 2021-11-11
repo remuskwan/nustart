@@ -1,10 +1,15 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+
 import {
     ChevronRightIcon,
     CheckIcon,
     SelectorIcon,
     StarIcon,
+    UserCircleIcon,
+    MailIcon,
+    PhoneIcon,
+    BanIcon,
 } from '@heroicons/react/solid'
 import {
     CalendarIcon,
@@ -13,43 +18,45 @@ import {
     AcademicCapIcon,
     AnnotationIcon,
     LibraryIcon,
+    CheckCircleIcon,
 } from '@heroicons/react/outline'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
-import ContactForm from '../../components/contacts/ContactForm'
-import ContactList from '../../components/contacts/ContactList'
 
-const navigation = [
-    { name: 'Forums', href: '#', icon: HomeIcon, current: false },
-    { name: 'Change Password', href: '#', icon: CalendarIcon, current: false },
-]
+import NewButton from '../../components/newButton'
+import api from '../../util/api'
+import { useHistory, useParams } from 'react-router'
+import GuidesTab from './guidesTab'
+import ContactsTab from './contactsTab'
+
+import AccountTab from './accountTab';
+import ThreadsTab from './threadsTab'
+import PostsTab from './postsTab'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
+    { name: 'Password', href: '#', current: false },
+    { name: 'Contacts', href: '#', current: false },
     { name: 'Guides', href: '#', current: false },
     { name: 'Threads', href: '#', current: false },
     { name: 'Posts', href: '#', current: false },
-    { name: 'Favourites', href: '#', current: false },
+    //{ name: 'Liked', href: '#', current: false },
 ]
 
-const profile = {
-    name: 'Jane Doe',
-    imageUrl:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-    about: `about contents`,
-    faculty: 'Computing',
-    email: 'e0000000@u.nus.edu',
-    accountType: 'Staff',
-    contacts: [
-        { id: '1', value: '@janedoe', }
-    ],
+const defaultUser = {
+    "accountStatus": "ACTIVE",
+    "accountType": "ADMIN",
+    "contacts": [],
+    "created": "2021-11-03T16:00:00Z[UTC]",
+    "deleted": false,
+    "email": "admin01@mail.com",
+    "favoriteGuides": [],
+    "favoritePosts": [],
+    "id": 1,
+    "password": "asdf",
+    "username": "Admin01",
+    "yr": 0
 }
-
-const guides = [
-    { id: '1', title: 'Guide Title', creator: profile, datePublished: 'December 9 at 11:43 AM', dateEdited: 'December 12 at 11:43 AM' }
-]
 
 const posts = [
     {
@@ -95,12 +102,12 @@ const threads = [
     },
 ]
 
-const favouriteFilter = [
+const likedFilter = [
     { id: 1, name: 'Guides' },
     { id: 2, name: 'Posts' },
 ]
 
-const favourites = [
+const likes = [
     {
         id: 1, type: 'Guide',
         value: {
@@ -127,15 +134,104 @@ const favourites = [
     },
 ]
 
+const years = [
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' },
+    { id: 6, name: 'Part-time' },
+    { id: 7, name: 'Graduate' },
+    { id: 8, name: 'PhD' },
+]
+
+const faculties = [
+    { id: 1, name: 'Arts & Social Sciences' },
+    { id: 2, name: 'Business' },
+    { id: 3, name: 'Computing' },
+    { id: 4, name: 'Continuing and Lifelong Education' },
+    { id: 5, name: 'Dentistry' },
+    { id: 6, name: 'Design & Environment' },
+    { id: 7, name: 'Duke-NUS' },
+    { id: 8, name: 'Engineering' },
+    { id: 9, name: 'Integrative Sciences & Engineering' },
+    { id: 10, name: 'Law' },
+    { id: 11, name: 'Medicine' },
+    { id: 12, name: 'Music' },
+    { id: 13, name: 'Public Health' },
+    { id: 14, name: 'Public Policy' },
+    { id: 15, name: 'Science' },
+    { id: 16, name: 'University Scholars Program' },
+    { id: 17, name: 'Yale-NUS' },
+]
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function ProfilePage() {
-    //const [sidebarOpen, setSidebarOpen] = useState(false)
+
+    const [user, setUser] = useState(defaultUser) //logged in user
+    const [viewUser, setViewUser] = useState(defaultUser) //viewing other user
     const [tab, setTab] = useState(tabs[0])
-    const [contactStore, setNotesStore] = useState({ contacts: profile.contacts, currentId: 0 })
-    const [selected, setSelected] = useState(favouriteFilter[0])
+
+    const [profilePic, setProfilePic] = useState('')
+    const [selected, setSelected] = useState(likedFilter[0])
+
+    const [guides, setGuides] = useState([])
+    const [threads, setThreads] = useState([])
+    const [posts, setPosts] = useState([])
+    const [editMode, setEditMode] = useState(false)
+
+    const { uid } = useParams()
+
+    useEffect(() => {
+        async function getLogged() {
+            await api.getUser()
+                .then(response => {
+                    setUser(response.data)
+                    setProfilePic(response.data.profilePicture)
+                    setEditMode(response.data.id.toString() === uid)
+                    //console.log(response.data.id === uid)
+                }).then(async () => {
+                    if (!editMode) {
+                        await api.getUser(uid)
+                            .then(response => setViewUser(response.data))
+                    }
+                })
+        }
+        getLogged()
+    }, [])
+
+    useEffect(() => {
+        async function getGuides() {
+            await api.getUserGuide(uid)
+                .then(response => {
+                    setGuides(response.data)
+                })
+                .then(() => console.log(guides))
+        }
+        getGuides()
+    }, [])
+
+    useEffect(() => {
+        async function getThreads() {
+            await api.getUserThread(uid)
+                .then(response => {
+                    setThreads(response.data)
+                })
+                .then(() => console.log(threads))
+        }
+        getThreads()
+    }, [])
+
+    useEffect(() => {
+        async function getPosts() {
+            await api.getUserPost(uid)
+            .then(response => setPosts(response.data))
+        }
+        getPosts()
+    }, [])
 
     function resetTabState(tabName) {
         tabs.filter((t) => t.current === true).map((t) => t.current = false)
@@ -146,379 +242,21 @@ export default function ProfilePage() {
     function CurrentTab() {
         const activeTab = tabs.filter((t) => t.current === true)
         if (activeTab[0].name === 'Profile') {
-            return <ProfileTab />;
+            return <AccountTab editMode={editMode} uid={uid} />;
+        } else if (activeTab[0].name === 'Contacts') {
+            return <ContactsTab editMode={editMode} user={user} />;
         } else if (activeTab[0].name === 'Guides') {
-            console.log('guides')
-            return <GuidesTab />;
+            return <GuidesTab guides={guides} />;
         } else if (activeTab[0].name === 'Posts') {
-            console.log('posts')
-            return <PostsTab />;
+            return <PostsTab posts={posts} />;
         } else if (activeTab[0].name === 'Threads') {
-            return <ThreadsTab />;
+            return <ThreadsTab threads={threads} />
         } else {
-            return <FavouriteTab />;
+            return <LikedTab editMode={editMode} />;
         }
     }
 
-    function handleDelete(id) {
-        const { contacts } = contactStore;
-        const updatedNotes = contacts.filter((n) => {
-            return n.id !== id;
-        });
-
-        setNotesStore((oldNotesStore) => ({
-            currentId: oldNotesStore.currentId,
-            contacts: updatedNotes,
-        }));
-
-        console.log("###updatedNotes: ", updatedNotes);
-    } //end handleDelete
-
-    function handleAddEdit(note) {
-        console.log("###in handleAddEdit ", note);
-        const { currentId, contacts } = contactStore;
-        if (note.id === 0) {
-            //add action
-            if (note.value.trim() === "") return;
-
-            note.id = currentId + 1;
-
-            setNotesStore({
-                currentId: note.id,
-                contacts: [...contacts, note],
-            });
-        } else {
-            //edit action
-            if (note.value.trim() === "") {
-                //cancel edit
-                return;
-            } else {
-                //find the note
-                const updatedNotes = contacts.map((n) => {
-                    if (n.id === note.id) {
-                        note.editMode = false;
-                        return note;
-                    } else {
-                        return n;
-                    }
-                });
-
-                setNotesStore((oldContactsStore) => ({
-                    currentId: oldContactsStore.currentId,
-                    contacts: updatedNotes,
-                }));
-            }
-        }
-    }
-
-    const { contacts } = contactStore;
-
-    function ProfileTab() {
-        return (
-            <div className="mt-5 md:mt-0 md:col-span-2">
-                <form className="space-y-6 p-4" action="#" method="PUT">
-                    <div>
-                        <div className="mt-3 grid grid-cols-4 gap-6">
-                            <div className="col-span-4 sm:col-span-2">
-                                <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                                    First name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="first-name"
-                                    id="first-name"
-                                    autoComplete="cc-given-name"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-600 focus:border-rose-600 sm:text-sm"
-                                />
-                            </div>
-                            <div className="col-span-4 sm:col-span-2">
-                                <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                                    Last name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="last-name"
-                                    id="last-name"
-                                    autoComplete="cc-family-name"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-600 focus:border-rose-600 sm:text-sm"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-6">
-                            <div className="mt-3 col-span-6 sm:col-span-2">
-                                <label htmlFor="user-email" className="block text-sm font-medium text-gray-700">
-                                    Email
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow-sm">
-                                    <input
-                                        type="text"
-                                        name="user-email"
-                                        id="user-email"
-                                        className="focus:ring-rose-500 focus:border-rose-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300"
-                                        value={profile.email.replace("@u.nus.edu", "")}
-                                    />
-                                    <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                        @u.nus.edu
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-3">
-                            <label htmlFor="about" className="block text-sm font-medium text-gray-700">
-                                About
-                            </label>
-                            <div className="mt-1">
-                                <textarea
-                                    id="about"
-                                    name="about"
-                                    rows={3}
-                                    className="shadow-sm focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm border border-gray-300 rounded-md"
-                                    defaultValue={''}
-                                    contentEditable='true'
-                                    value={profile.about}
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-3 sm:col-span-6">
-                            <label htmlFor="photo" className="block text-sm font-medium text-gray-700">
-                                Photo
-                            </label>
-                            <div className="mt-1 flex items-center">
-                                <span className="h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                                    <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                    </svg>
-                                </span>
-                                <div className="p-3 flex text-sm text-gray-600">
-                                    <label
-                                        htmlFor="file-upload"
-                                        className="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-grey-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                    >
-                                        <span>Change</span>
-                                        <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                    </label>
-                                    <button
-                                        type="button"
-                                        className="ml-3 bg-transparent py-2 px-3 border border-transparent rounded-md text-sm font-medium text-rose-600 hover:text-blue-gray-700 focus:outline-none focus:border-blue-gray-300 focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-gray-50 focus:ring-blue-500"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-3 sm:col-span-6">
-                            <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700">
-                                Cover photo
-                            </label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                <div className="space-y-1 text-center">
-                                    <svg
-                                        className="mx-auto h-12 w-12 text-gray-400"
-                                        stroke="currentColor"
-                                        fill="none"
-                                        viewBox="0 0 48 48"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            strokeWidth={2}
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                    <div className="flex text-sm text-gray-600">
-                                        <label
-                                            htmlFor="file-upload"
-                                            className="relative cursor-pointer bg-white rounded-md font-medium text-rose-500 hover:text-rose-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-rose-500"
-                                        >
-                                            <span>Upload a file</span>
-                                            <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                        </label>
-                                        <p className="pl-1">or drag and drop</p>
-                                    </div>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="rounded-md shadow-sm -space-y-px">
-                            <div className="bg-white sm:rounded-lg">
-                                <div className="px-4 py-5 sm:p-3">
-                                    <h3 className="text-lg leading-6 font-medium text-gray-900">Contacts</h3>
-                                    <span className="text-sm text-gray-500" id="email-optional">
-                                        Optional
-                                    </span>
-                                    <br />
-                                    <div className="note-container">
-                                        <ContactForm onDone={handleAddEdit} />
-                                        <br />
-                                        <ContactList
-                                            contacts={contacts}
-                                            onDelete={handleDelete}
-                                            onDone={handleAddEdit}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                        </div>
-                        <button
-                            type="submit"
-                            className="mt-3 inline-flex items-end px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                        >
-                            Save
-                        </button>
-                    </div>
-                </form>
-            </div>
-        )
-    }
-
-    function GuidesTab() {
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {guides.map((guide) => (
-                        <li key={guide.id}>
-                            <a href="#" className="block hover:bg-gray-50">
-                                <div className="px-4 py-4 flex items-center sm:px-6">
-                                    <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                        <div className="truncate">
-                                            <div className="flex text-sm items-center">
-                                                <p className="text-xl font-medium text-rose-500 truncate">{guide.title}</p>
-                                                <p className="ml-3 flex-shrink-0 font-normal text-gray-500">Edited <time dateTime={guide.dateEdited}>{guide.dateEdited}</time></p>
-                                            </div>
-                                            <div className="mt-2 flex">
-                                                <div className="flex items-center text-sm text-gray-500">
-                                                    <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    <p>
-                                                        Created on <time dateTime={guide.datePublished}>{guide.datePublished}</time>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                            <div className="flex overflow-hidden -space-x-1">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="ml-5 flex-shrink-0">
-                                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
-    }
-
-    function ThreadsTab() {
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {threads.map((thread) => (
-                        <li key={thread.id}>
-                            <div className="px-4 py-4 flex items-center sm:px-6">
-                                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                    <div className="truncate">
-                                        <div className="flex text-sm items-center">
-                                            <p className="text-xl font-medium text-rose-500 truncate">{thread.title}</p>
-                                            <a href="#" className="block hover:bg-gray-50">
-                                                <p className="ml-3 text-l font-medium hover:text-rose-700 text-gray-500 truncate">{thread.forum.forumTitle}</p>
-                                            </a>
-                                        </div>
-                                        <div className="mt-2 flex">
-                                            <div className="flex items-center text-sm text-gray-500">
-                                                <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    Created on <time dateTime={thread.date}>{thread.date}</time>
-                                                </p>
-                                            </div>
-                                            <div className="ml-5 flex items-center text-sm text-gray-500">
-                                                <AnnotationIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    {thread.posts} posts
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                        <div className="flex overflow-hidden -space-x-1">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                                    >
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
-    }
-
-    function PostsTab() {
-        return (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {posts.map((p) => (
-                        <li key={p.creator.email}>
-
-                            <div className="flex items-center px-4 py-4 sm:px-6">
-                                <div className="min-w-0 flex-1 flex items-center">
-
-                                    <div className="min-w-0 flex-1 px-2 md:gap-2">
-                                        <div>
-                                            <p className="text-sm font-medium text-rose-500 truncate">{p.creator.forumTitle}</p>
-                                            <p className="mt-2 flex items-center text-sm text-gray-900">
-                                                <span className="truncate">Thread {p.creator.threadTitle}</span>
-                                            </p>
-                                        </div>
-                                        <div className="md:block">
-                                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                <p>
-                                                    <time dateTime={p.date}>{p.date}</time>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="md:block">
-                                            <div className="mt-2 flex items-center text-sm text-gray-700">
-                                                <p>
-                                                    {p.postContents}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                                    >
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )
-    }
-
-    function FavouriteTab() {
+    function LikedTab(editMode) {
         return (
             <div>
                 <Listbox value={selected} onChange={setSelected}>
@@ -532,7 +270,7 @@ export default function ProfilePage() {
 
                         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
                             <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                                {favouriteFilter.map((filter) => (
+                                {likedFilter.map((filter) => (
                                     <Listbox.Option
                                         key={filter.id}
                                         className={({ active }) =>
@@ -574,9 +312,9 @@ export default function ProfilePage() {
     function FilterFavourites() {
         let filtered = [];
         if (selected.name === 'Guides') {
-            filtered = favourites.filter((f) => f.type === 'Guide')
+            filtered = likes.filter((f) => f.type === 'Guide')
         } else {
-            filtered = favourites.filter((f) => f.type === 'Post')
+            filtered = likes.filter((f) => f.type === 'Post')
         }
         return (
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -598,9 +336,12 @@ export default function ProfilePage() {
                                         </div>
                                     </div>
                                     <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                        <a href="#" className="block hover:bg-gray-50">
-                                            <StarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                        </a>
+                                        {editMode
+                                            ? <a href="#" className="block hover:bg-gray-50">
+                                                <StarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                            </a>
+                                            : null
+                                        }
                                     </div>
                                 </div>
                                 <div className="ml-5 flex-shrink-0">
@@ -617,12 +358,64 @@ export default function ProfilePage() {
         )
     }
 
+    function RenderPosition() {
+        if (viewUser.accountType === 'STAFF') {
+            return (
+                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        Staff
+                    </div>
+
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        {viewUser.faculty}
+                    </div>
+                </div>
+            )
+        } else if (viewUser.accountType === 'ADMIN') {
+            return (
+                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <UserCircleIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        Administrator
+                    </div>
+
+                </div>
+            )
+
+        } else {
+            return (
+                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <AcademicCapIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        Student
+                    </div>
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        {viewUser.faculty}
+                    </div>
+                </div>
+            )
+        }
+
+
+
+    }
+
     function RenderTabs() {
-        if (profile.accountType === 'Student') {
-            const newTabs = tabs.filter((t) => t.name !== 'Guides')
+        if (!editMode) {
+            let finalTabs = []
+            const newTabs = tabs.filter((t) => t.name !== 'Password')
+            if (viewUser.accountType === 'STUDENT') {
+                finalTabs = newTabs.filter((t) => t.name !== 'Guides')
+            } else {
+                finalTabs = newTabs
+            }
             return (
                 <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                    {newTabs.map((tab) => (
+                    {finalTabs.map((tab) => (
                         <a
                             key={tab.name}
                             href={tab.href}
@@ -642,91 +435,179 @@ export default function ProfilePage() {
                     ))}
                 </nav>
             )
+        } else {
+            if (user.accountType === 'STUDENT') {
+                const newTabs = tabs.filter((t) => t.name !== 'Guides')
+                return (
+                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                        {newTabs.map((tab) => (
+                            <a
+                                key={tab.name}
+                                href={tab.href}
+                                className={classNames(
+                                    tab.current
+                                        ? 'border-pink-500 text-gray-900'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                                    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+                                )}
+                                aria-current={tab.current ? 'page' : undefined}
+                                onClick={() => {
+                                    resetTabState(tab.name)
+                                }}
+                            >
+                                {tab.name}
+                            </a>
+                        ))}
+                    </nav>
+                )
+            } else {
+                return (
+                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                        {tabs.map((tab) => (
+                            <a
+                                key={tab.name}
+                                href={tab.href}
+                                className={classNames(
+                                    tab.current
+                                        ? 'border-pink-500 text-gray-900'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                                    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+                                )}
+                                aria-current={tab.current ? 'page' : undefined}
+                                onClick={() => {
+                                    resetTabState(tab.name)
+                                }}
+                            >
+                                {tab.name}
+                            </a>
+                        ))}
+                    </nav>
+                )
+            }
         }
+    }
+
+    function EditMode() {
         return (
-            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                {tabs.map((tab) => (
-                    <a
-                        key={tab.name}
-                        href={tab.href}
-                        className={classNames(
-                            tab.current
-                                ? 'border-pink-500 text-gray-900'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
-                        )}
-                        aria-current={tab.current ? 'page' : undefined}
-                        onClick={() => {
-                            resetTabState(tab.name)
-                        }}
-                    >
-                        {tab.name}
-                    </a>
-                ))}
-            </nav>
+            <main className="lg:col-span-9 xl:col-span-9 bg-white rounded-md">
+                <article>
+                    <div>
+                        <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
+                            <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImage} alt="" />
+                        </div>
+                        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
+                                <div className="flex">
+                                    {profilePic === "default"
+                                        ?
+                                        <div class="max-w-md mx-auto my-3">
+                                            <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md hover:shadow-lg h-24 w-24 rounded-full fill-current text-white">
+                                                <h2 style={{ fontSize: 24 }}>{user.username.substring(0, 1)}</h2>
+                                            </div>
+                                        </div>
+                                        :
+                                        <img
+                                            className="h-24 w-24 rounded-full sm:h-32 sm:w-32"
+                                            src={profilePic}
+                                            alt={user.username.substring(0, 1)}
+                                        />
+                                    }
+                                </div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{viewUser.username}</h2>
+                                <RenderPosition />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-6 sm:mt-2 2xl:mt-5">
+                        <div className="border-b border-gray-200">
+                            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <RenderTabs />
+                            </div>
+                        </div>
+                    </div>
+                    <CurrentTab />
+                </article>
+            </main>
         )
     }
 
+    function ViewMode() {
+        return (
+            viewUser &&
+            <main className="lg:col-span-9 xl:col-span-9 bg-white rounded-md">
+                <article>
+                    <div>
+                        <div>
+                            <img className="h-32 w-full object-cover lg:h-48" src={viewUser.coverImage} alt="" />
+                        </div>
 
+                        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
+                                <div className="flex">
+                                    {viewUser.profilePicture === "default"
+                                        ?
+                                        <div class="max-w-md mx-auto my-3">
+                                            <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md hover:shadow-lg h-24 w-24 rounded-full fill-current text-white">
+                                                <h2 style={{ fontSize: 24 }}>{viewUser.username.substring(0, 1)}</h2>
+                                            </div>
+                                        </div>
+                                        :
+                                        <img
+                                            className="h-24 w-24 rounded-full sm:h-32 sm:w-32"
+                                            src={viewUser.profilePicture}
+                                            alt={viewUser.username.substring(0, 1)}
+                                        />
+                                    }
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{viewUser.username}</h2>
+                                    <RenderPosition />
+                                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                                        {
+                                            viewUser.accountStatus === 'ACTIVE'
+                                                ? 
+                                                <>
+                                                    <CheckCircleIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" aria-hidden="true" />
+                                                    {viewUser.accountStatus}
+                                                </>
+                                                : null
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div className="mt-6 sm:mt-2 2xl:mt-5">
+                        <div className="border-b border-gray-200">
+                            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <RenderTabs />
+                            </div>
+                        </div>
+                    </div>
+                    <CurrentTab />
+                </article>
+            </main>
+        )
+    }
 
     return (
         <div className="relative min-h-screen bg-gray-100">
-            <NavBar />
+            <NavBar
+                buttonContent="forum"
+                disableButton={user.accountType !== "ADMIN"}
+                component={<NewButton content='forum' path='/create' />}
+                user={user}
+            />
             <div className="py-10">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
-                        <SideBar />
+                        <SideBar user={user} />
                     </div>
-                    <main className="lg:col-span-9 xl:col-span-9 bg-white">
-                        <article>
-                            {/* Profile header */}
-                            <div>
-                                <div>
-                                    <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={profile.coverImageUrl} alt="" />
-                                </div>
-                                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                                    <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
-                                        <div className="flex">
-                                            <img
-                                                className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-                                                src={profile.imageUrl}
-                                                alt=""
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{profile.name}</h2>
-                                        <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                                            {profile.accountType === 'Staff' ? (
-                                                <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                    <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    Staff
-                                                </div>
-                                            ) : (
-                                                <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                    <AcademicCapIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    Student
-                                                </div>
-                                            )
-                                            }
-                                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                {profile.faculty}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-6 sm:mt-2 2xl:mt-5">
-                                <div className="border-b border-gray-200">
-                                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                                        <RenderTabs />
-                                    </div>
-                                </div>
-                            </div>
-                            <CurrentTab />
-                        </article>
-                    </main>
+                    {editMode ? <EditMode /> : <ViewMode />}
                 </div>
             </div>
         </div>
