@@ -10,7 +10,6 @@ import Breadcrumb from '../../components/breadcrumb'
 import ThreadOptions from './threadOptions'
 import api from '../../util/api'
 import PostPaginator from '../../components/Paginator/postPaginator'
-import ThreadsPaginator from '../../components/Paginator/postPaginator'
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
