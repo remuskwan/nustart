@@ -1,5 +1,5 @@
 import { CalendarIcon, UserIcon } from "@heroicons/react/solid"
-export default function SectionHeadDrop({ title, creator, date, open, menu }) {
+export default function SectionHeadDrop({ title, creator, date, open, menu, disableMenu }) {
   return (
     <div className="pb-5 border-b border-gray-200">
       <div className="sm:flex sm:justify-between sm:items-baseline">
@@ -30,7 +30,7 @@ export default function SectionHeadDrop({ title, creator, date, open, menu }) {
                 Closed
               </span>
             )}
-          {menu}
+          {!disableMenu && menu}
         </div>
       </div>
     </div>

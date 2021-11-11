@@ -1,5 +1,5 @@
-import { Link, NavLink, useRouteMatch } from 'react-router-dom'
-import { ChatAlt2Icon, BookOpenIcon, KeyIcon, UserGroupIcon, UserCircleIcon, LocationMarkerIcon } from '@heroicons/react/outline'
+import { NavLink, useRouteMatch } from 'react-router-dom'
+import { ChatAlt2Icon, BookOpenIcon, KeyIcon, UserCircleIcon, LocationMarkerIcon } from '@heroicons/react/outline'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -18,8 +18,9 @@ export default function SideBar({ editProfile = false, user }) {
   ]
 
   const adminConsole = [
-    { id: 1, name: 'Categories', path: '/admin/categories', icon: UserGroupIcon },
-    { id: 2, name: 'Users', path: '/users', icon: UserGroupIcon },
+    { id: 1, name: 'Campus', path: '/admin/campus' },
+    { id: 2, name: 'Categories', path: '/admin/categories' },
+    { id: 3, name: 'Users', path: '/users'},
   ]
 
   return (

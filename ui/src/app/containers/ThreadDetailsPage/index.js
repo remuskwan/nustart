@@ -126,6 +126,7 @@ export default function ThreadDetailsPage() {
                 creator={thread.creator.username}
                 date={moment().subtract(moment().diff(thread.created.slice(0, -5))).calendar()}
                 open={!thread.closed}
+                disableMenu={thread.creator.id !== user.id && user.accountType !== 'ADMIN'}
                 menu={
                   <ThreadOptions forumId={forumId} thread={thread} setThread={setThread} />
                 }

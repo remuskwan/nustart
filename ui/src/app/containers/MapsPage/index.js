@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useRouteMatch } from 'react-router'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
-import NewButton from '../../components/newButton'
 import MapSelectMenu from '../../components/SelectMenus/mapsSelectMenu'
 import api from '../../util/api'
 
@@ -32,16 +31,12 @@ export default function CampusPage() {
             ))
     }, [])
 
-    // console.log(maps)
     return (
         user &&
         <div className="relative min-h-screen bg-gray-100">
             <NavBar
                 buttonContent="forum"
-                disableButton={user.accountType !== "ADMIN"}
-                component={
-                    <NewButton content='map' path={`${url}/create`} />
-                }
+                disableButton={true}
                 user={user}
                 disableSearch={true}
             />
