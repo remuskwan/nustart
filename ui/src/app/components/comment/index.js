@@ -58,7 +58,6 @@ export default function Comment({ user, comment, guideId, setGuide, setComments 
                 </div>
                 <div className="mt-2 text-sm space-x-2">
                   <span className="text-gray-500 font-medium">{moment().subtract(moment().diff(comment.created.slice(0, -5))).calendar()}</span>{' '}
-                  <span className="text-gray-500 font-medium">&middot;</span>{' '}
                 </div>
               </div>
             </div>
