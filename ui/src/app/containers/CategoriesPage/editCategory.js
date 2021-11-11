@@ -8,15 +8,13 @@ import api from '../../util/api'
 export default function EditCategoryModal({ item, open, setOpen }) {
     const [title, setTitle] = useState(item.title)
     const [error, setError] = useState(null)
-    const [category, setCategory] = useState('')
 
     useEffect(() => {
         api.getCategory(item.id)
             .then(response => {
-                setCategory(response.data)
                 setTitle(response.data.name)
             })
-    }, [])
+    }, [item])
 
     const handleSubmit = (evt) => {
         evt.preventDefault()
@@ -28,15 +26,8 @@ export default function EditCategoryModal({ item, open, setOpen }) {
     }
 
     function editCategory() {
-        category.name = title
-        api.editCategory(category.id, category)
-            .then(response => setCategory(response.data))
-            .then(() => window.location.reload())
-        // api.editThread(forumId, thread)
-        //   .then((response) => {
-        //     setThread(response.data)
-        //   })
-        //   .catch(error => setError(error))
+        item.name = title
+        api.editCategory(item.id, item)
     }
 
     return (

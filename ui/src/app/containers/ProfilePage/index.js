@@ -1,29 +1,17 @@
-import { Fragment, useState, useEffect } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
+import { useState, useEffect } from 'react'
 
 import {
-    ChevronRightIcon,
-    CheckIcon,
-    SelectorIcon,
-    StarIcon,
     UserCircleIcon,
-    MailIcon,
-    PhoneIcon,
-    BanIcon,
 } from '@heroicons/react/solid'
 import {
-    CalendarIcon,
-    HomeIcon,
     BriefcaseIcon,
     AcademicCapIcon,
-    AnnotationIcon,
     LibraryIcon,
     CheckCircleIcon,
 } from '@heroicons/react/outline'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 
-import NewButton from '../../components/newButton'
 import api from '../../util/api'
 import { useHistory, useParams } from 'react-router'
 import GuidesTab from './guidesTab'
@@ -41,7 +29,6 @@ const tabs = [
     { name: 'Guides', href: '#', current: false },
     { name: 'Threads', href: '#', current: false },
     { name: 'Posts', href: '#', current: false },
-    //{ name: 'Liked', href: '#', current: false },
 ]
 
 const likedFilter = [
@@ -112,7 +99,6 @@ export default function ProfilePage() {
     useEffect(() => {
         async function getPosts() {
             await api.getUserPost(uid)
-                //.then(response => console.log(response.data))
                 .then(response => setPosts(response.data))
         }
         getPosts()

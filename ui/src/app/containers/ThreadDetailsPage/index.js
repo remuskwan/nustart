@@ -130,7 +130,9 @@ export default function ThreadDetailsPage() {
                   <ThreadOptions forumId={forumId} thread={thread} setThread={setThread} />
                 }
               />
+              <div className="mt-5">
               <SortSelectMenu options={sortTypes} sortType={sortType} setSortType={setSortType} />
+              </div>
               <div className="mt-4">
                 <h1 className="sr-only">Posts</h1>
                 <PostPaginator

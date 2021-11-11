@@ -31,6 +31,8 @@ export default function CampusPage() {
                 setError(error)
             ))
     }, [])
+
+    // console.log(maps)
     return (
         user &&
         <div className="relative min-h-screen bg-gray-100">
@@ -49,8 +51,8 @@ export default function CampusPage() {
                         <SideBar user={user} />
                     </div>
                     <main className="lg:col-span-9 xl:col-span-10">
-                        {maps.length && selected ?
-                            <MapSelectMenu options={maps} selected={selected} setSelected={setSelected} />
+                        {(maps.length && selected) ?
+                            <MapSelectMenu options={maps} map={selected} setMap={setSelected} />
                             : <div className="text-center">
                                 <svg
                                     className="mx-auto h-12 w-12 text-gray-400"

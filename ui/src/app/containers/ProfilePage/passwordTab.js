@@ -19,7 +19,7 @@ export default function PasswordTab({ user }) {
                 .then(() => console.log(password))
         }
         getLoggedInUser()
-    }, [])
+    }, [user.id])
 
     const handleSubmit = (evt) => {
         evt.preventDefault()

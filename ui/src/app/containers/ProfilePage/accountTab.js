@@ -98,7 +98,7 @@ export default function AccountTab({ editMode = false, uid }) {
             setUser(u.data)
         }
         getLogged()
-    }, [])
+    }, [uid])
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
@@ -173,6 +173,7 @@ export default function AccountTab({ editMode = false, uid }) {
 
         api.editUser(user.id, user)
             .then(response => setUser(response.data))
+            //.then(() => history.push(`/profile/${uid}`))
             .then(() => window.location.reload())
     }
 
