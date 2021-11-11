@@ -33,7 +33,7 @@ export default function Post({ user, setUser, post, forumId, threadId, setThread
         <div>
           <div className="flex space-x-3">
             <div className="flex-shrink-0">
-            {post.creator.profilePicture === "default"
+              {post.creator.profilePicture === "default"
                 ?
                 <div className="flex justify-center items-center content-center bg-gradient-to-br from-rose-300 to-rose-600 shadow-md hover:shadow-lg h-10 w-10 rounded-full fill-current text-white">
                   <h2 className="text-xs">{post.creator.username.substring(0, 1)}</h2>
@@ -56,15 +56,17 @@ export default function Post({ user, setUser, post, forumId, threadId, setThread
                 {moment().subtract(moment().diff(post.createdAt.slice(0, -5))).calendar()}
               </p>
             </div>
-            <div className="flex-shrink-0 self-center flex">
-              <PostOptions
-                forumId={forumId}
-                threadId={threadId}
-                post={post}
-                setThread={setThread}
-                setPosts={setPosts}
-              />
-            </div>
+            {(post.creator.id === user.id || user.accountType === 'ADMIN') &&
+              <div className="flex-shrink-0 self-center flex">
+                <PostOptions
+                  forumId={forumId}
+                  threadId={threadId}
+                  post={post}
+                  setThread={setThread}
+                  setPosts={setPosts}
+                />
+              </div>
+            }
           </div>
           <h2 id={'post-title-' + post.id} className="mt-4 text-base font-medium text-gray-900">
             <div dangerouslySetInnerHTML={{ __html: post.content }} />

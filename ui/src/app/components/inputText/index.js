@@ -3,6 +3,8 @@ export default function InputText(
     placeholder="", 
     required=false, 
     autoFocus=false, 
+    maxLength=255,
+    autoCapitalize='none',
     className="shadow-sm focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm border-gray-300 rounded-md",
     ...props
   }) {
@@ -22,7 +24,9 @@ export default function InputText(
           autoFocus={autoFocus}
           required={required}
           aria-invalid="true"
-          aria-describedby="input-error"
+          // aria-describedby="input-error"
+          maxLength={maxLength}
+          autoCapitalize={autoCapitalize}
           value={props.value}
           onChange={props.onChange}
         />

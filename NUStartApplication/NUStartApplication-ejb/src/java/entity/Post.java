@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,14 +27,12 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "varchar(5000)")
     private String content;
     @ManyToOne
     private Person creator;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-//    private Boolean published;
-//    private Date publishedAt;
-//    private Date updatedAt;
     private Long likes;
 
     public Post() {

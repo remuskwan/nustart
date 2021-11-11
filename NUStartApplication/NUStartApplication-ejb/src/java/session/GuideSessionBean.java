@@ -76,8 +76,6 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
             oldG.setTitle(g.getTitle());
             oldG.setContent(g.getContent());
             oldG.setPictureUrl(g.getPictureUrl());
-            oldG.setFiles(g.getFiles());
-//            oldG.setLinks(g.getLinks());
         } catch (NoResultException ex) {
             Logger.getLogger(GuideSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }

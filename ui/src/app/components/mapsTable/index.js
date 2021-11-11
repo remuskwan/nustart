@@ -62,9 +62,6 @@ export default function MapsTable({ items, setSearchString, dataLimit }) {
                         >
                           Image URL
                         </th>
-                        {/* <th scope="col" className="relative px-6 py-3">
-                          <span className="sr-only">Edit</span>
-                        </th> */}
                         <th scope="col" className="relative px-6 py-3">
                           <span className="sr-only">Options</span>
                         </th>

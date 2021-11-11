@@ -112,8 +112,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         user.setCourse(s.getCourse().trim());
         user.setProfilePicture(s.getProfilePicture());
         user.setCoverImage(s.getCoverImage());
-        user.setLikedGuides(s.getLikedGuides());
-        user.setLikedPosts(s.getLikedPosts());
         user.setEmail(s.getEmail().trim());
         user.setPassword(s.getPassword());
         user.setUsername(s.getUsername().trim());

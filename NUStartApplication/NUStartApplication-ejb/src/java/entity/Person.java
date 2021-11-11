@@ -47,12 +47,23 @@ public class Person implements Serializable {
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contacts;
-    private List<Integer> likedPosts;
-    private List<Integer> likedGuides;
 
     public Person() {
-        this.likedPosts = new ArrayList<>();
-        this.likedGuides = new ArrayList<>();
+        this.contacts = new ArrayList<>();
+    }
+
+    public Person(String email, String password, String username, String profilePicture, String coverImage, AccountType accountType, AccountStatus accountStatus, String faculty, String course, String yr, Date created) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.profilePicture = profilePicture;
+        this.coverImage = coverImage;
+        this.accountType = accountType;
+        this.accountStatus = accountStatus;
+        this.faculty = faculty;
+        this.course = course;
+        this.yr = yr;
+        this.created = created;
         this.contacts = new ArrayList<>();
     }
 
@@ -160,21 +171,21 @@ public class Person implements Serializable {
         this.accountStatus = accountStatus;
     }
 
-    public List<Integer> getLikedPosts() {
-        return likedPosts;
-    }
-
-    public void setLikedPosts(List<Integer> likedPosts) {
-        this.likedPosts = likedPosts;
-    }
-
-    public List<Integer> getLikedGuides() {
-        return likedGuides;
-    }
-
-    public void setLikedGuides(List<Integer> likedGuides) {
-        this.likedGuides = likedGuides;
-    }
+//    public List<Integer> getLikedPosts() {
+//        return likedPosts;
+//    }
+//
+//    public void setLikedPosts(List<Integer> likedPosts) {
+//        this.likedPosts = likedPosts;
+//    }
+//
+//    public List<Integer> getLikedGuides() {
+//        return likedGuides;
+//    }
+//
+//    public void setLikedGuides(List<Integer> likedGuides) {
+//        this.likedGuides = likedGuides;
+//    }
 
     @Override
     public int hashCode() {

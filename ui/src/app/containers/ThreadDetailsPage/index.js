@@ -128,7 +128,7 @@ export default function ThreadDetailsPage() {
                 open={!thread.closed}
                 disableMenu={thread.creator.id !== user.id && user.accountType !== 'ADMIN'}
                 menu={
-                  <ThreadOptions forumId={forumId} thread={thread} setThread={setThread} />
+                  <ThreadOptions user={user} forumId={forumId} thread={thread} setThread={setThread} />
                 }
               />
               <div className="mt-5">

@@ -29,6 +29,7 @@ export default function EditGuideModal({ categoryId, guide, setGuide, open, setO
       setNotifTitle("saved guide")
       triggerNotification()
       setOpen(false)
+      window.location.reload()
     }
     else if(title === ''){
       alert("Title cannot be empty")
@@ -42,10 +43,9 @@ export default function EditGuideModal({ categoryId, guide, setGuide, open, setO
     guide.title = title
     guide.content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     api.editGuide(categoryId, guide)
-      .then((response) =>
-        {setGuide(response.data)
-        console.log(response.data)}
-      )
+      .then((response) =>{
+        setGuide(response.data)
+      })
       .catch(error => setError(error))
   }
 
