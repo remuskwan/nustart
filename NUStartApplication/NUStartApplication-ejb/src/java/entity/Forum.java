@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,15 +33,24 @@ public class Forum implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(columnDefinition = "varchar(1000)")
     private String description;
     @Temporal(TemporalType.DATE)
     private Date created;
     @ManyToOne
-    private Administrator creator;
+    private Person creator;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Thread> threads;
 
     public Forum() {
+        this.threads = new ArrayList<>();
+    }
+
+    public Forum(String title, String description, Date created, Person creator) {
+        this.title = title;
+        this.description = description;
+        this.created = created;
+        this.creator = creator;
         this.threads = new ArrayList<>();
     }
 
@@ -84,11 +94,11 @@ public class Forum implements Serializable {
         this.created = created;
     }
 
-    public Administrator getCreator() {
+    public Person getCreator() {
         return creator;
     }
 
-    public void setCreator(Administrator creator) {
+    public void setCreator(Person creator) {
         this.creator = creator;
     }
 

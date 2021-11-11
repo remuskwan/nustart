@@ -5,6 +5,7 @@
  */
 package session;
 
+import entity.Forum;
 import entity.Post;
 import entity.Thread;
 import error.NoResultException;
@@ -17,13 +18,18 @@ import javax.ejb.Local;
  */
 @Local
 public interface ThreadSessionBeanLocal {
+
     public Thread getThread(Long tId) throws NoResultException;
+
+    public Forum getForumFromThread(Long tId) throws NoResultException;
     
+    public Thread getThreadFromPost(Long pId) throws NoResultException;
+
     public List<Thread> searchThreads(Long fId, String title);
-    
+
     public void addPost(Long tId, Post p) throws NoResultException;
-    
-    public void editPost(Long tId, Post p) throws NoResultException;
-    
+
+    public void editPost(Post p) throws NoResultException;
+
     public void deletePost(Long tId, Long pId) throws NoResultException;
 }

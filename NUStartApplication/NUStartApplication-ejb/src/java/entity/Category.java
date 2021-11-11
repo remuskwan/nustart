@@ -6,6 +6,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,7 +15,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -24,13 +29,29 @@ public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Temporal(TemporalType.DATE)
+    private Date created;
     
+    @ManyToOne
+    private Person creator;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> guides;
 
+    public Category(String name, Date created, Person creator) {
+        this.name = name;
+        this.created = created;
+        this.creator = creator;
+        this.guides = new ArrayList<>();
+    }
+
+    public Category() {
+        this.guides = new ArrayList<>();
+    }
+    
+    
     public String getName() {
         return name;
     }
@@ -53,6 +74,22 @@ public class Category implements Serializable {
 
     public void setGuides(List<Guide> guides) {
         this.guides = guides;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Person getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Person creator) {
+        this.creator = creator;
     }
 
     @Override

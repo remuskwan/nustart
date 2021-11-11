@@ -1,0 +1,38 @@
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState } from "draft-js";
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { useEffect, useState } from 'react';
+
+import draftToHtml from 'draftjs-to-html';
+
+export default function RichTextArea(
+    { 
+        helpText = '',
+        editorState,
+        onEditorStateChange,
+        ...props }
+) {
+
+
+    return (
+        <div>
+            <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                {props.label}
+            </label>
+
+            <div>
+                <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
+                    <Editor
+                        editorState={editorState}
+                        onEditorStateChange={onEditorStateChange}
+                    /*value={editorState.getCurrentContent()}
+                    onChange={props.onChange}*/
+                    />
+
+                </div>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">{helpText}</p>
+
+        </div>
+    )
+}

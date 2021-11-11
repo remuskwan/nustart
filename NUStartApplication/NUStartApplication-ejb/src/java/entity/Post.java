@@ -7,10 +7,12 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,16 +25,19 @@ public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "varchar(5000)")
     private String content;
+    @ManyToOne
     private Person creator;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-//    private Boolean published;
-//    private Date publishedAt;
-//    private Date updatedAt;
     private Long likes;
+
+    public Post() {
+        this.likes = 0l;
+    }
 
     public Long getId() {
         return id;

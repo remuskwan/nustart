@@ -6,12 +6,18 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -28,24 +34,28 @@ public class Guide implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    @Column(columnDefinition = "varchar(5000)")
     private String content;
-    private Boolean published;
-
+    private String pictureUrl;
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
     
-    @Temporal(TemporalType.DATE)
-    private Date dateUpdated;
-    
-    @Temporal(TemporalType.DATE)
-    private Date datePublished;
-    
     @ManyToOne
-    private Person creator;
+    private Person creator; //staff only
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
+    public Guide(String title, String content, String pictureUrl, Date dateCreated, Person creator) {
+        this.title = title;
+        this.content = content;
+        this.pictureUrl = pictureUrl;
+        this.dateCreated = dateCreated;
+        this.creator = creator;
+        this.comments = new ArrayList<>();
+    }
+    
     public Guide() {
-        this.datePublished = null;
-        this.dateUpdated = null;
+        this.comments = new ArrayList<>();
     }
     
     public Long getId() {
@@ -80,22 +90,6 @@ public class Guide implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Date getDateUpdated() {
-        return dateUpdated;
-    }
-
-    public void setDateUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
-    }
-
-    public Date getDatePublished() {
-        return datePublished;
-    }
-
-    public void setDatePublished(Date datePublished) {
-        this.datePublished = datePublished;
-    }
-
     public Person getCreator() {
         return creator;
     }
@@ -104,14 +98,22 @@ public class Guide implements Serializable {
         this.creator = creator;
     }
 
-    public Boolean getPublished() {
-        return published;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setPublished(Boolean published) {
-        this.published = published;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

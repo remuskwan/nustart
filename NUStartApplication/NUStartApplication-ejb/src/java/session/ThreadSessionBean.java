@@ -5,6 +5,7 @@
  */
 package session;
 
+import entity.Forum;
 import entity.Post;
 import entity.Thread;
 import error.NoResultException;
@@ -20,25 +21,54 @@ import javax.persistence.Query;
  */
 @Stateless
 public class ThreadSessionBean implements ThreadSessionBeanLocal {
-    
+
     @PersistenceContext
     private EntityManager em;
 
     @Override
     public Thread getThread(Long tId) throws NoResultException {
         Thread t = em.find(Thread.class, tId);
-        
+
         if (t != null) {
             return t;
         } else {
             throw new NoResultException("Thread not found");
         }
     }
+
+    @Override
+    public Forum getForumFromThread(Long tId) throws NoResultException {
+        Thread t = em.find(Thread.class, tId);
+
+        Query q = em.createQuery("SELECT DISTINCT f FROM Forum f WHERE :thread MEMBER OF f.threads");
+        q.setParameter("thread", t);
+        Forum f = (Forum) q.getSingleResult();
+        if (f != null) {
+            return f;
+        } else {
+            return new Forum();
+        }
+    }
+
+    @Override
+    public Thread getThreadFromPost(Long pId) throws NoResultException {
+        Post p = em.find(Post.class, pId);
+
+        Query q = em.createQuery("SELECT DISTINCT t FROM Thread t WHERE :post MEMBER OF t.posts");
+        q.setParameter("post", p);
+        Thread t = (Thread) q.getSingleResult();
+        if (t != null) {
+            return t;
+        } else {
+            return new Thread();
+        }
+    }
+
     @Override
     public List<Thread> searchThreads(Long fId, String title) {
         Query q;
         if (title != null) {
-            q = em.createQuery("SELECT t FROM Thread t, Forum f WHERE f.id = :fId AND " 
+            q = em.createQuery("SELECT t FROM Thread t, Forum f WHERE f.id = :fId AND "
                     + "LOWER(t.title) LIKE :title");
             q.setParameter("fId", fId);
             q.setParameter("title", "%" + title.toLowerCase() + "%");
@@ -46,10 +76,10 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
             q = em.createQuery("SELECT t FROM Thread t, Forum f WHERE f.id = :fId");
             q.setParameter("fId", fId);
         }
-        
+
         return q.getResultList();
     }
-    
+
     @Override
     public void addPost(Long tId, Post p) throws NoResultException {
         try {
@@ -62,20 +92,17 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
     }
 
     @Override
-    public void editPost(Long tId, Post p) throws NoResultException {
-        Thread t = getThread(tId);
+    public void editPost(Post p) throws NoResultException {
         Post oldP = em.find(Post.class, p.getId());
-        t.getPosts().remove(oldP);
         oldP.setContent(p.getContent());
         oldP.setLikes(p.getLikes());
-        t.getPosts().add(p);
     }
 
     @Override
     public void deletePost(Long tId, Long pId) throws NoResultException {
         Thread t = getThread(tId);
         Post p = em.find(Post.class, pId);
-        
+
         if (t != null) {
             t.getPosts().remove(p);
             em.remove(p);
@@ -83,5 +110,5 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
             throw new NoResultException("Not found");
         }
     }
-    
+
 }

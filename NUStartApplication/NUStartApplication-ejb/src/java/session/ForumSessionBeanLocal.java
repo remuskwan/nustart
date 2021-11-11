@@ -31,5 +31,5 @@ public interface ForumSessionBeanLocal {
     
     public void editThread(Thread tId) throws NoResultException;
     
-    public void deleteThread(Long tId) throws NoResultException;
+    public void deleteThread(Long fId, Long tId) throws NoResultException;
 }
