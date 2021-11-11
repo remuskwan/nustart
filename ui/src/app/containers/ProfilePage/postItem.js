@@ -21,7 +21,7 @@ export default function PostItem({ p }) {
             //console.log(p)
         }
         getThread()
-    }, [forum])
+    }, [p.id])
 
     async function getForum(tid) {
         await api.getThreadForum(tid).then(response => setForum(response.data))

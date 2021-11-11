@@ -1,12 +1,22 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import {
     BanIcon,
     CheckCircleIcon,
 } from '@heroicons/react/outline'
+import SortSelectMenu from '../../components/SelectMenus/sortSelectMenu'
 import api from '../../util/api'
 
-export default function BlockTab({sortType, searchString, searchType}) {
+const sortTypes = [
+    { id: 1, name: 'Recent', sortType: 'created', reverse: false },
+    { id: 2, name: 'Email', sortType: 'email', reverse: true },
+    { id: 2, name: 'Username', sortType: 'username', reverse: true },
+    { id: 2, name: 'Role', sortType: 'accountType', reverse: true },
+    { id: 2, name: 'Status', sortType: 'accountStatus', reverse: true },
+]
+
+export default function BlockTab({ searchString, searchType }) {
     const [allUsers, setAllUsers] = useState([])
+    const [sortType, setSortType] = useState(sortTypes[0])
 
     useEffect(() => {
         api.getUsers()
@@ -14,7 +24,8 @@ export default function BlockTab({sortType, searchString, searchType}) {
                 const searchSortItems = (type, searchString, searchType) => {
                     const types = {
                         created: 'created',
-                        // role: 'isAdmin',
+                        accountType: 'accountType',
+                        accountStatus: 'accountStatus',
                         email: 'email',
                         username: 'username',
                     }
@@ -33,16 +44,14 @@ export default function BlockTab({sortType, searchString, searchType}) {
                             }
                         })
                     const sorted = [...filtered]
-                        .sort((x, y) =>
-                            sortProperty === 'isAdmin'
-                                ? y[sortProperty] - x[sortProperty]
-                                : y[sortProperty].localeCompare(x[sortProperty]))
-                    setAllUsers(sorted);    
+                        .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty])
+                            || y['created'].localeCompare(x['created']))
+                    setAllUsers(sorted);
                 }
-                searchSortItems(sortType, searchString, searchType.searchType)
+                searchSortItems(sortType.sortType, searchString, searchType.searchType)
                 // setAllUsers(users.data.filter((user) => (user.accountStatus === 'ACTIVE' || user.accountStatus === 'BLOCKED') && user.accountType !== "ADMIN"));
             })
-    }, [sortType, searchString, searchType.searchType])
+    }, [sortType.sortType, searchString, searchType.searchType])
 
     function toggleBlock(user) {
         user.accountStatus = user.accountStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED'
@@ -56,9 +65,24 @@ export default function BlockTab({sortType, searchString, searchType}) {
     return (
         allUsers &&
         <div>
+            <div className="pt-6 pb-4">
+                <SortSelectMenu options={sortTypes} sortType={sortType} setSortType={setSortType} />
+            </div>
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" className="divide-y divide-gray-200">
-                    {allUsers.map((user) => (
+                <ul className="divide-y divide-gray-200">
+                    {(!allUsers || !allUsers.length) ?
+                        <li key='No users to block'>
+                            <div className="px-4 py-4 flex items-center sm:px-6">
+                                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+                                    <div className="truncate">
+                                        <div className="flex text-sm items-center">
+                                            <p className="text-xl font-medium text-rose-500 truncate">No users to block</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        : allUsers.map((user) => (
                         <li key={user.id}>
                             <div className="px-4 py-4 flex items-center sm:px-6">
                                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
