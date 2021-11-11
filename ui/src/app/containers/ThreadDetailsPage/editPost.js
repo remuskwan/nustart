@@ -6,7 +6,7 @@ import api from '../../util/api'
 import htmlToDraft from 'html-to-draftjs'
 import draftToHtml from 'draftjs-to-html';
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, ContentState ,convertToRaw} from "draft-js";
+import { EditorState, ContentState, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const htmlToDraftBlocks = (html) => {
@@ -19,16 +19,19 @@ const htmlToDraftBlocks = (html) => {
 
 export default function EditPostModal({ forumId, threadId, setThread, post, open, setOpen }) {
   // const [content, setContent] = useState(post.content)
-  
+
   const [editorState, setEditorState] = useState()
   const [error, setError] = useState(null);
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    if (editorState !== '') {
+    if (editorState.getCurrentContent().hasText()) {
       editPost()
       setOpen(false)
       alert("Successfully edited thread.")
+    }
+    else {
+      alert("Content cannot be empty")
     }
   }
 
@@ -44,6 +47,7 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
   useEffect(() => {
     const editorState = htmlToDraftBlocks(post.content)
     setEditorState(() => editorState)
+
   }, [post.content])
 
   return (

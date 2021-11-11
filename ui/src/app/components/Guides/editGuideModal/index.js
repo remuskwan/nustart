@@ -26,11 +26,17 @@ export default function EditGuideModal({ categoryId, guide, setGuide, open, setO
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    if (title !== '') {
+    if (title !== '' && editorState.getCurrentContent().hasText()) {
       editGuide()
       setOpen(false)
       setNotifTitle("saved guide")
       triggerNotification()
+    }
+    else if(title === ''){
+      alert("Title cannot be empty")
+    }
+    else{
+      alert("Content cannot be empty")
     }
   }
 
