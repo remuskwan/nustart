@@ -161,7 +161,7 @@ export default function ForumDetailsPage() {
                 <ThreadPaginator
                   data={threads}
                   component={ThreadList}
-                  dataLimit={3}
+                  dataLimit={8}
                 />
               </div>
             </main>

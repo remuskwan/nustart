@@ -1,7 +1,6 @@
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import NewButton from '../../components/newButton'
@@ -10,13 +9,17 @@ import SectionHeadDrop from '../../components/sectionHeadDrop'
 import Breadcrumb from '../../components/breadcrumb'
 import ThreadOptions from './threadOptions'
 import api from '../../util/api'
+import PostPaginator from '../../components/Paginator/postPaginator'
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
   { name: 'Most Liked', href: '#', current: false },
   { name: 'Most Answers', href: '#', current: false },
 ]
-
+const searchTypes = [
+  { id: 1, name: 'Title', searchType: 'title' },
+  { id: 2, name: 'Creator', searchType: 'creator' },
+]
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -28,6 +31,9 @@ export default function ThreadDetailsPage() {
   const [thread, setThread] = useState(null)
   const [posts, setPosts] = useState(null)
   const [error, setError] = useState(null)
+  const [searchString, setSearchString] = useState("")
+  const [searchType, setSearchType] = useState(searchTypes[0])
+  const [sortType, setSortType] = useState('createdAt')
 
   useEffect(() => {
     api.getUser()
@@ -50,13 +56,40 @@ export default function ThreadDetailsPage() {
   useEffect(() => {
     api.getThread(threadId)
       .then((response) => {
+        const searchSortItems = (type, searchString, searchType) => {
+          const types = {
+            createdAt: 'createdAt',
+            content: 'content',
+          }
+          const searchTypes = {
+            content: 'content',
+            creator: 'creator',
+          }
+          const sortProperty = types[type]
+          const searchProperty = searchTypes[searchType]
+          const filtered = [...response.data.posts]
+            .filter((thread) => {
+              if (searchString === '') {
+                return thread
+              } else if (searchProperty === "creator") {
+                if (thread[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
+                  return thread
+                }
+              } else if (thread[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                return thread
+              }
+            })
+          const sorted = [...filtered]
+            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
+          setPosts(sorted)
+        }
         setThread(response.data)
-        setPosts(response.data.posts)
+        searchSortItems(sortType, searchString, searchType.searchType)
       })
       .catch((error) => (
         setError(error)
       ))
-  }, [threadId])
+  }, [threadId, sortType, searchString, searchType.searchType])
 
   if (error) return `Error: ${error.message}`
 
@@ -68,7 +101,13 @@ export default function ThreadDetailsPage() {
         buttonContent="post"
         disableButton={thread.closed}
         user={user}
-        component={<NewButton content='post' path={`/${forumId}/threads/${threadId}/posts/create`} />} />
+        component={<NewButton content='post' path={`/${forumId}/threads/${threadId}/posts/create`} />}
+        searchString={searchString}
+        setSearchString={setSearchString}
+        searchTypes={searchTypes}
+        searchType={searchType}
+        setSearchType={setSearchType} />
+
       <Breadcrumb pages={[
         {
           name: forum.title,
@@ -138,15 +177,10 @@ export default function ThreadDetailsPage() {
               </div>
               <div className="mt-4">
                 <h1 className="sr-only">Posts</h1>
-                <PostList
-                user={user}
-                setUser={setUser}
-                  items={posts}
-                  forumId={forumId}
-                  threadId={threadId}
-                  setThread={setThread}
-                  contentType="posts"
-                  setPosts={setPosts}
+                <PostPaginator
+                  data={posts}
+                  component={PostList}
+                  dataLimit={8}
                 />
               </div>
             </main>

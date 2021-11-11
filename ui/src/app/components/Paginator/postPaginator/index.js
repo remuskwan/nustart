@@ -1,97 +1,59 @@
-import { Fragment, useEffect, useState } from 'react'
-import { ArrowNarrowLeftIcon, ArrowNarrowRightIcon } from '@heroicons/react/solid'
+import { Fragment, useState, useEffect } from 'react'
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function PostsPaginator({ data, component: Component, pageLimit, dataLimit, ...rest }) {
-  const [pages, setPages] = useState(1)
+export default function ThreadsPaginator({ data, component: Component, dataLimit }) {
+  const [pages, setPages] = useState(Math.ceil(data.length / dataLimit))
   const [currentPage, setCurrentPage] = useState(1)
+
+  const startIndex = currentPage * dataLimit - dataLimit
+  const endIndex = startIndex + dataLimit
 
   const goToNextPage = () => setCurrentPage((page) => page + 1)
   const goToPreviousPage = () => setCurrentPage((page) => page - 1)
-  const changePage = (evt) => {
-    const pageNumber = Number(evt.target.textContent)
-    setCurrentPage(pageNumber)
-  }
+
   const getPaginatedData = () => {
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-    return data.slice(startIndex, endIndex);
+    const startIndex = currentPage * dataLimit - dataLimit
+    const endIndex = startIndex + dataLimit
+    return data.slice(startIndex, endIndex)
   }
-  const getStartPaginationGroup = () => {
-    let start = Math.floor((currentPage - 1) / pageLimit) * pageLimit
-    return new Array(pages > pageLimit ? pageLimit : pages).fill().map((_, idx) => start + idx + 1)
-  }
-
-  const getEndPaginationGroup = () => {
-    let start = Math.floor((pages - pageLimit - 1) / pageLimit) * pageLimit
-    return new Array(pageLimit).fill().map((_, idx) => start + idx + 1)
-  }
-
   useEffect(() => {
     setPages(Math.ceil(data.length / dataLimit))
   }, [data.length, dataLimit])
 
   return (
     <Fragment>
-      <Component items={getPaginatedData()} {...rest} />
-      {pages > 1 &&
-        <nav className="border-t border-gray-200 px-4 flex items-center justify-between sm:px-0">
-          <div className="-mt-px w-0 flex-1 flex">
-            {currentPage !== 1 &&
-              <button
-                className="border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                onClick={goToPreviousPage}
-              >
-                <ArrowNarrowLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                Previous
-              </button>
+      <div className="dataContainer">
+        <Component items={getPaginatedData()} />
+      </div>
+      {data.length > 0 && <nav
+        className="bg-white shadow overflow-hidden px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:rounded-b-md sm:px-6"
+        aria-label="Pagination"
+      >
+        <div className="hidden sm:block">
+          <p className="text-sm text-gray-700">
+            Showing <span className="font-medium">{startIndex + 1}</span> to <span className="font-medium">{data.length > endIndex ? (endIndex) : data.length}</span> of{' '}
+            <span className="font-medium">{data.length}</span> results
+          </p>
+        </div>
+        <div className="flex-1 flex justify-between sm:justify-end">
+          {currentPage !== 1 &&
+            <button
+              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              onClick={goToPreviousPage}
+            >
+              Previous
+            </button>
+          }
+          {(currentPage !== pages && pages > 1) &&
+            <button
+              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              onClick={goToNextPage}
+            >
+              Next
+            </button>
             }
-          </div>
-          <div className="hidden md:-mt-px md:flex">
-            {getStartPaginationGroup().map((item, index) => (
-              <button
-                key={index}
-                onClick={changePage}
-                className={classNames(
-                  currentPage === item ? "border-indigo-500 text-indigo-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                  "border-transparent border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium")}
-              >
-                {item}
-              </button>
-            ))}
-            {pages > (2 * pageLimit) &&
-              <span className="border-transparent text-gray-500 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
-                ...
-              </span>
-            }
-            {pages > pageLimit &&
-              getEndPaginationGroup().map((item, index) => (
-                <button
-                  key={index}
-                  onClick={changePage}
-                  className={classNames(
-                    currentPage === item ? "border-indigo-500 text-indigo-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                    "border-transparent border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium")}
-                >
-                  {item}
-                </button>
-              ))}
-          </div>
-          <div className="-mt-px w-0 flex-1 flex justify-end">
-            {currentPage !== pages &&
-              <button
-                className="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                onClick={goToNextPage}
-              >
-                Next
-                <ArrowNarrowRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-              </button>
-            }
-          </div>
-        </nav>}
+        </div>
+      </nav>}
+
     </Fragment>
 
   )
