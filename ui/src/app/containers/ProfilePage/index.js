@@ -229,6 +229,7 @@ export default function ProfilePage() {
     useEffect(() => {
         async function getPosts() {
             await api.getUserPost(uid)
+            //.then(response => console.log(response.data))
             .then(response => setPosts(response.data))
         }
         getPosts()

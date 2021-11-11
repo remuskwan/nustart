@@ -44,6 +44,15 @@ public class ThreadSessionBean implements ThreadSessionBeanLocal {
         q.setParameter("thread", t);
         return (Forum) q.getSingleResult();
     }
+    
+        @Override
+    public Thread getThreadFromPost(Long pId) throws NoResultException {
+        Post p = em.find(Post.class, pId);
+        
+        Query q = em.createQuery("SELECT DISTINCT t FROM Thread t WHERE :post MEMBER OF t.posts");
+        q.setParameter("post", p);
+        return (Thread) q.getSingleResult();
+    }
 
     @Override
     public List<Thread> searchThreads(Long fId, String title) {

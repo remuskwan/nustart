@@ -22,6 +22,8 @@ public interface ThreadSessionBeanLocal {
     public Thread getThread(Long tId) throws NoResultException;
 
     public Forum getForumFromThread(Long tId) throws NoResultException;
+    
+    public Thread getThreadFromPost(Long pId) throws NoResultException;
 
     public List<Thread> searchThreads(Long fId, String title);
 
