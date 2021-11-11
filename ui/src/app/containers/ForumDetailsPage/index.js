@@ -8,13 +8,17 @@ import ThreadList from './threadList';
 import Breadcrumb from '../../components/breadcrumb';
 import api from '../../util/api';
 import NewButton from '../../components/newButton';
+import ThreadPaginator from '../../components/Paginator/threadPaginator'
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
   { name: 'Most Liked', href: '#', current: false },
   { name: 'Most Answers', href: '#', current: false },
 ]
-
+const searchTypes = [
+  { id: 1, name: 'Title', searchType: 'title' },
+  { id: 2, name: 'Creator', searchType: 'creator' },
+]
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -25,22 +29,60 @@ export default function ForumDetailsPage() {
   const [user, setUser] = useState(null)
   const [forum, setForum] = useState(null)
   const [error, setError] = useState(null)
+  const [threads, setThreads] = useState([])
+  const [sortType, setSortType] = useState('created')
+  const [searchString, setSearchString] = useState("")
+  const [searchType, setSearchType] = useState(searchTypes[0])
 
   useEffect(() => {
     api.getUser()
       .then(response => setUser(response.data))
       .catch((error) => setError(error))
   }, [])
-  
+
   useEffect(() => {
     api.getForum(id)
-      .then((response) =>
+      .then((response) => {
+        const searchSortItems = (type, searchString, searchType) => {
+          const types = {
+            created: 'created',
+            title: 'title',
+            posts: 'posts'
+          }
+          const searchTypes = {
+            title: 'title',
+            creator: 'creator',
+          }
+          const sortProperty = types[type]
+          const searchProperty = searchTypes[searchType]
+          const filtered = [...response.data.threads]
+            .filter((forum) => {
+              if (searchString === '') {
+                return forum
+              } else if (searchProperty === "creator") {
+                if (forum[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
+                  return forum
+                }
+              } else if (forum[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                return forum
+              }
+            })
+          const sorted = [...filtered]
+            .sort((x, y) =>
+              sortProperty === 'posts'
+                ? y['posts'].length - x['posts'].length
+                : y[sortProperty].localeCompare(x[sortProperty])
+                || y['created'].localeCompare(x['created']))
+            .sort((x, y) => y['pinned'] - x['pinned'])
+          setThreads(sorted)
+        }
         setForum(response.data)
-      )
+        searchSortItems(sortType, searchString, searchType.searchType)
+      })
       .catch((error) => (
         setError(error)
       ))
-  }, [])
+  }, [id, sortType, searchString, searchType.searchType])
 
   if (error) return (error.message)
 
@@ -49,8 +91,13 @@ export default function ForumDetailsPage() {
     <div className="relative min-h-screen bg-gray-100">
       <NavBar
         buttonContent="thread"
-        component={<NewButton content='thread' path={`${url}/create`}/>}
+        component={<NewButton content='thread' path={`${url}/create`} />}
         user={user}
+        searchString={searchString}
+        setSearchString={setSearchString}
+        searchTypes={searchTypes}
+        searchType={searchType}
+        setSearchType={setSearchType}
       />
       <Breadcrumb />
       <div className="py-10">
@@ -60,7 +107,7 @@ export default function ForumDetailsPage() {
           </div>
           {forum &&
             <main className="lg:col-span-9 xl:col-span-10">
-              
+
               <div className="pb-5 border-b border-gray-200">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">{forum.title}</h3>
                 <p className="mt-2 max-w-4xl text-sm text-gray-500">
@@ -111,10 +158,11 @@ export default function ForumDetailsPage() {
               </div>
               <div className="mt-4">
                 <h1 className="sr-only">Threads</h1>
-                <ThreadList
-                  items={forum.threads}
-                  forum={forum}
-                  contentType="threads" />
+                <ThreadPaginator
+                  data={threads}
+                  component={ThreadList}
+                  dataLimit={3}
+                />
               </div>
             </main>
           }
