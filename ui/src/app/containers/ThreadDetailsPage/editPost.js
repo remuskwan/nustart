@@ -40,7 +40,6 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
       })
       .catch(error => setError(error))
   }
-  console.log(editorState)
 
   useEffect(() => {
     const editorState = htmlToDraftBlocks(post.content)

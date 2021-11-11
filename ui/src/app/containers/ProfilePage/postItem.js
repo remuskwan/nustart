@@ -170,7 +170,7 @@ export default function PostItem({ p }) {
                     <div className="mt-2 flex">
                         <div className="flex items-center text-sm text-gray-500">
                             {/* <p> <ChevronRightIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" /> </p> */}
-                            <p className="text-xl font-medium text-rose-500 truncate">{p.content}</p>
+                            <div className="text-xl font-medium text-rose-500 truncate"dangerouslySetInnerHTML={{ __html: postMessage.content }} />
                         </div>
                     </div>
                 </div>

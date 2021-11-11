@@ -73,7 +73,7 @@ export default function GuidesListPage() {
                 if (guide[searchProperty]["username"].toLowerCase().includes(searchString.toLowerCase())) {
                   return guide
                 }
-              } else if (guide[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+              } else if (guide[searchProperty].replace( /(<([^>]+)>)/ig, '').toLowerCase().includes(searchString.toLowerCase())) {
                 return guide
               }
             })
