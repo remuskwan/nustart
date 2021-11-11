@@ -75,7 +75,6 @@ export default function CategoriesPage() {
 
   return (
     user &&
-    <Fragment>
       <div className="relative min-h-screen bg-gray-100">
         <NavBar
           buttonContent="forum"
@@ -146,7 +145,5 @@ export default function CategoriesPage() {
           </div>
         </div>
       </div>
-      {/* <AddCategoryModal open={open} setOpen={setOpen} setCategories={setCategories} /> */}
-    </Fragment>
   )
 }

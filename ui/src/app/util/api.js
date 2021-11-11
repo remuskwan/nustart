@@ -32,6 +32,12 @@ const api = {
   getGuideCategory(guideId) {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/category`)
   },
+  getMap(mapId){
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/admin/maps/${mapId}`)
+  },
+  getMaps(){
+    return axios.get("http://localhost:8080/NUStartApplication-war/webresources/admin/maps")
+  },
   getUserGuide(userId) {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/guides`)
   },
@@ -68,6 +74,9 @@ const api = {
   editComment(guideId, comment) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments`, comment)
   }, 
+  editMap(id, map) {
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/admin/maps/${id}`, map)
+  },
   editUser(id, user) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/users/${id}`, user)
   },
@@ -96,8 +105,8 @@ const api = {
   createCategory(category) {
     return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/categories`, category)
   },
-  createLink(guideId, link) {
-    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}`, link)
+  createMap(map) {
+    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/admin/maps`, map)
   },
   createContact(userId, contact) {
     return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/contacts`, contact)
@@ -117,12 +126,12 @@ const api = {
   deleteComment(guideId, commentId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments/${commentId}`)
   },
-  deleteLink(guideId, linkId) {
-    return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/links/${linkId}`)
-  },
   deleteContact(userId, contactId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/contact/${contactId}`)
-  }
+  },
+  deleteMap(mapId) {
+    return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/admin/maps/${mapId}`)
+  },
 }
 
 export default api

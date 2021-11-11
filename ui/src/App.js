@@ -19,6 +19,8 @@ import AddCategoryPage from './app/containers/AddCategoryPage';
 import GuidesListPage from './app/containers/GuidesListPage';
 import AddAdminPage from './app/containers/AddAdminPage';
 import PendingApprovalPage from './app/containers/PendingApprovalPage/pendingApproval';
+import CampusPage from './app/containers/MapsPage';
+import AddMapPage from './app/containers/AddMapPage';
 
 function App() {
   return (
@@ -42,6 +44,8 @@ function App() {
         <PrivateRoute path="/createGuide" component={AddGuidePage} />
         <PrivateRoute path="/admin/categories/create" component={AddCategoryPage} />
         <PrivateRoute exact path="/admin/categories" component={CategoriesPage} />
+        <PrivateRoute exact path="/campus" component={CampusPage} />
+        <PrivateRoute path="/campus/create" component={AddMapPage} />
         <Redirect exact from="/:id" to="/:id/threads" />
         <Redirect exact from="/:forumId/threads/:threadId" to="/:forumId/threads/:threadId/posts" />
       </Switch>

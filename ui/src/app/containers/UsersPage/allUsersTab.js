@@ -141,7 +141,7 @@ export default function AllUsersTab({ searchString, searchType }) {
             <ThreadPaginator
                 data={allUsers}
                 component={UserList}
-                dataLimit={8}
+                dataLimit={5}
             />
 
         </div>

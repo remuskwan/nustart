@@ -26,9 +26,9 @@ export default function EditGuideModal({ categoryId, guide, setGuide, open, setO
     evt.preventDefault()
     if (title !== '') {
       editGuide()
-      setOpen(false)
       setNotifTitle("saved guide")
       triggerNotification()
+      setOpen(false)
     }
   }
 

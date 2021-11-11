@@ -16,8 +16,8 @@ export default function ProfileDropDown({ user }) {
           <span className="sr-only">Open user menu</span>
           {user.profilePicture === "default"
             ?
-            <div class="max-w-md mx-auto my-3">
-              <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 hover:shadow-lg h-10 w-10 rounded-full fill-current text-white">
+            <div className="max-w-md mx-auto my-3">
+              <div className="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 hover:shadow-lg h-10 w-10 rounded-full fill-current text-white">
                 <h2 style={{ fontSize: 18 }}>{user.username.substring(0, 1)}</h2>
               </div>
             </div>
