@@ -11,6 +11,7 @@ import error.InvalidLoginException;
 import error.NoResultException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
+import error.UserRejectedException;
 import error.UserUnapprovedException;
 import java.util.List;
 import javax.ejb.Local;
@@ -22,7 +23,7 @@ import javax.ejb.Local;
 @Local
 public interface PersonSessionBeanLocal {
 
-    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, NoResultException;
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserRejectedException, UserUnapprovedException, NoResultException;
 
     public Person getPerson(Long pId) throws NoResultException;
 
@@ -34,9 +35,11 @@ public interface PersonSessionBeanLocal {
 
     public void deletePerson(Long pId) throws NoResultException;
 
-    public void addContact(Contact c, Long pId) throws NoResultException;
-
-    public int getContacts();
+    public List<Contact> getContacts();
+    
+    public List<Contact> addContact(Long pId, Contact c);
+    
+    public List<Contact> deleteContact(Long pId, Long contactId) throws NoResultException;
 
     public void blockUser(Long pId) throws NoResultException;
 
@@ -53,7 +56,7 @@ public interface PersonSessionBeanLocal {
     public void addCategories(Category c);
 
     public void updateCategory(Category c);
-    
+
     public void deleteCategory(Long cId) throws NoResultException;
 
     public List<Facility> getFacilities();
@@ -87,8 +90,8 @@ public interface PersonSessionBeanLocal {
     public List<Person> searchByStaff();
 
     public List<Guide> getGuidesCreated(Long pId);
-    
+
     public List<Thread> getThreadsCreated(Long pId);
-    
+
     public List<Post> getPostsCreated(Long pId);
 }

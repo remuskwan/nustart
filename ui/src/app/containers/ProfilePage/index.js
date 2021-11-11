@@ -32,6 +32,7 @@ import ContactsTab from './contactsTab'
 import AccountTab from './accountTab';
 import ThreadsTab from './threadsTab'
 import PostsTab from './postsTab'
+import PasswordTab from './passwordTab'
 
 const tabs = [
     { name: 'Profile', href: '#', current: true },
@@ -180,6 +181,7 @@ export default function ProfilePage() {
 
     const [guides, setGuides] = useState([])
     const [threads, setThreads] = useState([])
+    const [posts, setPosts] = useState([])
     const [editMode, setEditMode] = useState(false)
 
     const { uid } = useParams()
@@ -191,7 +193,7 @@ export default function ProfilePage() {
                     setUser(response.data)
                     setProfilePic(response.data.profilePicture)
                     setEditMode(response.data.id.toString() === uid)
-                    console.log(response.data.id === uid)
+                    //console.log(response.data.id === uid)
                 }).then(async () => {
                     if (!editMode) {
                         await api.getUser(uid)
@@ -224,6 +226,14 @@ export default function ProfilePage() {
         getThreads()
     }, [])
 
+    useEffect(() => {
+        async function getPosts() {
+            await api.getUserPost(uid)
+            .then(response => setPosts(response.data))
+        }
+        getPosts()
+    }, [])
+
     function resetTabState(tabName) {
         tabs.filter((t) => t.current === true).map((t) => t.current = false)
         const currentTab = tabs.filter((t) => t.name === tabName).map((t) => t.current = true)
@@ -243,113 +253,62 @@ export default function ProfilePage() {
         } else if (activeTab[0].name === 'Threads') {
             return <ThreadsTab threads={threads} />
         } else {
-            return <LikedTab editMode={editMode} />;
+            return <PasswordTab user={user} />
         }
     }
 
-    // function PostsTab() {
+    // function LikedTab(editMode) {
     //     return (
-    //         <div className="bg-white shadow overflow-hidden sm:rounded-md">
-    //             <ul role="list" className="divide-y divide-gray-200">
-    //                 {posts.map((p) => (
-    //                     <li key={p.creator.email}>
+    //         <div>
+    //             <Listbox value={selected} onChange={setSelected}>
+    //                 <div className="p-5 mt-1 relative">
+    //                     <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
+    //                         <span className="block truncate">{selected.name}</span>
+    //                         <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+    //                             <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+    //                         </span>
+    //                     </Listbox.Button>
 
-    //                         <div className="flex items-center px-4 py-4 sm:px-6">
-    //                             <div className="min-w-0 flex-1 flex items-center">
-
-    //                                 <div className="min-w-0 flex-1 px-2 md:gap-2">
-    //                                     <div>
-    //                                         <p className="text-sm font-medium text-rose-500 truncate">{p.creator.forumTitle}</p>
-    //                                         <p className="mt-2 flex items-center text-sm text-gray-900">
-    //                                             <span className="truncate">Thread {p.creator.threadTitle}</span>
-    //                                         </p>
-    //                                     </div>
-    //                                     <div className="md:block">
-    //                                         <div className="mt-2 flex items-center text-sm text-gray-500">
-    //                                             <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-    //                                             <p>
-    //                                                 <time dateTime={p.date}>{p.date}</time>
-    //                                             </p>
-    //                                         </div>
-    //                                     </div>
-    //                                     <div className="md:block">
-    //                                         <div className="mt-2 flex items-center text-sm text-gray-700">
-    //                                             <p>
-    //                                                 {p.postContents}
-    //                                             </p>
-    //                                         </div>
-    //                                     </div>
-    //                                 </div>
-    //                             </div>
-    //                             <div>
-    //                                 <a
-    //                                     href="#"
-    //                                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
+    //                     <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+    //                         <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+    //                             {likedFilter.map((filter) => (
+    //                                 <Listbox.Option
+    //                                     key={filter.id}
+    //                                     className={({ active }) =>
+    //                                         classNames(
+    //                                             active ? 'text-white bg-rose-600' : 'text-gray-900',
+    //                                             'cursor-default select-none relative py-2 pl-8 pr-4'
+    //                                         )
+    //                                     }
+    //                                     value={filter}
     //                                 >
-    //                                     View
-    //                                 </a>
-    //                             </div>
-    //                         </div>
-
-    //                     </li>
-    //                 ))}
-    //             </ul>
+    //                                     {({ selected, active }) => (
+    //                                         <>
+    //                                             <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+    //                                                 {filter.name}
+    //                                             </span>
+    //                                             {selected ? (
+    //                                                 <span
+    //                                                     className={classNames(
+    //                                                         active ? 'text-white' : 'text-rose-600',
+    //                                                         'absolute inset-y-0 left-0 flex items-center pl-1.5'
+    //                                                     )}
+    //                                                 >
+    //                                                     <CheckIcon className="h-5 w-5" aria-hidden="true" />
+    //                                                 </span>
+    //                                             ) : null}
+    //                                         </>
+    //                                     )}
+    //                                 </Listbox.Option>
+    //                             ))}
+    //                         </Listbox.Options>
+    //                     </Transition>
+    //                 </div>
+    //             </Listbox>
+    //             <FilterFavourites />
     //         </div>
     //     )
     // }
-
-    function LikedTab(editMode) {
-        return (
-            <div>
-                <Listbox value={selected} onChange={setSelected}>
-                    <div className="p-5 mt-1 relative">
-                        <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm">
-                            <span className="block truncate">{selected.name}</span>
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                            </span>
-                        </Listbox.Button>
-
-                        <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                            <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                                {likedFilter.map((filter) => (
-                                    <Listbox.Option
-                                        key={filter.id}
-                                        className={({ active }) =>
-                                            classNames(
-                                                active ? 'text-white bg-rose-600' : 'text-gray-900',
-                                                'cursor-default select-none relative py-2 pl-8 pr-4'
-                                            )
-                                        }
-                                        value={filter}
-                                    >
-                                        {({ selected, active }) => (
-                                            <>
-                                                <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
-                                                    {filter.name}
-                                                </span>
-                                                {selected ? (
-                                                    <span
-                                                        className={classNames(
-                                                            active ? 'text-white' : 'text-rose-600',
-                                                            'absolute inset-y-0 left-0 flex items-center pl-1.5'
-                                                        )}
-                                                    >
-                                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                    </span>
-                                                ) : null}
-                                            </>
-                                        )}
-                                    </Listbox.Option>
-                                ))}
-                            </Listbox.Options>
-                        </Transition>
-                    </div>
-                </Listbox>
-                <FilterFavourites />
-            </div>
-        )
-    }
 
     function FilterFavourites() {
         let filtered = [];
@@ -588,7 +547,7 @@ export default function ProfilePage() {
                         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                 <div className="flex">
-                                    {profilePic === "default"
+                                    {viewUser.profilePicture === "default"
                                         ?
                                         <div class="max-w-md mx-auto my-3">
                                             <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md hover:shadow-lg h-24 w-24 rounded-full fill-current text-white">

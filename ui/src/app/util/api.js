@@ -59,6 +59,12 @@ const api = {
   getUserThread(userId) {
     return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/threads`)
   },
+  getPostThread(postId) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/threads/${postId}/post`)
+  },
+  getUserPost(userId) {
+    return axios.get(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/posts`)
+  },
   editComment(guideId, comment) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments`, comment)
   }, 
@@ -93,6 +99,9 @@ const api = {
   createLink(guideId, link) {
     return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}`, link)
   },
+  createContact(userId, contact) {
+    return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/contacts`, contact)
+  },
   deletePost(forumId, threadId, postId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}/posts/${postId}`)
   },
@@ -110,6 +119,9 @@ const api = {
   },
   deleteLink(guideId, linkId) {
     return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/links/${linkId}`)
+  },
+  deleteContact(userId, contactId) {
+    return axios.delete(`http://localhost:8080/NUStartApplication-war/webresources/users/${userId}/contact/${contactId}`)
   }
 }
 

@@ -7,11 +7,16 @@ import NewButton from '../../components/newButton'
 import GuideList from '../../components/Guides/guideList'
 import api from '../../util/api'
 import GuideCategories from '../../components/guideCategories'
+import PostPaginator from '../../components/Paginator/postPaginator'
 
 const tabs = [//need to change to category
   { name: 'Recent', href: '#', current: true },
   { name: 'Most Liked', href: '#', current: false },
   { name: 'Most Answers', href: '#', current: false },
+]
+const searchTypes = [
+  { id: 1, name: 'Title', searchType: 'title' },
+  { id: 2, name: 'Creator', searchType: 'creator' },
 ]
 
 function classNames(...classes) {
@@ -26,6 +31,9 @@ export default function GuidesListPage() {
   const [categories, setCategories] = useState([])
   const [error, setError] = useState(null)
   const [selected, setSelected] = useState(null)
+  const [searchString, setSearchString] = useState("")
+  const [searchType, setSearchType] = useState(searchTypes[0])
+  const [sortType, setSortType] = useState('dateCreated')
 
   useEffect(() => {
     api.getUser()
@@ -50,13 +58,41 @@ export default function GuidesListPage() {
   useEffect(() => {
     api.getCategory(id)
       .then((response) => {
+        const searchSortItems = (type, searchString, searchType) => {
+          const types = {
+            dateCreated: 'dateCreated',
+            title: 'title',
+            content: 'content',
+          }
+          const searchTypes = {
+            content: 'content',
+            creator: 'creator',
+          }
+          const sortProperty = types[type]
+          const searchProperty = searchTypes[searchType]
+          const filtered = [...response.data.guides]
+            .filter((category) => {
+              if (searchString === '') {
+                return category
+              } else if (searchProperty === "creator") {
+                if (category[searchProperty]["displayName"].toLowerCase().includes(searchString.toLowerCase())) {
+                  return category
+                }
+              } else if (category[searchProperty].toLowerCase().includes(searchString.toLowerCase())) {
+                return category
+              }
+            })
+          const sorted = [...filtered]
+            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
+          setGuides(sorted)
+        }
         setCategory(response.data)
-        setGuides(response.data.guides)
+        searchSortItems(sortType, searchString, searchType.searchType)
       })
       .catch((error) => (
         setError(error)
       ))
-  }, [id])
+  }, [id,sortType, searchString, searchType.searchType])
 
   if (error) return `Error: ${error.message}`
 
@@ -68,6 +104,11 @@ export default function GuidesListPage() {
         disableButton={user.accountType === "STUDENT"}
         component={<NewButton content='guide' path="/createGuide" />}
         user={user}
+        searchString={searchString}
+        setSearchString={setSearchString}
+        searchTypes={searchTypes}
+        searchType={searchType}
+        setSearchType={setSearchType} 
       />
       <div className="py-10">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
@@ -76,9 +117,9 @@ export default function GuidesListPage() {
           </div>
           <main className="lg:col-span-9 xl:col-span-10">
             <div className="px-4 sm:px-0">
-            {(categories.length && selected) &&
-              <GuideCategories categories={categories} selected={selected} setSelected={setSelected} />
-            }
+              {(categories.length && selected) &&
+                <GuideCategories categories={categories} selected={selected} setSelected={setSelected} />
+              }
               {/* <div className="sm:hidden">
                 <label htmlFor="question-tabs" className="sr-only">
                   Select a tab
@@ -122,10 +163,18 @@ export default function GuidesListPage() {
             </div>
             <div className="mt-4">
               <h1 className="sr-only">Guides</h1>
-              <GuideList
-                items={guides}
-                contentType="guides"
+              <PostPaginator
+                // items={guides}
+                // contentType="guides"
+                // setGuides={setGuides}
+                // user={user}
+                data={guides}
+                component={GuideList}
+                dataLimit={3}
+                // forumId={forumId}
+                // threadId={threadId}
                 setGuides={setGuides}
+                contentType="guides"
                 user={user}
               />
             </div>

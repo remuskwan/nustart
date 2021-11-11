@@ -5,6 +5,8 @@
  */
 package webservices.restful;
 
+import entity.Contact;
+import error.UserRejectedException;
 import entity.Person;
 import entity.Post;
 import enumeration.AccountType;
@@ -31,7 +33,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.PersonSessionBeanLocal;
-import session.UnknownPersistenceException;
 
 /**
  * REST Web Service
@@ -74,7 +75,7 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getContactId() {
         try {
-            int latestId = personSessionBeanLocal.getContacts();
+            int latestId = personSessionBeanLocal.getContacts().size();
             System.out.println(latestId);
             return Response.status(200)
                     .entity(latestId)
@@ -152,6 +153,26 @@ public class UsersResource {
         }
     }
 
+    @POST
+    @Path("/{id}/contacts")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addContact(@PathParam("id") Long pId, Contact c) {
+        try {
+            List<Contact> contacts = personSessionBeanLocal.addContact(pId, c);
+            return Response.status(200)
+                    .entity(contacts)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+    }
+
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -159,6 +180,24 @@ public class UsersResource {
         try {
             personSessionBeanLocal.deletePerson(pId);
             return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception)
+                    .build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}/contact/{cid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteContact(@PathParam("id") Long pId, @PathParam("cid") Long contactId) {
+        try {
+            List<Contact> c = personSessionBeanLocal.deleteContact(pId, contactId);
+            return Response.status(200)
+                    .entity(c)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         } catch (NoResultException ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Not found").build();
@@ -207,6 +246,11 @@ public class UsersResource {
         } catch (UserUnapprovedException ex) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Please wait to be approved").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (UserRejectedException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "You have been rejected.").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (Exception ex) {

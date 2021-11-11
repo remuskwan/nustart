@@ -16,7 +16,10 @@ import enumeration.AccountType;
 import error.InvalidLoginException;
 import error.UserBlockedException;
 import error.UserEmailExistException;
+import error.UserRejectedException;
 import error.UserUnapprovedException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.persistence.PersistenceException;
@@ -58,7 +61,7 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, NoResultException {
+    public Long login(String email, String password) throws InvalidLoginException, UserBlockedException, UserUnapprovedException, UserRejectedException, NoResultException {
         try {
             Person p = getPersonByEmail(email);
             if (!p.getPassword().equals(password)) {
@@ -67,6 +70,8 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
                 throw new UserBlockedException("User blocked");
             } else if (p.getAccountStatus().equals(AccountStatus.UNAPPROVED)) {
                 throw new UserUnapprovedException("Please wait to be approved");
+            } else if (p.getAccountStatus().equals(AccountStatus.REJECTED)) {
+                throw new UserRejectedException("You have been rejected.");
             } else {
                 return p.getId();
             }
@@ -78,10 +83,17 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     @Override
     public void createUser(Person p) throws UserEmailExistException, UnknownPersistenceException {
         try {
+            p.setCreated(new Date());
+            p.setCoverImage("default");
+            p.setProfilePicture("default");
+            if (p.getAccountType() == AccountType.STAFF) {
+                p.setCourse("default");
+                p.setYr("0");
+            }
             em.persist(p);
         } catch (PersistenceException ex) {
             if (ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getName().equals("org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException")) {
+                    && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
                 throw new UserEmailExistException("Account already exists");
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
@@ -112,13 +124,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     public void deletePerson(Long pId) throws NoResultException {
         Person p = getPerson(pId);
         em.remove(p);
-    }
-
-    @Override
-    public void addContact(Contact c, Long pId) throws NoResultException {
-        em.persist(c);
-        Person p = getPerson(pId);
-        p.getContacts().add(c);
     }
 
     @Override
@@ -254,11 +259,35 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public int getContacts() {
-        return em.createQuery("SELECT c FROM Contact c").getResultList().size();
+    public List<Contact> getContacts() {
+        return em.createQuery("SELECT c FROM Contact c").getResultList();
     }
 
+    public List<Contact> addContact(Long pId, Contact c) {
+        try {
+            Person p = getPerson(pId);
+            em.persist(c);
+            p.getContacts().add(c);
+            return p.getContacts();
+        } catch (NoResultException ex) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<Contact> deleteContact(Long pId, Long contactId) throws NoResultException {
+        Contact c = em.find(Contact.class, contactId);
+        if (c != null) {
+            Query q = em.createQuery("SELECT p FROM Person p WHERE :contact MEMBER OF p.contacts");
+            q.setParameter("contact", c);
+            Person p = (Person) q.getSingleResult();
+            p.getContacts().remove(c);
+            return p.getContacts();
+        } else {
+            throw new NoResultException("Not found!");
+        }
+    }
+    
     @Override
     public List<Person> searchByEmail(String email) {
         Query q;

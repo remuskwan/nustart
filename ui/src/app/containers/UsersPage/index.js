@@ -1,10 +1,11 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import NewButton from '../../components/newButton'
 import api from '../../util/api'
 import AllUsersTab from './allUsersTab'
 import BlockTab from './BlockTab'
+import ApproveTab from './ApproveTab'
 
 const tabs = [
     { name: 'All Users', href: '#', current: true },
@@ -36,10 +37,11 @@ export default function UsersPage() {
     const [user, setUser] = useState(defaultUser)
     const [error, setError] = useState(null)
 
-
     useEffect(() => {
         api.getUser()
-            .then(response => setUser(response.data))
+            .then(response => {
+                setUser(response.data)
+            })
             .catch((error) => (
                 setError(error)
             ))
@@ -57,7 +59,7 @@ export default function UsersPage() {
             return <AllUsersTab />
         } else if (activeTab[0].name === 'To Approve') {
             //console.log('guides')
-            return null
+            return <ApproveTab />
         } else if (activeTab[0].name === 'Block') {
             //console.log('posts')
             return <BlockTab user={user} />
@@ -120,9 +122,9 @@ export default function UsersPage() {
                                 <div className="hidden sm:block">
                                     <nav className="relative z-0 rounded-lg shadow flex divide-x divide-gray-200" aria-label="Tabs">
                                         {tabs.map((tab, tabIdx) => (
-                                            <a
+                                            <button
                                                 key={tab.name}
-                                                href={tab.href}
+                                                // href={tab.href}
                                                 className={classNames(
                                                     tab.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
                                                     tabIdx === 0 ? 'rounded-l-lg' : '',
@@ -142,7 +144,7 @@ export default function UsersPage() {
                                                         'absolute inset-x-0 bottom-0 h-0.5'
                                                     )}
                                                 />
-                                            </a>
+                                            </button>
                                         ))}
                                     </nav>
                                 </div>
