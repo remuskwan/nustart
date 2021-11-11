@@ -57,12 +57,12 @@ export default function MapDetailsPage() {
           <main className="lg:col-span-9 xl:col-span-10">
             {(maps.length && selected) &&
               <MapSelectMenu options={maps} map={selected} setMap={setSelected} />}
-            <div className="mt-4">
+            <div className="mt-4 flex">
               <h1 className="sr-only">map</h1>
               <img
                 src={map.url}
                 alt=""
-                // className='object-cover pointer-events-none'
+                className="flex-shrink-0 min-w-full"
               />
             </div>
           </main>

@@ -27,15 +27,12 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "varchar(2000)")
+    @Column(columnDefinition = "varchar(5000)")
     private String content;
     @ManyToOne
     private Person creator;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-//    private Boolean published;
-//    private Date publishedAt;
-//    private Date updatedAt;
     private Long likes;
 
     public Post() {

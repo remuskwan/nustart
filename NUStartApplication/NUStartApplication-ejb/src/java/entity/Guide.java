@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -33,10 +34,9 @@ public class Guide implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    @Column(columnDefinition = "varchar(2000)")
+    @Column(columnDefinition = "varchar(5000)")
     private String content;
     private String pictureUrl;
-    private List<String> files;
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
     
@@ -45,7 +45,17 @@ public class Guide implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Comment> comments;
 
+    public Guide(String title, String content, String pictureUrl, Date dateCreated, Person creator) {
+        this.title = title;
+        this.content = content;
+        this.pictureUrl = pictureUrl;
+        this.dateCreated = dateCreated;
+        this.creator = creator;
+        this.comments = new ArrayList<>();
+    }
+    
     public Guide() {
+        this.comments = new ArrayList<>();
     }
     
     public Long getId() {
@@ -102,14 +112,6 @@ public class Guide implements Serializable {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-
-    public List<String> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<String> files) {
-        this.files = files;
     }
     
     @Override

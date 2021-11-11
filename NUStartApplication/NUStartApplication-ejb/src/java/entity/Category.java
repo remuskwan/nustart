@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -28,7 +29,7 @@ public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @Temporal(TemporalType.DATE)
@@ -39,6 +40,18 @@ public class Category implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Guide> guides;
 
+    public Category(String name, Date created, Person creator) {
+        this.name = name;
+        this.created = created;
+        this.creator = creator;
+        this.guides = new ArrayList<>();
+    }
+
+    public Category() {
+        this.guides = new ArrayList<>();
+    }
+    
+    
     public String getName() {
         return name;
     }

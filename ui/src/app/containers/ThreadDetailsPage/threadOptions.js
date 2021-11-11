@@ -11,7 +11,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ThreadOptions({ forumId, thread, setThread }) {
+export default function ThreadOptions({ user, forumId, thread, setThread }) {
   const history = useHistory()
   const [action, setAction] = useState("")
   const [open, setOpen] = useState(false)
@@ -90,39 +90,42 @@ export default function ThreadOptions({ forumId, thread, setThread }) {
                     </button>
                   )}
                 </Menu.Item>}
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    type="button"
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'w-full flex justify-right px-4 py-2 text-sm'
+              { user.accountType === 'ADMIN' &&
+                <>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        className={classNames(
+                          active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                          'w-full flex justify-right px-4 py-2 text-sm'
+                        )}
+                        onClick={() => {
+                          setAction(thread.closed ? "open" : "close")
+                          setOpen(true)
+                        }}
+                      >
+                        <span>{thread.closed ? "Open" : "Close"} thread</span>
+                      </button>
                     )}
-                    onClick={() => {
-                      setAction(thread.closed ? "open" : "close")
-                      setOpen(true)
-                    }}
-                  >
-                    <span>{thread.closed ? "Open" : "Close"} thread</span>
-                  </button>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    type="button"
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'w-full flex justify-right px-4 py-2 text-sm'
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        className={classNames(
+                          active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                          'w-full flex justify-right px-4 py-2 text-sm'
+                        )}
+                        onClick={() => {
+                          togglePinned(thread)
+                        }}
+                      >
+                        <span>{thread.pinned ? "Unpin" : "Pin"} thread</span>
+                      </button>
                     )}
-                    onClick={() => {
-                      togglePinned(thread)
-                    }}
-                  >
-                    <span>{thread.pinned ? "Unpin" : "Pin"} thread</span>
-                  </button>
-                )}
-              </Menu.Item>
+                  </Menu.Item>
+                </>}
             </div>
           </Menu.Items>
         </Transition>

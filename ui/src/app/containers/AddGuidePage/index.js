@@ -32,7 +32,6 @@ export default function AddGuidePage() {
   const [title, setTitle] = useState("")
   const [error, setError] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null)
-  const [links, setLinks] = useState([])
   // const [files, setFiles] = useState([]);
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -64,7 +63,6 @@ export default function AddGuidePage() {
       content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       creator: user,
       pictureUrl: picLocation,
-      links: links
     })
       .then(() => history.goBack())
       .catch(error => setError(error))

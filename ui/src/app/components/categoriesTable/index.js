@@ -29,7 +29,7 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
 
   function deleteCategory(categoryId) {
     api.deleteCategory(categoryId)
-      .then(() => setSearchString(""))
+      .then(() => window.location.reload())
       .catch(error => setError(error))
   }
 
@@ -71,9 +71,6 @@ export default function CategoriesTable({ items, setSearchString, dataLimit }) {
                         >
                           Created
                         </th>
-                        {/* <th scope="col" className="relative px-6 py-3">
-                          <span className="sr-only">Edit</span>
-                        </th> */}
                         <th scope="col" className="relative px-6 py-3">
                           <span className="sr-only">Options</span>
                         </th>

@@ -46,6 +46,14 @@ public class Forum implements Serializable {
         this.threads = new ArrayList<>();
     }
 
+    public Forum(String title, String description, Date created, Person creator) {
+        this.title = title;
+        this.description = description;
+        this.created = created;
+        this.creator = creator;
+        this.threads = new ArrayList<>();
+    }
+
     public Long getId() {
         return id;
     }

@@ -23,7 +23,6 @@ export default function AddMapPage() {
   const history = useHistory()
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState("")
-  // const [url, setUrl] = useState("")
   const [error, setError] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
 

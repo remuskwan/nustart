@@ -62,7 +62,6 @@ export default function AddForumPage() {
                           autoComplete="title"
                           autoFocus={true}
                           required={true}
-                          maxLength={45}
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
                         />
