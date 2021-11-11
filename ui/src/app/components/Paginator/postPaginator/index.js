@@ -1,35 +1,18 @@
 import { Fragment, useEffect, useState } from 'react'
 import { ArrowNarrowLeftIcon, ArrowNarrowRightIcon } from '@heroicons/react/solid'
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function PostsPaginator({ data, component: Component, pageLimit, dataLimit, ...rest }) {
+export default function PostsPaginator({ data, component: Component, dataLimit, ...rest }) {
   const [pages, setPages] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
 
   const goToNextPage = () => setCurrentPage((page) => page + 1)
   const goToPreviousPage = () => setCurrentPage((page) => page - 1)
-  const changePage = (evt) => {
-    const pageNumber = Number(evt.target.textContent)
-    setCurrentPage(pageNumber)
-  }
+
   const getPaginatedData = () => {
     const startIndex = currentPage * dataLimit - dataLimit;
     const endIndex = startIndex + dataLimit;
     return data.slice(startIndex, endIndex);
   }
-  const getStartPaginationGroup = () => {
-    let start = Math.floor((currentPage - 1) / pageLimit) * pageLimit
-    return new Array(pages > pageLimit ? pageLimit : pages).fill().map((_, idx) => start + idx + 1)
-  }
-
-  const getEndPaginationGroup = () => {
-    let start = Math.floor((pages - pageLimit - 1) / pageLimit) * pageLimit
-    return new Array(pageLimit).fill().map((_, idx) => start + idx + 1)
-  }
-
   useEffect(() => {
     setPages(Math.ceil(data.length / dataLimit))
   }, [data.length, dataLimit])
@@ -49,36 +32,6 @@ export default function PostsPaginator({ data, component: Component, pageLimit, 
                 Previous
               </button>
             }
-          </div>
-          <div className="hidden md:-mt-px md:flex">
-            {getStartPaginationGroup().map((item, index) => (
-              <button
-                key={index}
-                onClick={changePage}
-                className={classNames(
-                  currentPage === item ? "border-indigo-500 text-indigo-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                  "border-transparent border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium")}
-              >
-                {item}
-              </button>
-            ))}
-            {pages > (2 * pageLimit) &&
-              <span className="border-transparent text-gray-500 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
-                ...
-              </span>
-            }
-            {pages > pageLimit &&
-              getEndPaginationGroup().map((item, index) => (
-                <button
-                  key={index}
-                  onClick={changePage}
-                  className={classNames(
-                    currentPage === item ? "border-indigo-500 text-indigo-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                    "border-transparent border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium")}
-                >
-                  {item}
-                </button>
-              ))}
           </div>
           <div className="-mt-px w-0 flex-1 flex justify-end">
             {currentPage !== pages &&
