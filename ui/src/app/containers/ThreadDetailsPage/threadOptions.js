@@ -69,7 +69,6 @@ export default function ThreadOptions({ forumId, thread, setThread }) {
                     )}
                     onClick={() => setOpenEdit(true)}
                   >
-                    <PencilIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                     <span>Edit thread</span>
                   </button>
                 )}
@@ -87,7 +86,6 @@ export default function ThreadOptions({ forumId, thread, setThread }) {
                         setOpen(true)
                       }}
                     >
-                      <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                       <span>Delete thread</span>
                     </button>
                   )}

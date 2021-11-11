@@ -127,18 +127,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
     }
 
     @Override
-    public void blockUser(Long pId) throws NoResultException {
-        Person p = getPerson(pId);
-        p.setAccountStatus(AccountStatus.BLOCKED);
-    }
-
-    @Override
-    public void unblockUser(Long pId) throws NoResultException {
-        Person p = getPerson(pId);
-        p.setAccountStatus(AccountStatus.ACTIVE);
-    }
-
-    @Override
     public List<Person> searchUsers(String username) {
         Query q;
         if (username != null) {
@@ -220,15 +208,22 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         Query q = em.createQuery("select m from Map m");
         return q.getResultList();
     }
+    
+    @Override
+    public Map getMap(Long mId) throws NoResultException{
+        return em.find(Map.class, mId);
+    }
 
     @Override
     public void addMap(Map m) {
+        m.setTitle(m.getTitle().trim());
         em.persist(m);
     }
 
     @Override
     public void updateMap(Map m) {
         Map oldMap = em.find(Map.class, m.getId());
+        oldMap.setTitle(m.getTitle().trim());
         oldMap.setUrl(m.getUrl());
     }
 
@@ -244,19 +239,6 @@ public class PersonSessionBean implements PersonSessionBeanLocal {
         } catch (NoResultException ex) {
             throw new NoResultException("Map not found");
         }
-    }
-
-    @Override
-    public void approveStaff(Person staff) {
-        //check
-//        createUser(staff);
-    }
-
-    @Override
-    public void rejectStaff(Person staff) {
-        //show on front end rejection?
-        //or send email?
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public List<Contact> getContacts() {

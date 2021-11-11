@@ -7,11 +7,9 @@ package webservices.restful;
 
 import error.NoResultException;
 import java.util.List;
-import entity.Category;
 import entity.Facility;
 import entity.Map;
 import entity.Person;
-import java.util.Date;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -33,14 +31,15 @@ import session.PersonSessionBeanLocal;
  */
 @Path("admin")
 public class AdminResource {
+
     @EJB
-    private PersonSessionBeanLocal personSessionBeanLocal; 
+    private PersonSessionBeanLocal personSessionBeanLocal;
 
     @GET
     @Path("/staffs")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Person> getAllStaff() {
-        
+
         return personSessionBeanLocal.getAllStaff();
     }
 
@@ -51,6 +50,31 @@ public class AdminResource {
         return personSessionBeanLocal.getAllStudents();
     }
 
+    @GET
+    @Path("/maps")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Map> getAllMaps() {
+        return personSessionBeanLocal.getMaps();
+    }
+
+    @GET
+    @Path("/maps/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMap(@PathParam("id") Long mId) {
+        try {
+            Map m = personSessionBeanLocal.getMap(mId);
+            return Response.status(200)
+                    .entity(m)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+    }
+
     @POST
     @Path("/maps")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -59,8 +83,7 @@ public class AdminResource {
         personSessionBeanLocal.addMap(map);
         return map;
     }
-    
-    
+
     @PUT
     @Path("/maps/{mId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -69,7 +92,7 @@ public class AdminResource {
 
         try {
             personSessionBeanLocal.updateMap(map);
-            return Response.status(204).build();
+            return Response.status(200).entity(map).build();
         } catch (Exception e) {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "Map not found")
@@ -78,7 +101,7 @@ public class AdminResource {
                     .type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @DELETE
     @Path("/maps/{mapId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -92,9 +115,8 @@ public class AdminResource {
                     .build();
             return Response.status(404).entity(exception).build();
         }
-    }   
-    
-    
+    }
+
     @POST
     @Path("/facilities")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -129,70 +151,4 @@ public class AdminResource {
         personSessionBeanLocal.deleteFacility(fId);
         return Response.status(204).build();
     }
-
-    @PUT
-    @Path("/students/block/{studentId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response blockStudent(@PathParam("studentId") Long sId) {
-        try {
-            personSessionBeanLocal.blockUser(sId);
-            return Response.status(204).build();
-        } catch (NoResultException ex) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "not found")
-                    .build();
-            return Response.status(404).entity(exception)
-                    .type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @PUT
-    @Path("/students/unblock/{sid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response unblockStudent(@PathParam("sid") Long sId) {
-        try {
-            personSessionBeanLocal.unblockUser(sId);
-            return Response.status(204).build();
-        } catch (NoResultException ex) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "not found")
-                    .build();
-            return Response.status(404).entity(exception)
-                    .type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @PUT
-    @Path("/staffs/block/{staffId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response blockStaff(@PathParam("staffId") Long sId) {
-        try {
-            personSessionBeanLocal.blockUser(sId);
-            return Response.status(204).build();
-        } catch (NoResultException ex) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "not found")
-                    .build();
-            return Response.status(404).entity(exception)
-                    .type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @PUT
-    @Path("/staffs/unblock/{sid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response unblockStaff(@PathParam("sid") Long sId) {
-        try {
-            personSessionBeanLocal.unblockUser(sId);
-            return Response.status(204).build();
-        } catch (NoResultException ex) {
-            JsonObject exception = Json.createObjectBuilder()
-                    .add("error", "not found")
-                    .build();
-            return Response.status(404).entity(exception)
-                    .type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-    
-    
 }

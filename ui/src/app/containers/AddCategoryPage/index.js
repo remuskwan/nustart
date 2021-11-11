@@ -49,9 +49,6 @@ export default function AddCategoryPage() {
                   <div className="bg-white py-6 px-4 space-y-6 sm:p-6">
                     <div>
                       <h3 className="text-lg leading-6 font-medium text-gray-900">New Category</h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        This information will be displayed publicly so be careful what you share.
-                      </p>
                     </div>
                     <div className="grid grid-cols-3 gap-6">
                       <div className="col-span-3 sm:col-span-2">

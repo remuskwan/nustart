@@ -8,7 +8,6 @@ package session;
 import entity.Category;
 import entity.Comment;
 import entity.Guide;
-import entity.Link;
 import entity.Person;
 import error.NoResultException;
 import java.util.List;
@@ -78,7 +77,7 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
             oldG.setContent(g.getContent());
             oldG.setPictureUrl(g.getPictureUrl());
             oldG.setFiles(g.getFiles());
-            oldG.setLinks(g.getLinks());
+//            oldG.setLinks(g.getLinks());
         } catch (NoResultException ex) {
             Logger.getLogger(GuideSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -177,31 +176,31 @@ public class GuideSessionBean implements GuideSessionBeanLocal {
         }
     }
 
-    @Override
-    public void addLink(Long gId, Link l) throws NoResultException {
-        Guide guide = getGuide(gId);
-        l.setName(l.getName().trim());
-        em.persist(l);
-        guide.getLinks().add(l);
-    }
-
-    @Override
-    public void editLink(Link l) throws NoResultException {
-        Link oldL = em.find(Link.class, l.getId());
-        oldL.setName(l.getName().trim());
-        oldL.setURL(l.getURL().trim());
-    }
-
-    @Override
-    public void deleteLink(Long gId, Long lId) throws NoResultException {
-        Guide g = getGuide(gId);
-        Link l = em.find(Link.class, lId);
-
-        if (g != null) {
-            g.getLinks().remove(l);
-            em.remove(l);
-        } else {
-            throw new NoResultException("Not found");
-        }
-    }
+//    @Override
+//    public void addLink(Long gId, Link l) throws NoResultException {
+//        Guide guide = getGuide(gId);
+//        l.setName(l.getName().trim());
+//        em.persist(l);
+//        guide.getLinks().add(l);
+//    }
+//
+//    @Override
+//    public void editLink(Link l) throws NoResultException {
+//        Link oldL = em.find(Link.class, l.getId());
+//        oldL.setName(l.getName().trim());
+//        oldL.setURL(l.getURL().trim());
+//    }
+//
+//    @Override
+//    public void deleteLink(Long gId, Long lId) throws NoResultException {
+//        Guide g = getGuide(gId);
+//        Link l = em.find(Link.class, lId);
+//
+//        if (g != null) {
+//            g.getLinks().remove(l);
+//            em.remove(l);
+//        } else {
+//            throw new NoResultException("Not found");
+//        }
+//    }
 }

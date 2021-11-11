@@ -1,5 +1,5 @@
 import { Link, NavLink, useRouteMatch } from 'react-router-dom'
-import { ChatAlt2Icon, HomeIcon, KeyIcon, UserGroupIcon, UserCircleIcon } from '@heroicons/react/outline'
+import { ChatAlt2Icon, BookOpenIcon, KeyIcon, UserGroupIcon, UserCircleIcon, LocationMarkerIcon } from '@heroicons/react/outline'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -10,8 +10,8 @@ export default function SideBar({ editProfile = false, user }) {
 
   const navigation = !editProfile ? [
     { name: 'Forums', path: '/', icon: ChatAlt2Icon },
-    { name: 'Guides', path: '/categories', icon: HomeIcon },
-    // ...user.accountType === "ADMIN" ? [{ name: 'Users', path: '/users', icon: UserGroupIcon }] : []
+    { name: 'Guides', path: '/categories', icon: BookOpenIcon },
+    { name: 'Campus', path: '/campus', icon: LocationMarkerIcon },
   ] : [
     { name: 'Account', path: '/account/edit', icon: UserCircleIcon },
     { name: 'Password', path: '/account/edit/password', icon: KeyIcon }
