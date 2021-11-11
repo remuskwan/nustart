@@ -5,6 +5,8 @@ import {
 } from '@heroicons/react/outline'
 import SortSelectMenu from '../../components/SelectMenus/sortSelectMenu'
 import api from '../../util/api'
+import ThreadPaginator from '../../components/Paginator/threadPaginator'
+import BlockUserList from './blockUserList'
 
 const sortTypes = [
     { id: 1, name: 'Recent', sortType: 'created', reverse: false },
@@ -68,74 +70,12 @@ export default function BlockTab({ searchString, searchType }) {
             <div className="pt-6 pb-4">
                 <SortSelectMenu options={sortTypes} sortType={sortType} setSortType={setSortType} />
             </div>
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul className="divide-y divide-gray-200">
-                    {(!allUsers || !allUsers.length) ?
-                        <li key='No users to block'>
-                            <div className="px-4 py-4 flex items-center sm:px-6">
-                                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                    <div className="truncate">
-                                        <div className="flex text-sm items-center">
-                                            <p className="text-xl font-medium text-rose-500 truncate">No users to block</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        : allUsers.map((user) => (
-                        <li key={user.id}>
-                            <div className="px-4 py-4 flex items-center sm:px-6">
-                                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                    <div className="truncate">
-                                        <div className="flex text-sm items-center">
-                                            <p className="text-xl font-medium text-rose-500 truncate">{user.email}</p>
-                                            <p className="ml-3 flex-shrink-0 font-normal text-gray-500">{user.accountType}</p>
-                                        </div>
-                                        <div className="mt-2 flex">
-                                            <div className="flex items-center text-sm text-gray-500">
-                                                {user.accountStatus}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                        <div className="flex overflow-hidden -space-x-1">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="ml-5 flex items-center">
-                                    {user.accountStatus === "BLOCKED"
-                                        ?
-                                        <button
-                                            type="button"
-                                            className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                            onClick={() => {
-                                                toggleBlock(user);
-                                            }}
-                                        >
-                                            <CheckCircleIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
-                                            Unblock
-                                        </button>
-                                        :
-                                        <button
-                                            type="button"
-                                            className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
-                                            onClick={() => {
-                                                toggleBlock(user);
-                                            }}
-                                        >
-                                            <BanIcon className="mr-3 h-4 w-4" aria-hidden="true"
-                                            />
-                                            Block
-                                        </button>
-
-                                    }
-                                </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            <ThreadPaginator
+                data={allUsers}
+                component={BlockUserList}
+                dataLimit={8}
+                toggleBlock={toggleBlock}
+            />
         </div>
     )
 }

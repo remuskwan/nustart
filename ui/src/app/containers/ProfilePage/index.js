@@ -112,8 +112,8 @@ export default function ProfilePage() {
     useEffect(() => {
         async function getPosts() {
             await api.getUserPost(uid)
-            //.then(response => console.log(response.data))
-            .then(response => setPosts(response.data))
+                //.then(response => console.log(response.data))
+                .then(response => setPosts(response.data))
         }
         getPosts()
     }, [])
@@ -378,16 +378,22 @@ export default function ProfilePage() {
             <main className="lg:col-span-9 xl:col-span-9 bg-white rounded-md">
                 <article>
                     <div>
-                        <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
-                            <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImage} alt="" />
-                        </div>
+                        {user.coverImage !== 'default'
+                            ? <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
+                                <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={user.coverImage} alt="" />
+                            </div>
+                            :
+                            <div className="h-10 w-full object-cover lg:h-28 xl:h-20 rounded-md">
+
+                            </div>
+                        }
                         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                 <div className="flex">
                                     {profilePic === "default"
                                         ?
                                         <div class="max-w-md mx-auto my-3">
-                                            <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md hover:shadow-lg h-24 w-24 rounded-full fill-current text-white">
+                                            <div class="flex justify-center items-center content-center bg-gradient-to-br from-pink-300 to-pink-600 shadow-md h-24 w-24 rounded-full fill-current text-white">
                                                 <h2 style={{ fontSize: 24 }}>{user.username.substring(0, 1)}</h2>
                                             </div>
                                         </div>
@@ -425,10 +431,15 @@ export default function ProfilePage() {
             <main className="lg:col-span-9 xl:col-span-9 bg-white rounded-md">
                 <article>
                     <div>
-                        <div>
-                            <img className="h-32 w-full object-cover lg:h-48" src={viewUser.coverImage} alt="" />
-                        </div>
+                        {viewUser.coverImage !== 'default'
+                            ? <div className="h-18 w-full object-cover lg:h-28 xl:h-40 rounded-md">
+                                <img className="h-32 w-full object-cover lg:h-48 xl:h-56 rounded-md" src={viewUser.coverImage} alt="" />
+                            </div>
+                            :
+                            <div className="h-10 w-full object-cover lg:h-28 xl:h-20 rounded-md">
 
+                            </div>
+                        }
                         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                 <div className="flex">
@@ -453,7 +464,7 @@ export default function ProfilePage() {
                                     <div className="mt-2 flex items-center text-sm text-gray-500">
                                         {
                                             viewUser.accountStatus === 'ACTIVE'
-                                                ? 
+                                                ?
                                                 <>
                                                     <CheckCircleIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" aria-hidden="true" />
                                                     {viewUser.accountStatus}

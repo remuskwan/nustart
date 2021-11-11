@@ -89,6 +89,9 @@ const api = {
   editPost(forumId, threadId, post) {
     return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/forums/${forumId}/threads/${threadId}/posts`, post)
   },
+  editCategory(categoryId, category) {
+    return axios.put(`http://localhost:8080/NUStartApplication-war/webresources/categories/${categoryId}`, category)
+  },
   createComment(guideId, comment) {
     return axios.post(`http://localhost:8080/NUStartApplication-war/webresources/guides/${guideId}/comments`, comment)
   },

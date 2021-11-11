@@ -1,12 +1,15 @@
 import moment from "moment";
 import { Fragment, useState, useEffect } from "react"
 import { Link } from "react-router-dom";
+import EditCategoryModal from "../../containers/CategoriesPage/editCategory";
 import api from "../../util/api";
 import DeleteConfirm from "../deleteConfirm";
 
 export default function CategoriesTable({ user, items, setSearchString, dataLimit }) {
   const [open, setOpen] = useState(false)
   const [deleteCat, setDeleteCat] = useState(null)
+  const [editCat, setEditCat] = useState(null)
+
   const [error, setError] = useState(null);
   const [pages, setPages] = useState(Math.ceil(items.length / dataLimit))
   const [currentPage, setCurrentPage] = useState(1)
@@ -21,8 +24,8 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
     const startIndex = currentPage * dataLimit - dataLimit
     const endIndex = startIndex + dataLimit
     return items.slice(startIndex, endIndex)
-  
-}
+
+  }
   function deleteCategory(categoryId) {
     api.deleteCategory(categoryId)
       .then(() => setSearchString(""))
@@ -91,7 +94,7 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
                             <button
                               className="text-rose-600 hover:text-rose-900"
                               onClick={() => {
-                                setDeleteCat(item)
+                                setEditCat(item)
                                 setOpen(true)
                               }}>
                               Edit
@@ -156,6 +159,13 @@ export default function CategoriesTable({ user, items, setSearchString, dataLimi
           setOpen={setOpen}
           cat={deleteCat}
           onConfirm={deleteCategory}
+        />
+      }
+      {editCat &&
+        <EditCategoryModal
+          item={editCat}
+          open={open}
+          setOpen={setOpen}
         />
       }
       {/* {editCat &&
