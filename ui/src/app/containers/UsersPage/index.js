@@ -26,8 +26,6 @@ export default function UsersPage() {
     const [tab, setTab] = useState(tabs[0])
     const [user, setUser] = useState(null)
     const [error, setError] = useState(null)
-    const [sortType, setSortType] = useState('created')
-    const [currentTab, setCurrentTab] = useState(1)
     const [searchString, setSearchString] = useState("")
     const [searchType, setSearchType] = useState(searchTypes[0])
 
@@ -50,13 +48,11 @@ export default function UsersPage() {
     function CurrentTab() {
         const activeTab = tabs.filter((t) => t.current === true)
         if (activeTab[0].name === 'All Users') {
-            return <AllUsersTab searchString={searchString} searchType={searchType} sortType={sortType}/>
+            return <AllUsersTab searchString={searchString} searchType={searchType}/>
         } else if (activeTab[0].name === 'To Approve') {
-            //console.log('guides')
-            return <ApproveTab />
+            return <ApproveTab searchString={searchString} searchType={searchType}/>
         } else if (activeTab[0].name === 'Block') {
-            //console.log('posts')
-            return <BlockTab user={user} searchString={searchString} searchType={searchType} sortType={sortType}/>
+            return <BlockTab user={user} searchString={searchString} searchType={searchType} />
         } else {
             return null
         }
@@ -81,27 +77,8 @@ export default function UsersPage() {
                     <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
                         <SideBar user={user} />
                     </div>
-                    <main className="lg:col-span-9 xl:col-span-9 bg-white">
-                        <article>
-                            {/* Profile header */}
-                            <div>
-
-                                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                                    <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
-
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h2 className="p-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">{user.name}</h2>
-                                        <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-
-                                            <div className="mt-2 flex items-center text-sm text-gray-500">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                    <main className="lg:col-span-9 xl:col-span-9">
+                        <>
                             <div>
                                 <div className="sm:hidden">
                                     <label htmlFor="tabs" className="sr-only">
@@ -150,7 +127,7 @@ export default function UsersPage() {
                                 </div>
                             </div>
                             <CurrentTab />
-                        </article>
+                        </>
                     </main>
                 </div>
             </div>

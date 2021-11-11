@@ -13,8 +13,8 @@ import PostPaginator from '../../components/Paginator/postPaginator'
 import SortSelectMenu from '../../components/SelectMenus/sortSelectMenu'
 
 const sortTypes = [
-    { id: 1, name: 'Recent', sortType: 'createdAt', reverse: false },
-    { id: 2, name: 'Title', sortType: 'title', reverse: true },
+  { id: 1, name: 'Recent', sortType: 'createdAt', reverse: false },
+  { id: 2, name: 'Content', sortType: 'content', reverse: true },
 ]
 
 const searchTypes = [
@@ -31,7 +31,7 @@ export default function ThreadDetailsPage() {
   const [error, setError] = useState(null)
   const [searchString, setSearchString] = useState("")
   const [searchType, setSearchType] = useState(searchTypes[0])
-  const [sortType, setSortType] = useState('createdAt')
+  const [sortType, setSortType] = useState(sortTypes[0])
 
   useEffect(() => {
     api.getUser()
@@ -56,12 +56,12 @@ export default function ThreadDetailsPage() {
       .then((response) => {
         const searchSortItems = (type, searchString, searchType) => {
           const types = {
-            created: 'created',
+            createdAt: 'createdAt',
             content: 'content',
           }
           const searchTypes = {
-            content: 'content',
             creator: 'creator',
+            content: 'content',
           }
           const sortProperty = types[type]
           const searchProperty = searchTypes[searchType]
@@ -77,17 +77,17 @@ export default function ThreadDetailsPage() {
                 return post
               }
             })
-          // const sorted = [...filtered]
-          //   .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
-          setPosts(filtered)
+          const sorted = [...filtered]
+            .sort((x, y) => y[sortProperty].localeCompare(x[sortProperty]))
+          setPosts(sorted)
         }
         setThread(response.data)
-        searchSortItems(sortType, searchString, searchType.searchType)
+        searchSortItems(sortType.sortType, searchString, searchType.searchType)
       })
       .catch((error) => (
         setError(error)
       ))
-  }, [threadId, sortType, searchString, searchType.searchType])
+  }, [threadId, sortType.sortType, searchString, searchType.searchType])
 
   if (error) return `Error: ${error.message}`
 
