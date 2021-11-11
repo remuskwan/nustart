@@ -164,6 +164,12 @@ export default function RegisterPage() {
                 if (error.response.status === 404) setSubmitError(new Error("Account already exists"))
                 else setSubmitError(new Error("Something went wrong. Please try again later."))
             })
+            /** new */
+            .then(() => history.push("/pendingApproval"))
+            .catch(error => {
+                if (error.response.accountStatus === 'UNAPPROVED') setSubmitError(new Error("Account is yet to be approved, please wait"))
+            })
+            /** */
     }
     const { contacts } = contactList;
 
