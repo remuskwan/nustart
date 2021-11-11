@@ -18,13 +18,19 @@ export default function ApproveTab() {
     function approve(user) {
         user.accountStatus = 'ACTIVE'
         api.editUser(user.id, user)
-            .then(api.setAllUsers(response.data))
+            .then(() => {
+                api.getUsers()
+                    .then((response) => setAllUsers(response.data))
+            })
     }
 
     function disapprove(user) {
         user.accountStatus = 'REJECTED'
         api.editUser(user.id, user)
-            .then(api.setAllUsers(response.data))
+            .then(() => {
+                api.getUsers()
+                    .then((response) => setAllUsers(response.data))
+            })
     }
 
     return (
