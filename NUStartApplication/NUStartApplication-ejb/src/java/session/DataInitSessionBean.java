@@ -66,8 +66,8 @@ public class DataInitSessionBean {
             a.setCoverImage("default");
             personSessionBeanLocal.createUser(a);
             Person student1 = new Person("johntan@u.nus.edu", "1234567aA@", "John Tan", "default", "default", AccountType.STUDENT, AccountStatus.ACTIVE, "Business", "Business Administration", "1", new Date());
-            Person student2 = new Person("bobwong@u.nus.edu", "1234567aA@", "Bob Wong", "default", "default", AccountType.STUDENT, AccountStatus.BLOCKED, "Science", "Biomedical Engineering", "3", new Date());
-            Person staff1 = new Person("profben@comp.nus.edu.sg", "1234567aA@","Prof. Ben", "default", "default", AccountType.STAFF, AccountStatus.UNAPPROVED, "Computing", "default", "default", new Date());
+            Person student2 = new Person("bobwong@u.nus.edu", "1234567aA@", "Bob Wong", "default", "default", AccountType.STUDENT, AccountStatus.ACTIVE, "Science", "Biomedical Engineering", "3", new Date());
+            Person staff1 = new Person("profben@comp.nus.edu.sg", "1234567aA@","Prof. Ben", "default", "default", AccountType.STAFF, AccountStatus.ACTIVE, "Computing", "default", "default", new Date());
             Person staff2 = new Person("sam@nus.edu.sg", "1234567aA@","Sam Lim", "default", "default", AccountType.STAFF, AccountStatus.UNAPPROVED, "Business", "default", "default", new Date());
             personSessionBeanLocal.createUser(student1);
             personSessionBeanLocal.createUser(student2);
@@ -81,7 +81,7 @@ public class DataInitSessionBean {
             cat1.setGuides(c1);
             personSessionBeanLocal.addCategories(cat1);
             
-            Category cat2 = new Category("NUS Food Reviews", new Date(), a);
+            Category cat2 = new Category("SG Attractions", new Date(), a);
             personSessionBeanLocal.addCategories(cat2);
             
             Thread t1 = new Thread();

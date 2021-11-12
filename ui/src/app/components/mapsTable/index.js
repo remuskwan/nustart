@@ -70,7 +70,7 @@ export default function MapsTable({ items, setSearchString, dataLimit }) {
                       {getPaginatedData().map((item, itemIdx) => (
                         <tr key={item.id} className={itemIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            <Link to={`/profile/${item.id}`} className="hover:underline">
+                            <Link to={`/campus/${item.id}`} className="hover:underline">
                               {item.title}
                             </Link>
                           </td>
