@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/NUStartApplication-war/static/css/main.6c3afd20.chunk.css",
+    "main.js": "/NUStartApplication-war/static/js/main.b0a036be.chunk.js",
+    "main.js.map": "/NUStartApplication-war/static/js/main.b0a036be.chunk.js.map",
+    "runtime-main.js": "/NUStartApplication-war/static/js/runtime-main.e6fc6873.js",
+    "runtime-main.js.map": "/NUStartApplication-war/static/js/runtime-main.e6fc6873.js.map",
+    "static/css/2.0af64950.chunk.css": "/NUStartApplication-war/static/css/2.0af64950.chunk.css",
+    "static/js/2.bf4abf25.chunk.js": "/NUStartApplication-war/static/js/2.bf4abf25.chunk.js",
+    "static/js/2.bf4abf25.chunk.js.map": "/NUStartApplication-war/static/js/2.bf4abf25.chunk.js.map",
+    "static/js/3.d9cf39fb.chunk.js": "/NUStartApplication-war/static/js/3.d9cf39fb.chunk.js",
+    "static/js/3.d9cf39fb.chunk.js.map": "/NUStartApplication-war/static/js/3.d9cf39fb.chunk.js.map",
+    "index.html": "/NUStartApplication-war/index.html",
+    "static/css/2.0af64950.chunk.css.map": "/NUStartApplication-war/static/css/2.0af64950.chunk.css.map",
+    "static/css/main.6c3afd20.chunk.css.map": "/NUStartApplication-war/static/css/main.6c3afd20.chunk.css.map",
+    "static/js/2.bf4abf25.chunk.js.LICENSE.txt": "/NUStartApplication-war/static/js/2.bf4abf25.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e6fc6873.js",
+    "static/css/2.0af64950.chunk.css",
+    "static/js/2.bf4abf25.chunk.js",
+    "static/css/main.6c3afd20.chunk.css",
+    "static/js/main.b0a036be.chunk.js"
+  ]
+}
