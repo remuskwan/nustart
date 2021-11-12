@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useRouteMatch } from 'react-router'
 import SideBar from '../../components/sideBar'
 import NavBar from '../../components/navBar'
 import MapSelectMenu from '../../components/SelectMenus/mapsSelectMenu'
 import api from '../../util/api'
 
 export default function CampusPage() {
-    const { url } = useRouteMatch()
     const [user, setUser] = useState(null)
     const [maps, setMaps] = useState([])
     const [selected, setSelected] = useState(null)

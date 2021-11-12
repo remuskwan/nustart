@@ -1,5 +1,4 @@
 import { Fragment, useState } from 'react'
-import axios from 'axios'
 import { Dialog, Transition } from '@headlessui/react'
 import InputText from '../../components/inputText'
 import api from '../../util/api'

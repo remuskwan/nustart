@@ -1,7 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
-import axios from 'axios'
 import { Dialog, Transition } from '@headlessui/react'
-import TextArea from '../../components/textArea'
 import api from '../../util/api'
 import htmlToDraft from 'html-to-draftjs'
 import draftToHtml from 'draftjs-to-html';
@@ -18,8 +16,6 @@ const htmlToDraftBlocks = (html) => {
 }
 
 export default function EditPostModal({ forumId, threadId, setThread, post, open, setOpen }) {
-  // const [content, setContent] = useState(post.content)
-
   const [editorState, setEditorState] = useState()
   const [error, setError] = useState(null);
 
@@ -86,15 +82,6 @@ export default function EditPostModal({ forumId, threadId, setThread, post, open
                     Edit post
                   </Dialog.Title>
                   <div className="mt-2 gap-6 text-left">
-                    {/* <TextArea
-                      name="content"
-                      id="content"
-                      label="Post"
-                      required={true}
-                      autoFocus={true}
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                    /> */}
                     <div>
                       <label htmlFor="about" className="block text-sm font-medium text-gray-700">
                         Post

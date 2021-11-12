@@ -7,7 +7,6 @@ import DeleteConfirm from "../deleteConfirm";
 export default function MapsTable({ items, setSearchString, dataLimit }) {
   const [open, setOpen] = useState(false)
   const [deleteM, setDeleteM] = useState(null)
-  const [editCat, setEditCat] = useState(null)
   const [error, setError] = useState(null);
   const [pages, setPages] = useState(Math.ceil(items.length / dataLimit))
   const [currentPage, setCurrentPage] = useState(1)
@@ -78,14 +77,6 @@ export default function MapsTable({ items, setSearchString, dataLimit }) {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.url}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
-                              className="text-rose-600 hover:text-rose-900"
-                              onClick={() => {
-                                setEditCat(item)
-                                setOpen(true)
-                              }}>
-                              Edit
-                            </button>
-                            <button
                               className="ml-5 text-rose-600 hover:text-rose-900"
                               onClick={() => {
                                 setDeleteM(item)
@@ -147,14 +138,6 @@ export default function MapsTable({ items, setSearchString, dataLimit }) {
           onConfirm={deleteMap}
         />
       }
-      {editCat &&
-        <EditCategoryModal
-          item={editCat}
-          open={open}
-          setOpen={setOpen}
-        />
-      }
-
     </Fragment>
   )
 }

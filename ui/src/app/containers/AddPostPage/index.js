@@ -19,8 +19,11 @@ export default function AddPostPage() {
   );
   const handleSubmit = (evt) => {
     evt.preventDefault()
+    if (editorState.getCurrentContent().hasText()) {
     createPost()
     alert("Successfully added post.")
+    }
+    else alert("Content cannot be empty.")
   }
 
   function createPost() {

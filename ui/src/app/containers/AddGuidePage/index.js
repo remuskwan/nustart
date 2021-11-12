@@ -32,14 +32,12 @@ export default function AddGuidePage() {
   const [title, setTitle] = useState("")
   const [error, setError] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null)
-  // const [files, setFiles] = useState([]);
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
 
   const handleFileInput = (e) => {
     setSelectedFile(e.target.files[0])
-    // setFiles([(prev) => prev].push(e.target.files[0]))
   }
 
   const handleUpload = async (file) => {
@@ -52,9 +50,12 @@ export default function AddGuidePage() {
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    if (selectedFile === null) createGuide()
-    else handleUpload(selectedFile)
-    alert("Successfully created guide.")
+    if (editorState.getCurrentContent().hasText()) {
+      if (selectedFile === null) createGuide()
+      else handleUpload(selectedFile)
+      alert("Successfully created guide.")
+    }
+    else alert("Body cannot be empty.")
   }
 
   function createGuide(picLocation = "") {
@@ -126,7 +127,7 @@ export default function AddGuidePage() {
                             Body
                           </label>
                           <div className="mt-1">
-                          <div className="shadow block w-full sm:text-sm rounded-md"
+                            <div className="shadow block w-full sm:text-sm rounded-md"
                               style={{ padding: '10px', minHeight: '400px' }}
                             >
                               <Editor

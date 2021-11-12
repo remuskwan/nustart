@@ -62,7 +62,7 @@ export default function MapDetailsPage() {
               <img
                 src={map.url}
                 alt=""
-                className="flex-shrink-0 min-w-full"
+                className="flex-shrink-0 min-w-full rounded-md"
               />
             </div>
           </main>

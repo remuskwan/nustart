@@ -3,7 +3,6 @@ import { useHistory, useParams } from 'react-router';
 import NavBar from "../../components/navBar";
 import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
-import TextArea from '../../components/textArea';
 import draftToHtml from 'draftjs-to-html';
 import api from '../../util/api';
 import { Editor } from "react-draft-wysiwyg";
@@ -22,8 +21,11 @@ export default function AddThreadPage() {
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    createThread()
-    alert("Successfully created thread.")
+    if (editorState.getCurrentContent().hasText()) {
+      createThread()
+      alert("Successfully created thread.")
+    }
+    else alert("Post cannot be empty.")
   }
 
   function createThread() {
@@ -92,8 +94,8 @@ export default function AddThreadPage() {
                           </label>
 
                           <div className='mt-1'>
-                            <div className="shadow block w-full sm:text-sm rounded-md" 
-                            style={{ padding: '10px', minHeight: '400px' }}>
+                            <div className="shadow block w-full sm:text-sm rounded-md"
+                              style={{ padding: '10px', minHeight: '400px' }}>
                               <Editor
                                 editorState={editorState}
                                 onEditorStateChange={setEditorState}

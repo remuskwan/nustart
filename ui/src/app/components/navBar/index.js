@@ -64,8 +64,8 @@ export default function NavBar({
                   </Link>
                 </div>
               </div>
-              <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-8">
-              <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
+              <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-7">
+                <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                   {!disableSearch ?
                     <div className="flex w-full">
                       <Fragment>
@@ -106,7 +106,7 @@ export default function NavBar({
                   )}
                 </Popover.Button>
               </div>
-              <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-2">
+              <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
                 {(!disableButton && component) && component}
                 {/* Profile dropdown */}
                 <ProfileDropDown user={user} />
