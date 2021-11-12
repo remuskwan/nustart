@@ -32,9 +32,9 @@ To run the NetBeans project, create a new Java DB Database with the following cr
 ### Setting up the frontend
 1. Navigate to the “ui” folder and install relevant dependencies with npm install.
 2. Once download has been completed execute npm run start and the browser window should direct you to localhost:3000
-Default users
+3. Default login
 Admin1: 
-email: admin01@mail.com
-password: 1234567aA@
+- email: admin01@mail.com
+- password: 1234567aA@
 
 The web application is deployed and ready now. 
