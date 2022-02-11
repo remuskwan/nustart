@@ -6,18 +6,7 @@ import SideBar from '../../components/sideBar';
 import InputText from '../../components/inputText';
 import UploadImage from '../../components/uploadImage';
 import api from '../../util/api';
-
-const S3_BUCKET = 'nustart';
-const REGION = 'ap-southeast-1';
-const ACCESS_KEY = 'AKIARTYBCSQYJNUGQWLJ';
-const SECRET_ACCESS_KEY = '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';
-
-const config = {
-  bucketName: S3_BUCKET,
-  region: REGION,
-  accessKeyId: ACCESS_KEY,
-  secretAccessKey: SECRET_ACCESS_KEY,
-}
+import { config } from '../../../config';
 
 export default function AddMapPage() {
   const history = useHistory()

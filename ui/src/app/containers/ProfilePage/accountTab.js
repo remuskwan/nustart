@@ -15,6 +15,7 @@ import {
 import api from '../../util/api'
 import { useHistory } from 'react-router'
 import UploadProfileImage from '../../components/uploadProfileImage'
+import { config } from '../../../config'
 import moment from 'moment'
 
 const years = [
@@ -63,18 +64,6 @@ export default function AccountTab({ editMode = false, uid }) {
     const [error, setError] = useState(null)
 
     const history = useHistory()
-
-    const S3_BUCKET = 'nustart';
-    const REGION = 'ap-southeast-1';
-    const ACCESS_KEY = 'AKIARTYBCSQYJNUGQWLJ';
-    const SECRET_ACCESS_KEY = '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';
-
-    const config = {
-        bucketName: S3_BUCKET,
-        region: REGION,
-        accessKeyId: ACCESS_KEY,
-        secretAccessKey: SECRET_ACCESS_KEY,
-    }
 
     useEffect(() => {
         async function getLogged() {
